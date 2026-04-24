@@ -1,0 +1,146 @@
+﻿@model JaiHindEdutech.Models.AddressInfoFormModel
+
+@using (Ajax.BeginForm("AddressInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessAddressInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "col-md-10 mx-auto" }))
+{
+    @Html.HiddenFor(m => m.StudentInfoId)
+    for (int i = 0; i < Model.Address.Count; i++)
+    {
+        @Html.HiddenFor(model => model.Address[i].StudentAddressInfoId)
+        @Html.HiddenFor(model => model.Address[i].CreatedBy)
+        @Html.HiddenFor(model => model.Address[i].CreatedOn)
+        @Html.HiddenFor(model => model.Address[i].ModifiedBy)
+        @Html.HiddenFor(model => model.Address[i].ModifiedOn)
+        @Html.HiddenFor(model => model.Address[i].IsDeleted)
+        @Html.HiddenFor(model => model.Address[i].AddressType, new { Value = Model.Address[i].AddressType })
+
+        if (@Model.Address[i].AddressType.ToString() == "PemanentAddress")
+        {
+            <h2>Permanent Address</h2>
+        }
+        else
+        { <h2>Present Address</h2>}
+
+
+
+        if (Model.Address[i].AddressType.ToString() == "PresentAddress")
+        {
+            <div class="form-group form-check">
+                @Html.CheckBoxFor(m => m.Address[i].SameAsPermanent, new { @class = "form-check-input", @id = "sameAsPermanent" })
+                @Html.LabelFor(m => m.Address[i].SameAsPermanent, "Same as Permanent Address", new { @class = "form-check-label" })
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].HouseNo)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].HouseNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].HouseNo", i)] != null && ViewData.ModelState[string.Format("Address[{0}].HouseNo", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "House No", @id = string.Format("HouseNo_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].HouseNo, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].Area)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].Area, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].Area", i)] != null && ViewData.ModelState[string.Format("Address[{0}].Area", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Area", @id = string.Format("Area_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].Area, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].Village)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].Village, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].Village", i)] != null && ViewData.ModelState[string.Format("Address[{0}].Village", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Village", @id = string.Format("Village_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].Village, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].PO)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].PO, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].PO", i)] != null && ViewData.ModelState[string.Format("Address[{0}].PO", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "PO", @id = string.Format("PO_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].PO, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].District)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].District, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].District", i)] != null && ViewData.ModelState[string.Format("Address[{0}].District", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "District", @id = string.Format("District_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].District, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].City)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].City, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].City", i)] != null && ViewData.ModelState[string.Format("Address[{0}].City", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "City", @id = string.Format("City_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].City, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].State)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].State, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].State", i)] != null && ViewData.ModelState[string.Format("Address[{0}].State", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "State", @id = string.Format("State_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].State, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address[i].Zip)
+                    <div>
+                        @Html.EditorFor(model => model.Address[i].Zip, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Address[{0}].Zip", i)] != null && ViewData.ModelState[string.Format("Address[{0}].Zip", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Zip", @id = string.Format("Zip_{0}", i) } })
+                        @Html.ValidationMessageFor(model => model.Address[i].Zip, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="divider"></div>
+    <div class="clearfix">
+        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+        <button type="button" onclick="loadStep(2)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+    </div>
+}
+<script type="text/javascript">
+    function ajaxSuccessAddressInfo(data) {
+        if (data.result == true) {
+            loadStep(4, 3, data.StudentInfoId);
+        }
+    };
+
+    $(document).ready(function () {
+        $('#sameAsPermanent').change(function () {
+            var index0 = 0;
+            var index1 = 1;
+
+            if ($(this).is(':checked')) {
+                $('#HouseNo_' + index1).val($('#HouseNo_' + index0).val());
+                $('#Area_' + index1).val($('#Area_' + index0).val());
+                $('#Village_' + index1).val($('#Village_' + index0).val());
+                $('#PO_' + index1).val($('#PO_' + index0).val());
+                $('#District_' + index1).val($('#District_' + index0).val());
+                $('#City_' + index1).val($('#City_' + index0).val());
+                $('#State_' + index1).val($('#State_' + index0).val());
+                $('#Zip_' + index1).val($('#Zip_' + index0).val());
+
+                // Optional: make fields readonly
+                $(`#HouseNo_${index1}, #Area_${index1}, #Village_${index1}, #PO_${index1}, #District_${index1}, #City_${index1}, #State_${index1}, #Zip_${index1}`).prop('readonly', true);
+            } else {
+                $(`#HouseNo_${index1}, #Area_${index1}, #Village_${index1}, #PO_${index1}, #District_${index1}, #City_${index1}, #State_${index1}, #Zip_${index1}`).val('').prop('readonly', false);
+            }
+        });
+    });
+</script>

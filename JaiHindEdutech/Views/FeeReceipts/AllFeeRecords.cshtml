@@ -1,0 +1,58 @@
+﻿@model IEnumerable<JaiHindEdutech.Models.FeeData>
+@{
+    ViewBag.Title = "AllStudents";
+}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<h2>All Students</h2>
+
+<table id="studentsTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Roll Number</th>
+            <th>Class Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.FullName</td>
+                <td>@student.RollNumber</td>
+                <td>@student.ClassName</td>
+                <td>
+                    <br />@Html.ActionLink("Print", "FeeReceiptPDF", "FeeReceipts", new { AdmissionFormId = student.AdmissionFormId }, new { @class = "btn btn-sm btn-primary" })
+                    | @Html.ActionLink("Fee Receipt", "Create", "FeeReceipts", new { AdmissionFormId = student.AdmissionFormId }, new { @class = "btn btn-sm btn-primary" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#studentsTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            columnDefs: [
+                { targets: 0, width: "150px" }, // Full Name
+                { targets: 1, width: "100px" }, // Roll No
+                { targets: 2, width: "180px" }, // Class
+                { targets: 6, width: "120px" }  // Actions
+            ],
+            autoWidth: false  // VERY important to prevent auto override
+        });
+    });
+</script>

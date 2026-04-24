@@ -1,0 +1,114 @@
+﻿@model JaiHindEdutech.Entity.FeeReceipt
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FeeReceipt</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AdmissionFee)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdmissionFee)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.C1StInstallment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.C1StInstallment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.C2ndInstallment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.C2ndInstallment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.C3rdInstallment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.C3rdInstallment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.C4thInstallment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.C4thInstallment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BalanceAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BalanceAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedIn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedIn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { FeeReceiptId = Model.FeeReceiptId }) |
+    @Html.ActionLink("Back to List", "GetAllStudents", "Admission")
+</p>

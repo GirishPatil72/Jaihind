@@ -1,0 +1,1367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="JaiHindEduModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDefaultRole" Type="bit" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogin">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ProviderId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="ProviderId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeID" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmployeeTitle" Type="nvarchar" MaxLength="100" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsFirstTimeLogin" Type="bit" />
+          <Property Name="IsLockedout" Type="bit" />
+        </EntityType>
+        <EntityType Name="AddmissionForm">
+          <Key>
+            <PropertyRef Name="AddmissionFormId" />
+          </Key>
+          <Property Name="AddmissionFormId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentInfoId" Type="int" />
+          <Property Name="CollegeInfoId" Type="int" />
+          <Property Name="ClassName" Type="varchar" MaxLength="100" />
+          <Property Name="SubjectsChoosenId" Type="int" />
+          <Property Name="DocumentSubmittedId" Type="int" />
+          <Property Name="AcademicYearId" Type="int" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="AdmissionFormNo" Type="varchar" MaxLength="100" />
+          <Property Name="RollNumber" Type="varchar" MaxLength="100" />
+          <Property Name="Stream" Type="varchar" MaxLength="100" />
+          <Property Name="CoachingCentreId" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="AdmissionFormSteps">
+          <Key>
+            <PropertyRef Name="AdmissionFormStepsId" />
+          </Key>
+          <Property Name="AdmissionFormStepsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AddmissionFormId" Type="int" />
+          <Property Name="Step1CollegeClass" Type="bit" />
+          <Property Name="Step2StudInfo" Type="bit" />
+          <Property Name="Step3ParentInfo" Type="bit" />
+          <Property Name="Step4AddressInfo" Type="bit" />
+          <Property Name="Step5SubjectSelection" Type="bit" />
+          <Property Name="Step6PrevAcademic" Type="bit" />
+          <Property Name="Step7DocumentSubmission" Type="bit" />
+          <Property Name="Step8" Type="bit" />
+          <Property Name="Step9" Type="bit" />
+          <Property Name="Step10" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="AssStudentAddressStudentInfo">
+          <Key>
+            <PropertyRef Name="AssStudentAddressStudentInfoId" />
+          </Key>
+          <Property Name="AssStudentAddressStudentInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentInfoId" Type="int" />
+          <Property Name="StudentAddressInfoId" Type="int" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="AssStudentParentInfo">
+          <Key>
+            <PropertyRef Name="AssStudentParentInfoId" />
+          </Key>
+          <Property Name="AssStudentParentInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentInfoId" Type="int" />
+          <Property Name="ParentInfoId" Type="int" />
+          <Property Name="ParentType" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="ClassInfo">
+          <Key>
+            <PropertyRef Name="ClassInfoId" />
+          </Key>
+          <Property Name="ClassInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="CoachingCentre">
+          <Key>
+            <PropertyRef Name="CoachingCentreId" />
+          </Key>
+          <Property Name="CoachingCentreId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CoachingCentreName" Type="varchar" MaxLength="1000" />
+          <Property Name="AddressLine1" Type="varchar" MaxLength="500" />
+          <Property Name="AddressLine2" Type="varchar" MaxLength="500" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
+          <Property Name="State" Type="varchar" MaxLength="100" />
+          <Property Name="Zip" Type="varchar" MaxLength="100" />
+          <Property Name="ContactNo1" Type="varchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CollegeInfo">
+          <Key>
+            <PropertyRef Name="CollegeInfoId" />
+          </Key>
+          <Property Name="CollegeInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CollegeName" Type="varchar" MaxLength="1000" />
+          <Property Name="CollegeType" Type="varchar" MaxLength="100" />
+          <Property Name="AddressLine1" Type="varchar" MaxLength="500" />
+          <Property Name="AddressLine2" Type="varchar" MaxLength="500" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
+          <Property Name="State" Type="varchar" MaxLength="100" />
+          <Property Name="Zip" Type="varchar" MaxLength="100" />
+          <Property Name="ContactNo1" Type="varchar" MaxLength="100" />
+          <Property Name="ContactNo2" Type="varchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="LogoURL" Type="nvarchar" MaxLength="500" />
+          <Property Name="CollegeNameShort" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentTypeId" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" />
+          <Property Name="Link" Type="nvarchar(max)" />
+          <Property Name="ThumbnailLink" Type="nvarchar(max)" />
+          <Property Name="ContainerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FileSize" Type="nvarchar" MaxLength="20" />
+          <Property Name="OtherDocumentType" Type="nvarchar" MaxLength="200" />
+          <Property Name="ExpDate" Type="datetime" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="DocumentSubmitted">
+          <Key>
+            <PropertyRef Name="DocumentSubmittedId" />
+          </Key>
+          <Property Name="DocumentSubmittedId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AddmissionFormId" Type="int" />
+          <Property Name="ClassXMarksheet" Type="bit" />
+          <Property Name="ClassXIMarksheet" Type="bit" />
+          <Property Name="SchoolLC" Type="bit" />
+          <Property Name="CasteCertificate" Type="bit" />
+          <Property Name="AadharCard" Type="bit" />
+          <Property Name="GapCertificate" Type="bit" />
+          <Property Name="SnglieGirlChild" Type="bit" />
+          <Property Name="ElegibilityCert" Type="bit" />
+          <Property Name="PassingCert" Type="bit" />
+          <Property Name="EBCCertificate" Type="bit" />
+          <Property Name="PassportSizePhoto" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="CopyOfLOC" Type="bit" />
+          <Property Name="AadharFather" Type="bit" />
+          <Property Name="AadharMother" Type="bit" />
+        </EntityType>
+        <EntityType Name="FeeReceipt">
+          <Key>
+            <PropertyRef Name="FeeReceiptId" />
+          </Key>
+          <Property Name="FeeReceiptId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdmissionFormId" Type="int" Nullable="false" />
+          <Property Name="AdmissionFee" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="1StInstallment" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="2ndInstallment" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="3rdInstallment" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="4thInstallment" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="BalanceAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="ExamFee" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Misclellaneous" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="LutAcademicYear">
+          <Key>
+            <PropertyRef Name="AcademicYearId" />
+          </Key>
+          <Property Name="AcademicYearId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Year" Type="varchar" MaxLength="100" />
+          <Property Name="Details" Type="varchar" MaxLength="100" />
+          <Property Name="IsCurrent" Type="bit" />
+        </EntityType>
+        <EntityType Name="LutDocumentType">
+          <Key>
+            <PropertyRef Name="DocumentTypeId" />
+          </Key>
+          <Property Name="DocumentTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsObsolete" Type="bit" />
+          <Property Name="Category" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="ParentInfo">
+          <Key>
+            <PropertyRef Name="ParentInfoId" />
+          </Key>
+          <Property Name="ParentInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParentType" Type="varchar" MaxLength="100" />
+          <Property Name="FullName" Type="varchar" MaxLength="500" />
+          <Property Name="Occupation" Type="varchar" MaxLength="100" />
+          <Property Name="AadharNo" Type="varchar" MaxLength="100" />
+          <Property Name="MobileNo" Type="varchar" MaxLength="100" />
+          <Property Name="EmailId" Type="varchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ParentPhotoId" Type="int" />
+          <Property Name="ParentSignatureId" Type="int" />
+          <Property Name="AnnualIncome" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="StudentAddressInfo">
+          <Key>
+            <PropertyRef Name="StudentAddressInfoId" />
+          </Key>
+          <Property Name="StudentAddressInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AddressType" Type="varchar" MaxLength="100" />
+          <Property Name="HouseNo" Type="varchar" MaxLength="200" />
+          <Property Name="Area" Type="varchar" MaxLength="100" />
+          <Property Name="Village" Type="varchar" MaxLength="100" />
+          <Property Name="PO" Type="varchar" MaxLength="100" />
+          <Property Name="District" Type="varchar" MaxLength="100" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
+          <Property Name="State" Type="varchar" MaxLength="100" />
+          <Property Name="Zip" Type="varchar" MaxLength="100" />
+          <Property Name="SameAsPermanent" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="StudentInfo">
+          <Key>
+            <PropertyRef Name="StudentInfoId" />
+          </Key>
+          <Property Name="StudentInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="200" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="200" />
+          <Property Name="LastName" Type="varchar" MaxLength="200" />
+          <Property Name="FullName" Type="varchar" MaxLength="500" />
+          <Property Name="DateOfBirth" Type="date" />
+          <Property Name="Gender" Type="varchar" MaxLength="100" />
+          <Property Name="AadharNo" Type="varchar" MaxLength="100" />
+          <Property Name="IsSingleGirlChild" Type="bit" />
+          <Property Name="BloodGroup" Type="varchar" MaxLength="100" />
+          <Property Name="Nationality" Type="varchar" MaxLength="100" />
+          <Property Name="Category" Type="varchar" MaxLength="100" />
+          <Property Name="MobileNo" Type="varchar" MaxLength="100" />
+          <Property Name="EmailId" Type="varchar" MaxLength="100" />
+          <Property Name="Domicile" Type="varchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="StudentPhotoId" Type="int" />
+          <Property Name="StudentSignatureId" Type="int" />
+        </EntityType>
+        <EntityType Name="StudentPreviousAcademicInfo">
+          <Key>
+            <PropertyRef Name="StudentPreviousAcademicInfoId" />
+          </Key>
+          <Property Name="StudentPreviousAcademicInfoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentInfoId" Type="int" />
+          <Property Name="ExamName" Type="varchar" MaxLength="200" />
+          <Property Name="Board" Type="varchar" MaxLength="200" />
+          <Property Name="SchoolOrCollege" Type="varchar" MaxLength="200" />
+          <Property Name="ExamSeatNo" Type="varchar" MaxLength="100" />
+          <Property Name="EligibilityCertNo" Type="varchar" MaxLength="100" />
+          <Property Name="MonthYearOfPassing" Type="varchar" MaxLength="100" />
+          <Property Name="TotalMarks" Type="varchar" MaxLength="100" />
+          <Property Name="Percentage" Type="varchar" MaxLength="100" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SubjectsChoosen">
+          <Key>
+            <PropertyRef Name="SubjectsChoosenId" />
+          </Key>
+          <Property Name="SubjectsChoosenId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AddmissionFormId" Type="int" />
+          <Property Name="English" Type="bit" />
+          <Property Name="Physics" Type="bit" />
+          <Property Name="Chemistry" Type="bit" />
+          <Property Name="EVS" Type="bit" />
+          <Property Name="PhysicalEducation" Type="bit" />
+          <Property Name="Hindi" Type="bit" />
+          <Property Name="Marathi" Type="bit" />
+          <Property Name="Mathemcatics" Type="bit" />
+          <Property Name="Biology" Type="bit" />
+          <Property Name="Geography" Type="bit" />
+          <Property Name="ComputerScience" Type="bit" />
+          <Property Name="InformationTechnology" Type="bit" />
+          <Property Name="CropScience" Type="bit" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="200" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="InformaticsPractices" Type="bit" />
+        </EntityType>
+        <Association Name="AssStudentAddressStudentInfo_FK">
+          <End Role="StudentAddressInfo" Type="Self.StudentAddressInfo" Multiplicity="0..1" />
+          <End Role="AssStudentAddressStudentInfo" Type="Self.AssStudentAddressStudentInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentAddressInfo">
+              <PropertyRef Name="StudentAddressInfoId" />
+            </Principal>
+            <Dependent Role="AssStudentAddressStudentInfo">
+              <PropertyRef Name="StudentAddressInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AssStudentParentInfo_FK">
+          <End Role="ParentInfo" Type="Self.ParentInfo" Multiplicity="0..1" />
+          <End Role="AssStudentParentInfo" Type="Self.AssStudentParentInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParentInfo">
+              <PropertyRef Name="ParentInfoId" />
+            </Principal>
+            <Dependent Role="AssStudentParentInfo">
+              <PropertyRef Name="ParentInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="GetAdmissionInfoByAddmissionFormId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="JHE">
+          <Parameter Name="AddmissionFormId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetAllApplicantStudentsByStudentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="JHE">
+          <Parameter Name="StudentInfoId" Type="int" Mode="In" />
+          <Parameter Name="AcademicYear" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="JaiHindEduModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserLogin" EntityType="Self.AspNetUserLogin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AddmissionForm" EntityType="Self.AddmissionForm" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="AdmissionFormSteps" EntityType="Self.AdmissionFormSteps" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="AssStudentAddressStudentInfo" EntityType="Self.AssStudentAddressStudentInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="AssStudentParentInfo" EntityType="Self.AssStudentParentInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="ClassInfo" EntityType="Self.ClassInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="CoachingCentre" EntityType="Self.CoachingCentre" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="CollegeInfo" EntityType="Self.CollegeInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="Document" EntityType="Self.Document" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="DocumentSubmitted" EntityType="Self.DocumentSubmitted" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="FeeReceipt" EntityType="Self.FeeReceipt" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="LutAcademicYear" EntityType="Self.LutAcademicYear" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="LutDocumentType" EntityType="Self.LutDocumentType" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="ParentInfo" EntityType="Self.ParentInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="StudentAddressInfo" EntityType="Self.StudentAddressInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="StudentInfo" EntityType="Self.StudentInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="StudentPreviousAcademicInfo" EntityType="Self.StudentPreviousAcademicInfo" Schema="JHE" store:Type="Tables" />
+          <EntitySet Name="SubjectsChoosen" EntityType="Self.SubjectsChoosen" Schema="JHE" store:Type="Tables" />
+          <AssociationSet Name="AssStudentAddressStudentInfo_FK" Association="Self.AssStudentAddressStudentInfo_FK">
+            <End Role="StudentAddressInfo" EntitySet="StudentAddressInfo" />
+            <End Role="AssStudentAddressStudentInfo" EntitySet="AssStudentAddressStudentInfo" />
+          </AssociationSet>
+          <AssociationSet Name="AssStudentParentInfo_FK" Association="Self.AssStudentParentInfo_FK">
+            <End Role="ParentInfo" EntitySet="ParentInfo" />
+            <End Role="AssStudentParentInfo" EntitySet="AssStudentParentInfo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="JaiHindEduModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDefaultRole" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogin">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ProviderId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ProviderId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRole">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmployeeTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsFirstTimeLogin" Type="Boolean" />
+          <Property Name="IsLockedout" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="AddmissionForm">
+          <Key>
+            <PropertyRef Name="AddmissionFormId" />
+          </Key>
+          <Property Name="AddmissionFormId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentInfoId" Type="Int32" />
+          <Property Name="CollegeInfoId" Type="Int32" />
+          <Property Name="ClassName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SubjectsChoosenId" Type="Int32" />
+          <Property Name="DocumentSubmittedId" Type="Int32" />
+          <Property Name="AcademicYearId" Type="Int32" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="AdmissionFormNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="RollNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Stream" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CoachingCentreId" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AdmissionFormStep">
+          <Key>
+            <PropertyRef Name="AdmissionFormStepsId" />
+          </Key>
+          <Property Name="AdmissionFormStepsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddmissionFormId" Type="Int32" />
+          <Property Name="Step1CollegeClass" Type="Boolean" />
+          <Property Name="Step2StudInfo" Type="Boolean" />
+          <Property Name="Step3ParentInfo" Type="Boolean" />
+          <Property Name="Step4AddressInfo" Type="Boolean" />
+          <Property Name="Step5SubjectSelection" Type="Boolean" />
+          <Property Name="Step6PrevAcademic" Type="Boolean" />
+          <Property Name="Step7DocumentSubmission" Type="Boolean" />
+          <Property Name="Step8" Type="Boolean" />
+          <Property Name="Step9" Type="Boolean" />
+          <Property Name="Step10" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="AssStudentAddressStudentInfo">
+          <Key>
+            <PropertyRef Name="AssStudentAddressStudentInfoId" />
+          </Key>
+          <Property Name="AssStudentAddressStudentInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentInfoId" Type="Int32" />
+          <Property Name="StudentAddressInfoId" Type="Int32" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="StudentAddressInfo" Relationship="Self.AssStudentAddressStudentInfo_FK" FromRole="AssStudentAddressStudentInfo" ToRole="StudentAddressInfo" />
+        </EntityType>
+        <EntityType Name="AssStudentParentInfo">
+          <Key>
+            <PropertyRef Name="AssStudentParentInfoId" />
+          </Key>
+          <Property Name="AssStudentParentInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentInfoId" Type="Int32" />
+          <Property Name="ParentInfoId" Type="Int32" />
+          <Property Name="ParentType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="ParentInfo" Relationship="Self.AssStudentParentInfo_FK" FromRole="AssStudentParentInfo" ToRole="ParentInfo" />
+        </EntityType>
+        <EntityType Name="ClassInfo">
+          <Key>
+            <PropertyRef Name="ClassInfoId" />
+          </Key>
+          <Property Name="ClassInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CoachingCentre">
+          <Key>
+            <PropertyRef Name="CoachingCentreId" />
+          </Key>
+          <Property Name="CoachingCentreId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CoachingCentreName" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine1" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine2" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Zip" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ContactNo1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CollegeInfo">
+          <Key>
+            <PropertyRef Name="CollegeInfoId" />
+          </Key>
+          <Property Name="CollegeInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CollegeName" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="CollegeType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine1" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddressLine2" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Zip" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ContactNo1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ContactNo2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="LogoURL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CollegeNameShort" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentTypeId" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ThumbnailLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContainerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileSize" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="OtherDocumentType" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ExpDate" Type="DateTime" Precision="3" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="DocumentSubmitted">
+          <Key>
+            <PropertyRef Name="DocumentSubmittedId" />
+          </Key>
+          <Property Name="DocumentSubmittedId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddmissionFormId" Type="Int32" />
+          <Property Name="ClassXMarksheet" Type="Boolean" />
+          <Property Name="ClassXIMarksheet" Type="Boolean" />
+          <Property Name="SchoolLC" Type="Boolean" />
+          <Property Name="CasteCertificate" Type="Boolean" />
+          <Property Name="AadharCard" Type="Boolean" />
+          <Property Name="GapCertificate" Type="Boolean" />
+          <Property Name="SnglieGirlChild" Type="Boolean" />
+          <Property Name="ElegibilityCert" Type="Boolean" />
+          <Property Name="PassingCert" Type="Boolean" />
+          <Property Name="EBCCertificate" Type="Boolean" />
+          <Property Name="PassportSizePhoto" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="CopyOfLOC" Type="Boolean" />
+          <Property Name="AadharFather" Type="Boolean" />
+          <Property Name="AadharMother" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="LutAcademicYear">
+          <Key>
+            <PropertyRef Name="AcademicYearId" />
+          </Key>
+          <Property Name="AcademicYearId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Year" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Details" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsCurrent" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="LutDocumentType">
+          <Key>
+            <PropertyRef Name="DocumentTypeId" />
+          </Key>
+          <Property Name="DocumentTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsObsolete" Type="Boolean" />
+          <Property Name="Category" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ParentInfo">
+          <Key>
+            <PropertyRef Name="ParentInfoId" />
+          </Key>
+          <Property Name="ParentInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParentType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Occupation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AadharNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ParentPhotoId" Type="Int32" />
+          <Property Name="ParentSignatureId" Type="Int32" />
+          <Property Name="AnnualIncome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AssStudentParentInfoes" Relationship="Self.AssStudentParentInfo_FK" FromRole="ParentInfo" ToRole="AssStudentParentInfo" />
+        </EntityType>
+        <EntityType Name="StudentAddressInfo">
+          <Key>
+            <PropertyRef Name="StudentAddressInfoId" />
+          </Key>
+          <Property Name="StudentAddressInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddressType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HouseNo" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Area" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Village" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PO" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="District" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Zip" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SameAsPermanent" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AssStudentAddressStudentInfoes" Relationship="Self.AssStudentAddressStudentInfo_FK" FromRole="StudentAddressInfo" ToRole="AssStudentAddressStudentInfo" />
+        </EntityType>
+        <EntityType Name="StudentInfo">
+          <Key>
+            <PropertyRef Name="StudentInfoId" />
+          </Key>
+          <Property Name="StudentInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AadharNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsSingleGirlChild" Type="Boolean" />
+          <Property Name="BloodGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Nationality" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Domicile" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="StudentPhotoId" Type="Int32" />
+          <Property Name="StudentSignatureId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StudentPreviousAcademicInfo">
+          <Key>
+            <PropertyRef Name="StudentPreviousAcademicInfoId" />
+          </Key>
+          <Property Name="StudentPreviousAcademicInfoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentInfoId" Type="Int32" />
+          <Property Name="ExamName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Board" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SchoolOrCollege" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ExamSeatNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EligibilityCertNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MonthYearOfPassing" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TotalMarks" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Percentage" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="SubjectsChoosen">
+          <Key>
+            <PropertyRef Name="SubjectsChoosenId" />
+          </Key>
+          <Property Name="SubjectsChoosenId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddmissionFormId" Type="Int32" />
+          <Property Name="English" Type="Boolean" />
+          <Property Name="Physics" Type="Boolean" />
+          <Property Name="Chemistry" Type="Boolean" />
+          <Property Name="EVS" Type="Boolean" />
+          <Property Name="PhysicalEducation" Type="Boolean" />
+          <Property Name="Hindi" Type="Boolean" />
+          <Property Name="Marathi" Type="Boolean" />
+          <Property Name="Mathemcatics" Type="Boolean" />
+          <Property Name="Biology" Type="Boolean" />
+          <Property Name="Geography" Type="Boolean" />
+          <Property Name="ComputerScience" Type="Boolean" />
+          <Property Name="InformationTechnology" Type="Boolean" />
+          <Property Name="CropScience" Type="Boolean" />
+          <Property Name="CreatedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="InformaticsPractices" Type="Boolean" />
+        </EntityType>
+        <Association Name="AssStudentAddressStudentInfo_FK">
+          <End Role="StudentAddressInfo" Type="Self.StudentAddressInfo" Multiplicity="0..1" />
+          <End Role="AssStudentAddressStudentInfo" Type="Self.AssStudentAddressStudentInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentAddressInfo">
+              <PropertyRef Name="StudentAddressInfoId" />
+            </Principal>
+            <Dependent Role="AssStudentAddressStudentInfo">
+              <PropertyRef Name="StudentAddressInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AssStudentParentInfo_FK">
+          <End Role="ParentInfo" Type="Self.ParentInfo" Multiplicity="0..1" />
+          <End Role="AssStudentParentInfo" Type="Self.AssStudentParentInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParentInfo">
+              <PropertyRef Name="ParentInfoId" />
+            </Principal>
+            <Dependent Role="AssStudentParentInfo">
+              <PropertyRef Name="ParentInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="JaiHindEduEntitiesNew" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRole" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="AddmissionForms" EntityType="Self.AddmissionForm" />
+          <EntitySet Name="AdmissionFormSteps" EntityType="Self.AdmissionFormStep" />
+          <EntitySet Name="AssStudentAddressStudentInfoes" EntityType="Self.AssStudentAddressStudentInfo" />
+          <EntitySet Name="AssStudentParentInfoes" EntityType="Self.AssStudentParentInfo" />
+          <EntitySet Name="ClassInfoes" EntityType="Self.ClassInfo" />
+          <EntitySet Name="CoachingCentres" EntityType="Self.CoachingCentre" />
+          <EntitySet Name="CollegeInfoes" EntityType="Self.CollegeInfo" />
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="DocumentSubmitteds" EntityType="Self.DocumentSubmitted" />
+          <EntitySet Name="LutAcademicYears" EntityType="Self.LutAcademicYear" />
+          <EntitySet Name="LutDocumentTypes" EntityType="Self.LutDocumentType" />
+          <EntitySet Name="ParentInfoes" EntityType="Self.ParentInfo" />
+          <EntitySet Name="StudentAddressInfoes" EntityType="Self.StudentAddressInfo" />
+          <EntitySet Name="StudentInfoes" EntityType="Self.StudentInfo" />
+          <EntitySet Name="StudentPreviousAcademicInfoes" EntityType="Self.StudentPreviousAcademicInfo" />
+          <EntitySet Name="SubjectsChoosens" EntityType="Self.SubjectsChoosen" />
+          <AssociationSet Name="AssStudentAddressStudentInfo_FK" Association="Self.AssStudentAddressStudentInfo_FK">
+            <End Role="StudentAddressInfo" EntitySet="StudentAddressInfoes" />
+            <End Role="AssStudentAddressStudentInfo" EntitySet="AssStudentAddressStudentInfoes" />
+          </AssociationSet>
+          <AssociationSet Name="AssStudentParentInfo_FK" Association="Self.AssStudentParentInfo_FK">
+            <End Role="ParentInfo" EntitySet="ParentInfoes" />
+            <End Role="AssStudentParentInfo" EntitySet="AssStudentParentInfoes" />
+          </AssociationSet>
+          <FunctionImport Name="GetAllApplicantStudentsByStudentId" ReturnType="Collection(JaiHindEduModel.GetAllApplicantStudentsByStudentId_Result)">
+            <Parameter Name="StudentInfoId" Mode="In" Type="Int32" />
+            <Parameter Name="AcademicYear" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="FeeReceipts" EntityType="JaiHindEduModel.FeeReceipt" />
+          <FunctionImport Name="GetAdmissionInfoByAddmissionFormId" ReturnType="Collection(JaiHindEduModel.GetAdmissionInfoByAddmissionFormId_Result)">
+          <Parameter Name="AddmissionFormId" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="GetAllApplicantStudentsByStudentId_Result">
+          <Property Type="Int32" Name="StudentInfoId" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="MiddleName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="FullName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="DateOfBirth" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="MobileNo" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="AadharNo" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="EmailId" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="AddmissionFormId" Nullable="false" />
+          <Property Type="Int32" Name="CollegeInfoId" Nullable="true" />
+          <Property Type="String" Name="RollNumber" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CollegeName" Nullable="false" MaxLength="1000" />
+        </ComplexType>
+        <EntityType Name="FeeReceipt">
+          <Key>
+            <PropertyRef Name="FeeReceiptId" />
+          </Key>
+          <Property Name="FeeReceiptId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdmissionFormId" Type="Int32" Nullable="false" />
+          <Property Name="AdmissionFee" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="C1StInstallment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="C2ndInstallment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="C3rdInstallment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="C4thInstallment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="BalanceAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="ExamFee" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Misclellaneous" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <ComplexType Name="GetAdmissionInfoByAddmissionFormId_Result">
+          <Property Type="String" Name="FullName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="MiddleName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="ClassName" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Stream" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="AddmissionFormId" Nullable="false" />
+          <Property Type="Int32" Name="StudentInfoId" Nullable="false" />
+          <Property Type="String" Name="RollNumber" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CollegeName" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="CollegeAddress1" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="CollegeAddress2" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="CollegeCity" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CollegeContact" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CoachingCentreName" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="CoachingCentreContactNo" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CollegeType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="CollegeLogo" Nullable="true" MaxLength="500" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="JaiHindEduModelStoreContainer" CdmEntityContainer="JaiHindEduEntitiesNew">
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsDefaultRole" ColumnName="IsDefaultRole" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AspNetUserLogin">
+              <MappingFragment StoreEntitySet="AspNetUserLogin">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderId" ColumnName="ProviderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserRoles">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AspNetUserRole">
+              <MappingFragment StoreEntitySet="AspNetUserRoles">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmployeeTitle" ColumnName="EmployeeTitle" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsFirstTimeLogin" ColumnName="IsFirstTimeLogin" />
+                <ScalarProperty Name="IsLockedout" ColumnName="IsLockedout" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AddmissionForms">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AddmissionForm">
+              <MappingFragment StoreEntitySet="AddmissionForm">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="CollegeInfoId" ColumnName="CollegeInfoId" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="SubjectsChoosenId" ColumnName="SubjectsChoosenId" />
+                <ScalarProperty Name="DocumentSubmittedId" ColumnName="DocumentSubmittedId" />
+                <ScalarProperty Name="AcademicYearId" ColumnName="AcademicYearId" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AdmissionFormNo" ColumnName="AdmissionFormNo" />
+                <ScalarProperty Name="RollNumber" ColumnName="RollNumber" />
+                <ScalarProperty Name="Stream" ColumnName="Stream" />
+                <ScalarProperty Name="CoachingCentreId" ColumnName="CoachingCentreId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdmissionFormSteps">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AdmissionFormStep">
+              <MappingFragment StoreEntitySet="AdmissionFormSteps">
+                <ScalarProperty Name="AdmissionFormStepsId" ColumnName="AdmissionFormStepsId" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="Step1CollegeClass" ColumnName="Step1CollegeClass" />
+                <ScalarProperty Name="Step2StudInfo" ColumnName="Step2StudInfo" />
+                <ScalarProperty Name="Step3ParentInfo" ColumnName="Step3ParentInfo" />
+                <ScalarProperty Name="Step4AddressInfo" ColumnName="Step4AddressInfo" />
+                <ScalarProperty Name="Step5SubjectSelection" ColumnName="Step5SubjectSelection" />
+                <ScalarProperty Name="Step6PrevAcademic" ColumnName="Step6PrevAcademic" />
+                <ScalarProperty Name="Step7DocumentSubmission" ColumnName="Step7DocumentSubmission" />
+                <ScalarProperty Name="Step8" ColumnName="Step8" />
+                <ScalarProperty Name="Step9" ColumnName="Step9" />
+                <ScalarProperty Name="Step10" ColumnName="Step10" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssStudentAddressStudentInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AssStudentAddressStudentInfo">
+              <MappingFragment StoreEntitySet="AssStudentAddressStudentInfo">
+                <ScalarProperty Name="AssStudentAddressStudentInfoId" ColumnName="AssStudentAddressStudentInfoId" />
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="StudentAddressInfoId" ColumnName="StudentAddressInfoId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssStudentParentInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.AssStudentParentInfo">
+              <MappingFragment StoreEntitySet="AssStudentParentInfo">
+                <ScalarProperty Name="AssStudentParentInfoId" ColumnName="AssStudentParentInfoId" />
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="ParentInfoId" ColumnName="ParentInfoId" />
+                <ScalarProperty Name="ParentType" ColumnName="ParentType" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClassInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.ClassInfo">
+              <MappingFragment StoreEntitySet="ClassInfo">
+                <ScalarProperty Name="ClassInfoId" ColumnName="ClassInfoId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CoachingCentres">
+            <EntityTypeMapping TypeName="JaiHindEduModel.CoachingCentre">
+              <MappingFragment StoreEntitySet="CoachingCentre">
+                <ScalarProperty Name="CoachingCentreId" ColumnName="CoachingCentreId" />
+                <ScalarProperty Name="CoachingCentreName" ColumnName="CoachingCentreName" />
+                <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
+                <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="ContactNo1" ColumnName="ContactNo1" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CollegeInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.CollegeInfo">
+              <MappingFragment StoreEntitySet="CollegeInfo">
+                <ScalarProperty Name="CollegeInfoId" ColumnName="CollegeInfoId" />
+                <ScalarProperty Name="CollegeName" ColumnName="CollegeName" />
+                <ScalarProperty Name="CollegeType" ColumnName="CollegeType" />
+                <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
+                <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="ContactNo1" ColumnName="ContactNo1" />
+                <ScalarProperty Name="ContactNo2" ColumnName="ContactNo2" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="LogoURL" ColumnName="LogoURL" />
+                <ScalarProperty Name="CollegeNameShort" ColumnName="CollegeNameShort" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="JaiHindEduModel.Document">
+              <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="DocumentTypeId" ColumnName="DocumentTypeId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="ThumbnailLink" ColumnName="ThumbnailLink" />
+                <ScalarProperty Name="ContainerName" ColumnName="ContainerName" />
+                <ScalarProperty Name="FileSize" ColumnName="FileSize" />
+                <ScalarProperty Name="OtherDocumentType" ColumnName="OtherDocumentType" />
+                <ScalarProperty Name="ExpDate" ColumnName="ExpDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentSubmitteds">
+            <EntityTypeMapping TypeName="JaiHindEduModel.DocumentSubmitted">
+              <MappingFragment StoreEntitySet="DocumentSubmitted">
+                <ScalarProperty Name="AadharMother" ColumnName="AadharMother" />
+                <ScalarProperty Name="AadharFather" ColumnName="AadharFather" />
+                <ScalarProperty Name="DocumentSubmittedId" ColumnName="DocumentSubmittedId" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="ClassXMarksheet" ColumnName="ClassXMarksheet" />
+                <ScalarProperty Name="ClassXIMarksheet" ColumnName="ClassXIMarksheet" />
+                <ScalarProperty Name="SchoolLC" ColumnName="SchoolLC" />
+                <ScalarProperty Name="CasteCertificate" ColumnName="CasteCertificate" />
+                <ScalarProperty Name="AadharCard" ColumnName="AadharCard" />
+                <ScalarProperty Name="GapCertificate" ColumnName="GapCertificate" />
+                <ScalarProperty Name="SnglieGirlChild" ColumnName="SnglieGirlChild" />
+                <ScalarProperty Name="ElegibilityCert" ColumnName="ElegibilityCert" />
+                <ScalarProperty Name="PassingCert" ColumnName="PassingCert" />
+                <ScalarProperty Name="EBCCertificate" ColumnName="EBCCertificate" />
+                <ScalarProperty Name="PassportSizePhoto" ColumnName="PassportSizePhoto" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CopyOfLOC" ColumnName="CopyOfLOC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LutAcademicYears">
+            <EntityTypeMapping TypeName="JaiHindEduModel.LutAcademicYear">
+              <MappingFragment StoreEntitySet="LutAcademicYear">
+                <ScalarProperty Name="AcademicYearId" ColumnName="AcademicYearId" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="IsCurrent" ColumnName="IsCurrent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LutDocumentTypes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.LutDocumentType">
+              <MappingFragment StoreEntitySet="LutDocumentType">
+                <ScalarProperty Name="DocumentTypeId" ColumnName="DocumentTypeId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsObsolete" ColumnName="IsObsolete" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParentInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.ParentInfo">
+              <MappingFragment StoreEntitySet="ParentInfo">
+                <ScalarProperty Name="ParentInfoId" ColumnName="ParentInfoId" />
+                <ScalarProperty Name="ParentType" ColumnName="ParentType" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+                <ScalarProperty Name="AadharNo" ColumnName="AadharNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ParentPhotoId" ColumnName="ParentPhotoId" />
+                <ScalarProperty Name="ParentSignatureId" ColumnName="ParentSignatureId" />
+                <ScalarProperty Name="AnnualIncome" ColumnName="AnnualIncome" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentAddressInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.StudentAddressInfo">
+              <MappingFragment StoreEntitySet="StudentAddressInfo">
+                <ScalarProperty Name="StudentAddressInfoId" ColumnName="StudentAddressInfoId" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="HouseNo" ColumnName="HouseNo" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="Village" ColumnName="Village" />
+                <ScalarProperty Name="PO" ColumnName="PO" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="SameAsPermanent" ColumnName="SameAsPermanent" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.StudentInfo">
+              <MappingFragment StoreEntitySet="StudentInfo">
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="AadharNo" ColumnName="AadharNo" />
+                <ScalarProperty Name="IsSingleGirlChild" ColumnName="IsSingleGirlChild" />
+                <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Domicile" ColumnName="Domicile" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="StudentPhotoId" ColumnName="StudentPhotoId" />
+                <ScalarProperty Name="StudentSignatureId" ColumnName="StudentSignatureId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentPreviousAcademicInfoes">
+            <EntityTypeMapping TypeName="JaiHindEduModel.StudentPreviousAcademicInfo">
+              <MappingFragment StoreEntitySet="StudentPreviousAcademicInfo">
+                <ScalarProperty Name="StudentPreviousAcademicInfoId" ColumnName="StudentPreviousAcademicInfoId" />
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="ExamName" ColumnName="ExamName" />
+                <ScalarProperty Name="Board" ColumnName="Board" />
+                <ScalarProperty Name="SchoolOrCollege" ColumnName="SchoolOrCollege" />
+                <ScalarProperty Name="ExamSeatNo" ColumnName="ExamSeatNo" />
+                <ScalarProperty Name="EligibilityCertNo" ColumnName="EligibilityCertNo" />
+                <ScalarProperty Name="MonthYearOfPassing" ColumnName="MonthYearOfPassing" />
+                <ScalarProperty Name="TotalMarks" ColumnName="TotalMarks" />
+                <ScalarProperty Name="Percentage" ColumnName="Percentage" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SubjectsChoosens">
+            <EntityTypeMapping TypeName="JaiHindEduModel.SubjectsChoosen">
+              <MappingFragment StoreEntitySet="SubjectsChoosen">
+                <ScalarProperty Name="SubjectsChoosenId" ColumnName="SubjectsChoosenId" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="English" ColumnName="English" />
+                <ScalarProperty Name="Physics" ColumnName="Physics" />
+                <ScalarProperty Name="Chemistry" ColumnName="Chemistry" />
+                <ScalarProperty Name="EVS" ColumnName="EVS" />
+                <ScalarProperty Name="PhysicalEducation" ColumnName="PhysicalEducation" />
+                <ScalarProperty Name="Hindi" ColumnName="Hindi" />
+                <ScalarProperty Name="Marathi" ColumnName="Marathi" />
+                <ScalarProperty Name="Mathemcatics" ColumnName="Mathemcatics" />
+                <ScalarProperty Name="Biology" ColumnName="Biology" />
+                <ScalarProperty Name="Geography" ColumnName="Geography" />
+                <ScalarProperty Name="ComputerScience" ColumnName="ComputerScience" />
+                <ScalarProperty Name="InformationTechnology" ColumnName="InformationTechnology" />
+                <ScalarProperty Name="CropScience" ColumnName="CropScience" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="InformaticsPractices" ColumnName="InformaticsPractices" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetAllApplicantStudentsByStudentId" FunctionName="JaiHindEduModel.Store.GetAllApplicantStudentsByStudentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="JaiHindEduModel.GetAllApplicantStudentsByStudentId_Result">
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="AadharNo" ColumnName="AadharNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="CollegeInfoId" ColumnName="CollegeInfoId" />
+                <ScalarProperty Name="RollNumber" ColumnName="RollNumber" />
+                <ScalarProperty Name="CollegeName" ColumnName="CollegeName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="FeeReceipts">
+            <EntityTypeMapping TypeName="JaiHindEduModel.FeeReceipt">
+              <MappingFragment StoreEntitySet="FeeReceipt">
+                <ScalarProperty Name="Misclellaneous" ColumnName="Misclellaneous" />
+                <ScalarProperty Name="ExamFee" ColumnName="ExamFee" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="BalanceAmount" ColumnName="BalanceAmount" />
+                <ScalarProperty Name="C4thInstallment" ColumnName="4thInstallment" />
+                <ScalarProperty Name="C3rdInstallment" ColumnName="3rdInstallment" />
+                <ScalarProperty Name="C2ndInstallment" ColumnName="2ndInstallment" />
+                <ScalarProperty Name="C1StInstallment" ColumnName="1StInstallment" />
+                <ScalarProperty Name="AdmissionFee" ColumnName="AdmissionFee" />
+                <ScalarProperty Name="AdmissionFormId" ColumnName="AdmissionFormId" />
+                <ScalarProperty Name="FeeReceiptId" ColumnName="FeeReceiptId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetAdmissionInfoByAddmissionFormId" FunctionName="JaiHindEduModel.Store.GetAdmissionInfoByAddmissionFormId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="JaiHindEduModel.GetAdmissionInfoByAddmissionFormId_Result">
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="Stream" ColumnName="Stream" />
+                <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
+                <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
+                <ScalarProperty Name="RollNumber" ColumnName="RollNumber" />
+                <ScalarProperty Name="CollegeName" ColumnName="CollegeName" />
+                <ScalarProperty Name="CollegeAddress1" ColumnName="CollegeAddress1" />
+                <ScalarProperty Name="CollegeAddress2" ColumnName="CollegeAddress2" />
+                <ScalarProperty Name="CollegeCity" ColumnName="CollegeCity" />
+                <ScalarProperty Name="CollegeContact" ColumnName="CollegeContact" />
+                <ScalarProperty Name="CoachingCentreName" ColumnName="CoachingCentreName" />
+                <ScalarProperty Name="CoachingCentreContactNo" ColumnName="CoachingCentreContactNo" />
+                <ScalarProperty Name="CollegeType" ColumnName="CollegeType" />
+                <ScalarProperty Name="CollegeLogo" ColumnName="CollegeLogo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

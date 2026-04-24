@@ -1,0 +1,247 @@
+﻿
+@model JaiHindEdutech.Models.StudentInfoModel
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .btn-outline-primary {
+        color: #2e2e2e;
+        border: 2px solid #ffe5d1;
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-primary:hover,
+        .btn-check:checked + .btn-outline-primary {
+            background-color: #e76f51;
+            color: #fff;
+            border-color: #e76f51;
+        }
+
+    /* Custom border for dropdown */
+    .border-custom {
+        border: 3px solid #ffe5d1;
+        transition: border-color 0.3s ease;
+    }
+
+        .border-custom:focus,
+        .border-custom:hover,
+        .border-custom:focus:hover {
+            border-color: #e76f51;
+            box-shadow: 0 0 0 0.15rem rgba(231, 111, 81, 0.3);
+            outline: none;
+        }
+</style>
+
+<div class="app-page-title" style="padding: 20px; margin: -30px -30px 0; background-color: #ffe5d1; border-bottom: 3px solid #e76f51; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading" style="display: flex; align-items: center; font-family: 'Segoe UI', sans-serif; color: #2e2e2e; font-size: 20px; font-weight: 700;">
+            @if (ViewBag.collegeId == 1)
+            {
+                <img src="~/Content/Logo/1.jpg" style="width: 140px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else if (ViewBag.collegeId == 2 || ViewBag.collegeId == 3)
+            {
+                <img src="~/Content/Logo/2_3.jpg" style="width: 140px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else if (ViewBag.collegeId == 4)
+            {
+                <img src="~/Content/Logo/4.jpg" style="width: 75px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else if (ViewBag.collegeId == 5 || ViewBag.collegeId == 10)
+            {
+                <img src="~/Content/Logo/10.jpg" style="width: 75px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else if (ViewBag.collegeId == 6 || ViewBag.collegeId == 7)
+            {
+                <img src="~/Content/Logo/6_7.jpg" style="width: 75px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else if (ViewBag.collegeId == 9)
+            {
+                <img src="~/Content/Logo/9.jpg" style="width: 75px; height: 60px; margin-right: 20px; border-radius: 6px; background-color: #fff; padding: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); " />
+            }
+            else
+            {
+                <div class="page-title-icon">
+                    <i class="lnr-map text-info"></i>
+                </div>
+            }
+            <div>
+                @ViewBag.collegeName
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row p-4">
+    <div class="col-md-4">
+        <label>Select Class</label>
+        <input type="radio" class="btn-check" name="ClassName" id="class11" value="11th" form="frmStudentInfo" @(Model.ClassName == "11th" ? "checked" : "")>
+        <label class="btn btn-outline-primary" for="class11">11th Class</label>
+        <input type="radio" class="btn-check" name="ClassName" id="class12" value="12th" form="frmStudentInfo" @(Model.ClassName == "12th" ? "checked" : "")>
+        <label class="btn btn-outline-primary" for="class12">12th Class</label>
+    </div>
+    <div class="col-md-4">
+        <label>Select Stream</label>
+        <input type="radio" class="btn-check" name="Stream" id="Science" value="Science" form="frmStudentInfo" @(Model.Stream == "Science" ? "checked" : "")>
+        <label class="btn btn-outline-primary" for="Science">Science</label>
+        <input type="radio" class="btn-check" name="Stream" id="Commerce" value="Commerce" form="frmStudentInfo" @(Model.Stream == "Commerce" ? "checked" : "")>
+        <label class="btn btn-outline-primary" for="Commerce">Commerce</label>
+    </div>
+    <div class="col-md-4">
+        <label>Select Coaching Centre</label>
+        @Html.DropDownList("CoachingCentreId", ViewBag.CoachingCentres as SelectList, "Select Coaching Centre", new { @class = "btn dropdown-toggle border-custom", form = "frmStudentInfo" })
+    </div>
+</div>
+
+
+<div class="col-lg-12 col-md-12">
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+
+            <div id="smartwizard" class="sw-main sw-theme-default">
+                <ul class="forms-wizard nav nav-tabs step-anchor">
+                    <li class="nav-item active" id="step1">
+                        <a href="" class="nav-link">
+                            <em>1</em><span>Student Information</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="step2">
+                        <a href="" class="nav-link">
+                            <em>2</em><span>Parent Information</span>
+                        </a>
+                    </li>
+                    @*<li class="nav-item" id="step3">
+                            <a href="" class="nav-link">
+                                <em>3</em><span>Address Information</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="step4">
+                            <a href="" class="nav-link">
+                                <em>4</em><span>Upload Images</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="step5">
+                            <a href="" class="nav-link">
+                                <em>5</em><span>Prev Academic Info</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="step6">
+                            <a href="" class="nav-link">
+                                <em>6</em><span>Subject & Document Selection</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="step7">
+                            <a href="" class="nav-link">
+                                <em>7</em><span>Confirm</span>
+                            </a>
+                        </li>*@
+                    @*<li class="nav-item" id="step8">
+                            <a href="" class="nav-link">
+                                <em>8</em><span>Confirm</span>
+                            </a>
+                        </li>*@
+                </ul>
+            </div>
+            <div class="form-wizard-content sw-container tab-content" id="wizardContainer">
+                @Html.Partial("StudentInfo", Model)
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.nav-link').on('click', function (e) {
+        e.preventDefault();
+    });
+    function loadStep(NextStep, CurrentStep, StudentInfoId) {
+        if (NextStep == 1) {
+            $("#step1").removeClass("done").addClass("active");
+            $("#step2").removeClass("active").removeClass("done");
+            $("#step3").removeClass("active").removeClass("done");
+            $("#step4").removeClass("active").removeClass("done");
+            $("#step5").removeClass("active").removeClass("done");
+            $("#step6").removeClass("active").removeClass("done");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        } else if (NextStep == 2) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("done").addClass("active");
+            $("#step3").removeClass("active").removeClass("done");
+            $("#step4").removeClass("active").removeClass("done");
+            $("#step5").removeClass("active").removeClass("done");
+            $("#step6").removeClass("active").removeClass("done");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 3) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("done").addClass("active");
+            $("#step4").removeClass("active").removeClass("done");
+            $("#step5").removeClass("active").removeClass("done");
+            $("#step6").removeClass("active").removeClass("done");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 4) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("active").addClass("done");
+            $("#step4").removeClass("done").addClass("active");
+            $("#step5").removeClass("active").removeClass("done");
+            $("#step6").removeClass("active").removeClass("done");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 5) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("active").addClass("done");
+            $("#step4").removeClass("active").addClass("done");
+            $("#step5").removeClass("done").addClass("active");
+            $("#step6").removeClass("active").removeClass("done");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 6) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("active").addClass("done");
+            $("#step4").removeClass("active").addClass("done");
+            $("#step5").removeClass("active").addClass("done");
+            $("#step6").removeClass("done").addClass("active");
+            $("#step7").removeClass("active").removeClass("done");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 7) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("active").addClass("done");
+            $("#step4").removeClass("active").addClass("done");
+            $("#step5").removeClass("active").addClass("done");
+            $("#step6").removeClass("active").addClass("done");
+            $("#step7").removeClass("done").addClass("active");
+            //$("#step8").removeClass("active").removeClass("done");
+        }
+        else if (NextStep == 8) {
+            $("#step1").removeClass("active").addClass("done");
+            $("#step2").removeClass("active").addClass("done");
+            $("#step3").removeClass("active").addClass("done");
+            $("#step4").removeClass("active").addClass("done");
+            $("#step5").removeClass("active").addClass("done");
+            $("#step6").removeClass("active").addClass("done");
+            $("#step7").removeClass("active").addClass("done");
+            $("#step8").removeClass("done").addClass("active");
+        }
+        $.ajax({
+            url: '@Url.Action("StepPartial","Admission")',
+            type: 'POST',
+            data: $('form').serialize() + '&step=' + NextStep + '&studentInfoId=' + StudentInfoId,
+            success: function (result) {
+                $('#wizardContainer').html(result);
+            }
+        });
+    }
+</script>

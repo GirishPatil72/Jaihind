@@ -1,0 +1,83 @@
+﻿@model JaiHindEdutech.Models.CoachingCentreModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<div>
+    <h4>Coaching Centre Details</h4>
+    <hr />
+
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.CoachingCentreName):</b>
+            @Html.DisplayFor(model => model.CoachingCentreName)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.AddressLine1):</b>
+            @Html.DisplayFor(model => model.AddressLine1)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.AddressLine2):</b>
+            @Html.DisplayFor(model => model.AddressLine2)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.City):</b>
+            @Html.DisplayFor(model => model.City)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.State):</b>
+            @Html.DisplayFor(model => model.State)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.Zip):</b>
+            @Html.DisplayFor(model => model.Zip)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.ContactNo1):</b>
+            @Html.DisplayFor(model => model.ContactNo1)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.CreatedOn):</b>
+            @Html.DisplayFor(model => model.CreatedOn)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.CreatedBy):</b>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.ModifiedOn):</b>
+            @Html.DisplayFor(model => model.ModifiedOn)
+        </span>
+    </div>
+    <div class="row">
+        <span>
+            <b>@Html.LabelFor(model => model.ModifiedBy):</b>
+            @Html.DisplayFor(model => model.ModifiedBy)
+        </span>
+    </div>
+
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CoachingCentreId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

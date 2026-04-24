@@ -1,0 +1,279 @@
+﻿@model JaiHindEdutech.Models.StudentInfoModel
+@{
+    Layout = null;
+}
+@{
+    ViewBag.BloodGroups = new List<SelectListItem>
+{
+        new SelectListItem { Text = "Select", Value = "" },
+        new SelectListItem { Text = "A+", Value = "A+" },
+        new SelectListItem { Text = "A-", Value = "A-" },
+        new SelectListItem { Text = "B+", Value = "B+" },
+        new SelectListItem { Text = "B-", Value = "B-" },
+        new SelectListItem { Text = "AB+", Value = "AB+" },
+        new SelectListItem { Text = "AB-", Value = "AB-" },
+        new SelectListItem { Text = "O+", Value = "O+" },
+        new SelectListItem { Text = "O-", Value = "O-" }
+    };
+
+    var GenderList = new SelectList(
+    new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Male", Value = "Male" },
+        new SelectListItem { Text = "Female", Value = "Female" }
+                                                                                                                                                                            }, "Value", "Text", Model.Gender);
+
+}
+@using (Ajax.BeginForm("StudentInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessStudentInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmStudentInfo", name = "frmStudentInfo", @class = "col-md-10 mx-auto" }))
+{
+    @Html.HiddenFor(model => model.ClassName, new { id = "hdnClassName" })
+    @Html.HiddenFor(model => model.Stream, new { id = "hdnStreamName" })
+    @Html.HiddenFor(model => model.CoachingCentreId, new { id = "hdnCoachingCentre" })
+
+
+    @Html.HiddenFor(model => model.AddmissionFormId)
+    @Html.HiddenFor(model => model.CollegeInfoId, new { Value = ViewBag.collegeId ?? Model.CollegeInfoId })
+    @Html.HiddenFor(model => model.CollegeName, new { Value = ViewBag.collegeName ?? Model.CollegeName })
+    @Html.HiddenFor(model => model.StudentInfoId)
+    @Html.HiddenFor(model => model.CreatedBy)
+    @Html.HiddenFor(model => model.CreatedOn)
+    @Html.HiddenFor(model => model.ModifiedBy)
+    @Html.HiddenFor(model => model.ModifiedOn)
+    @Html.HiddenFor(model => model.IsActive)
+    @Html.HiddenFor(model => model.IsDeleted)
+    @Html.HiddenFor(model => model.FullName)
+    <!--<form id="signupForm" class="col-md-10 mx-auto" method="post" action="" novalidate="novalidate">-->
+    @*@{
+            var isInvalidClass = (ViewData.ModelState["FirstName"] != null && ViewData.ModelState["FirstName"].Errors.Any()) ? "is-invalid" : "";
+        }*@
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName)
+                <div>
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["FirstName"] != null && ViewData.ModelState["FirstName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "First name" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.MiddleName)
+                <div>
+                    @Html.EditorFor(model => model.MiddleName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["MiddleName"] != null && ViewData.ModelState["MiddleName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Middle name" } })
+                    @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "error invalid-feedback" })
+                    @*<input type="text" class="form-control is-invalid" id="lastname" name="lastname" placeholder="Last name" aria-describedby="lastname-error"><em id="lastname-error" class="error invalid-feedback">Please enter your lastname</em>*@
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName)
+                <div>
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["LastName"] != null && ViewData.ModelState["LastName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Middle name" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateOfBirth)
+                <div>
+                    @*@Html.TextBoxFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Date Of Birth", @maxlength = "10" } })*@
+
+                    @Html.TextBoxFor(model => model.DateOfBirth, new
+                   {
+                       @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""),
+                       @placeholder = "Date Of Birth",
+                       @maxlength = "10",
+                       @Value = Model.DateOfBirth.HasValue ? Model.DateOfBirth.Value.ToString("dd/MM/yyyy") : ""
+                   })
+
+                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Gender)
+                <div>
+                    @Html.DropDownListFor(model => model.Gender, (SelectList)GenderList, "-- Select Gender --", new { @class = "form-control " + (ViewData.ModelState["Gender"] != null && ViewData.ModelState["Gender"].Errors.Any() ? "is-invalid" : "") })
+
+                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.AadharNo)
+                <div>
+                    @Html.EditorFor(model => model.AadharNo, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control " + (ViewData.ModelState["AadharNo"] != null && ViewData.ModelState["AadharNo"].Errors.Any() ? "is-invalid" : ""),
+                            @placeholder = "Aadhar No",
+                            type = "number",
+                            maxlength = "12",
+                   oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+               }
+                    })
+                    @Html.ValidationMessageFor(model => model.AadharNo, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div>
+            <div class="form-check">
+                @*<input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">*@
+                @Html.CheckBoxFor(model => model.IsSingleGirlChild, new { @class = "form-check-input" })
+                @Html.LabelFor(model => model.IsSingleGirlChild)
+                @Html.ValidationMessageFor(model => model.IsSingleGirlChild, "", new { @class = "error invalid-feedback" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.BloodGroup)
+                <div>
+                    @Html.DropDownListFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { @class = "form-control " + (ViewData.ModelState["BloodGroup"] != null && ViewData.ModelState["BloodGroup"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Blood Group" })
+                    @*@Html.EditorFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { htmlAttributes = new { @class = "form-control is-invalid", @placeholder = "Blood Group" } })*@
+                    @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nationality)
+                <div>
+                    @Html.EditorFor(model => model.Nationality, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Nationality"] != null && ViewData.ModelState["Nationality"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Nationality" } })
+                    @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Category)
+                <div>
+                    @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Category"] != null && ViewData.ModelState["Category"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Category" } })
+                    @Html.ValidationMessageFor(model => model.Category, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.MobileNo)
+                <div>
+                    @Html.EditorFor(model => model.MobileNo, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control " + (ViewData.ModelState["MobileNo"] != null && ViewData.ModelState["MobileNo"].Errors.Any() ? "is-invalid" : ""),
+                            @placeholder = "Mobile No",
+                   maxlength = "10",
+                   type = "number",
+                   oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+               }
+                    })
+                    @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmailId)
+                <div>
+                    @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EmailId"] != null && ViewData.ModelState["EmailId"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Email Id", type = "email" } })
+                    @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Domicile)
+                <div>
+                    @Html.EditorFor(model => model.Domicile, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Domicile"] != null && ViewData.ModelState["Domicile"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Domicile" } })
+                    @Html.ValidationMessageFor(model => model.Domicile, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Remark)
+                <div>
+                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Remark"] != null && ViewData.ModelState["Remark"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Remark" } })
+                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="form-group">
+            <div>
+                <div class="form-check">
+                    <input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">
+                    <label class="form-check-label">Please agree to our policy</label><em id="agree-error" class="error invalid-feedback">Please accept our policy</em>
+                </div>
+            </div>
+        </div>*@
+    @*<div class="form-group">
+            <button type="submit" class="btn btn-primary" name="signup" value="Sign up">Sign up</button>
+        </div>*@
+    @*</form>*@
+    <div class="form-group">
+        @Html.ValidationMessageFor(model => model.ClassName, "", new { @class = "text-danger" })<br />
+        @Html.ValidationMessageFor(model => model.Stream, "", new { @class = "text-danger" })
+    </div>
+    <div class="divider"></div>
+    <div class="clearfix">
+        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+    </div>
+}
+
+
+
+<script type="text/javascript">
+    $('#DateOfBirth').datepicker({
+        dateFormat: "dd/mm/yy",
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1980:2015"
+    });
+    function ajaxSuccessStudentInfo(data) {
+        if (data.result == true) {
+            loadStep(2, 1, data.StudentInfoId);
+        }
+    };
+    $(document).ready(function () {
+        var selectedClass = $('#hdnClassName').val();
+        if (selectedClass) {
+            $(`input[name="ClassName"][value="${selectedClass}"]`).prop("checked", true);
+        }
+
+        var selectedStream = $('#hdnStreamName').val();
+        if (selectedStream) {
+            $(`input[name="Stream"][value="${selectedStream}"]`).prop("checked", true);
+        }
+
+        var selectedCoachingCentre = $('#hdnCoachingCentre').val();
+        if (selectedCoachingCentre != 0) {
+            $('#CoachingCentreId').val(selectedCoachingCentre);
+        }
+
+
+    });
+
+</script>
+
+
+
+
+

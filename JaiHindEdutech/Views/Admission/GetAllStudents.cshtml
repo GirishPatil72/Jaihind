@@ -1,0 +1,96 @@
+﻿@model IEnumerable<JaiHindEdutech.Models.ApplicantStudentDto>
+@{
+    ViewBag.Title = "GetAllStudents";
+}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<div class="container jumbotron bg-amy-crisp">
+    <div class="row">
+        <div class="col-md-2"><h5>Export Data</h5></div>
+        <div class="col-md-3">
+            @Html.DropDownList("CollegeInfoId", ViewBag.College as SelectList, "Select a College", new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            <a href="#" id="exportBtn" class="btn btn-success">
+                <i class="fa fa-download"></i> Export to Excel
+            </a>
+        </div>
+    </div>
+</div>
+@*<a href="@Url.Action("AllAddmissionExportToExcel", "Admission")" class="btn btn-success">
+        <i class="fa fa-download"></i> Export to Excel
+    </a>*@
+
+<h3>All Students</h3>
+<table id="studentsTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Mobile No</th>
+            <th>Email Id</th>
+            <th>Date Of Birth</th>
+            <th>College Name</th>
+            <th>Roll No</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.FullName</td>
+                <td>@student.MobileNo</td>
+                <td>@student.EmailId</td>
+                <td>@student.DateOfBirth</td>
+                <td>@student.CollegeName</td>
+                <td>@student.RollNumber</td>
+                <td>
+                    @Html.ActionLink("Edit", "Index", "StudentInfoes", new { collegeId = @student.CollegeInfoId, collegeName = @student.CollegeName, studentInfoId = student.StudentInfoId }, new { @class = "btn btn-sm btn-primary" })
+                    |@Html.ActionLink("Print", "GenerateFormPDF", "Admission", new { studentInfoId = student.StudentInfoId }, new { @class = "btn btn-sm btn-primary" })
+                    <br /><br /> @Html.ActionLink("Fee Receipt", "Create", "FeeReceipts", new { AdmissionFormId = student.AddmissionFormId }, new { @class = "btn btn-sm btn-primary" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#studentsTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            columnDefs: [
+                { targets: 0, width: "150px" }, // Full Name
+                { targets: 1, width: "100px" }, // Mobile No
+                { targets: 2, width: "180px" }, // Email Id
+                { targets: 3, width: "120px" }, // Date Of Birth
+                { targets: 4, width: "300px" }, // College Name
+                { targets: 5, width: "150px" }, // Roll No
+                { targets: 6, width: "120px" }  // Actions
+            ],
+            autoWidth: false  // VERY important to prevent auto override
+        });
+    });
+
+    $("#exportBtn").on("click", function (e) {
+        e.preventDefault();
+
+        var CollegeInfoId = $("#CollegeInfoId").val();
+        if (!CollegeInfoId) {
+            alert("Please select a College first.");
+            return;
+        }
+
+        window.location.href = '@Url.Action("AllAddmissionExportToExcel", "Admission")' + '?CollegeInfoId=' + CollegeInfoId;
+    });
+</script>

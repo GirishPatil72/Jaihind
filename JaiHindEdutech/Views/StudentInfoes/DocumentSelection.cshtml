@@ -1,0 +1,21 @@
+﻿@model int
+<h2>DocumentSelection</h2>
+
+@using (Ajax.BeginForm("DocumentSelectionPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessDocumentSelection(data)", UpdateTargetId = "wizardContainer" }, new { id = "frmDocumentSelection", name = "frmDocumentSelection", @class = "col-md-10 mx-auto" }))
+{
+    @Html.Hidden("studentInfoId", new { Value = Model })
+
+    <div class="divider"></div>
+    <div class="clearfix">
+        @*<button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>*@
+        <button type="button" onclick="loadStep(8)" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+        <button type="button" onclick="loadStep(6)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+    </div>
+}
+<script type="text/javascript">
+    function ajaxSuccessDocumentSelection(data) {
+        if (data.result == true) {
+            loadStep(8, 7, data.StudentInfoId);
+        }
+    };
+</script>

@@ -1,0 +1,126 @@
+﻿
+@model JaiHindEdutech.Models.ParentInfoFormModel
+
+@using (Ajax.BeginForm("ParentInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessParentInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "col-md-10 mx-auto" }))
+{
+    @Html.HiddenFor(m => m.StudentInfoId)
+    for (int i = 0; i < Model.Parents.Count; i++)
+    {
+        @Html.HiddenFor(model => model.Parents[i].ParentInfoId)
+        @Html.HiddenFor(model => model.Parents[i].ParentType)
+        @Html.HiddenFor(model => model.Parents[i].CreatedBy)
+        @Html.HiddenFor(model => model.Parents[i].CreatedOn)
+        @Html.HiddenFor(model => model.Parents[i].ModifiedBy)
+        @Html.HiddenFor(model => model.Parents[i].ModifiedOn)
+        @Html.HiddenFor(model => model.Parents[i].IsActive)
+        @Html.HiddenFor(model => model.Parents[i].IsDeleted)
+
+        <h2>@Model.Parents[i].ParentType.ToString()</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].FullName)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].FullName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].FullName", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].FullName", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Full Name" } })
+                        @Html.ValidationMessageFor(model => model.Parents[i].FullName, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].Occupation)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].Occupation, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Occupation" } })
+                        @Html.ValidationMessageFor(model => model.Parents[i].Occupation, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].AadharNo)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].AadharNo, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)].Errors.Any() ? "is-invalid" : ""),
+                           @placeholder = "Aadhar No",
+                           type = "number",
+                           maxlength = "12",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.Parents[i].AadharNo, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].AnnualIncome)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].AnnualIncome, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)].Errors.Any() ? "is-invalid" : ""),
+                           @placeholder = "Annual Income",
+                           type = "number",
+                           maxlength = "12",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.Parents[i].AnnualIncome, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].MobileNo)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].MobileNo, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)].Errors.Any() ? "is-invalid" : ""),
+                           @placeholder = "Mobile No",
+                           maxlength = "10",
+                           type = "number",
+                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                       }
+                   })
+                        @Html.ValidationMessageFor(model => model.Parents[i].MobileNo, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Parents[i].EmailId)
+                    <div>
+                        @Html.EditorFor(model => model.Parents[i].EmailId, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Email Id", type = "email" } })
+                        @Html.ValidationMessageFor(model => model.Parents[i].EmailId, "", new { @class = "error invalid-feedback" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="divider"></div>
+    <div class="clearfix">
+        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+
+        <button type="button" onclick="loadStep(1)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+    </div>
+}
+
+
+<script type="text/javascript">
+    function ajaxSuccessParentInfo(data) {
+        if (data.result == true) {
+            loadStep(3, 2, data.StudentInfoId);
+        }
+    };
+
+</script>

@@ -1,0 +1,627 @@
+﻿@model JaiHindEdutech.Models.AdmissionConfirmationModel
+@using System.Web.Configuration
+@{
+    ViewBag.Title = "GenerateFormPDF";
+    Layout = null;
+}
+<style>
+    @@page {
+        size: A4;
+        margin: 20mm;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .divider {
+        page-break-after: always;
+        margin: 30px 0;
+    }
+
+    img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 5px;
+        vertical-align: top;
+    }
+
+    h4, h5 {
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .form-check {
+        margin-bottom: 5px;
+    }
+
+    .form-check-label {
+        margin-left: 5px;
+    }
+
+    .centered-header {
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 1px 0;
+    }
+
+
+    .photo-cell {
+        text-align: center;
+        padding: 10px;
+        vertical-align: top;
+        width: 150px; /* Set width to maintain consistent size */
+    }
+
+        .photo-cell img.photo {
+            width: 100%; /* Ensures the photo stretches within the container */
+            height: auto;
+            object-fit: cover;
+            border: 1px solid #000;
+            margin: 5px 0;
+            height: 150px !important;
+        }
+
+        .photo-cell img.signature {
+            width: 100%; /* Ensure signature image fits within the width */
+            height: 50px; /* Reduced height for signature */
+            object-fit: contain;
+            border: 1px solid #000;
+            margin: 5px 0;
+        }
+
+    .photo-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+
+
+
+
+    .checkbox-grid {
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+        .checkbox-grid .column {
+            float: left;
+            width: 33.33%;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+
+        .checkbox-grid .form-check {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-grid::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+    h3 {
+        margin-top: 0;
+        font-size: 18px;
+    }
+
+    dl.card {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .p-3 {
+        padding: 15px;
+    }
+</style>
+
+
+<dl class="card p-3">
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th style="text-align: center; vertical-align: middle;">
+                    <img src="@Model.collegeInfoModel.LogoURL" style="max-width: 400px " />
+                </th>
+                <td>
+                    <h4>@Model.collegeInfoModel.CollegeName</h4>
+                    @Model.collegeInfoModel.AddressLine1
+                    <br />@Model.collegeInfoModel.AddressLine2
+                    <br />@Model.collegeInfoModel.City - @Model.collegeInfoModel.Zip
+                    <br />Contact: @Model.collegeInfoModel.ContactNo1
+                </td>
+
+                <td>
+                    Admission Form No:
+                    <br />@Model.studentInfoModel.AdmissionFormNo
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</dl>
+
+<div class="row centered-header"><h2>Class @Model.studentInfoModel.ClassName Admission Form @WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString(): @Model.studentInfoModel.Stream</h2></div>
+
+@if (Model.uploadedImagesModel.Count > 0)
+{
+    <dl class="card p-3">
+        <table style="width: 100%; margin-top: 20px;">
+
+            <tr>
+                <td class="photo-cell">
+                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Student"))
+                    {
+
+                        if (image.DocumentType == "StudentPhoto")
+                        {
+                            <div class="photo-label">Student</div>
+                            <img class="photo" src="@image.DocumentURL" alt="Student Photo" /><br />
+                        }
+                        else if (image.DocumentType == "StudentSignature")
+                        {
+                            <img class="signature" src="@image.DocumentURL" alt="Student Signature" />
+                        }
+                    }
+
+                </td>
+                <td class="photo-cell">
+                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Father"))
+                    {
+
+                        if (image.DocumentType == "FathersPhoto")
+                        {
+                            <div class="photo-label">Father</div>
+                            <img class="photo" src="@image.DocumentURL" alt="Fathers Photo" /><br />
+                        }
+                        else if (image.DocumentType == "FathersSignature")
+                        {
+                            <img class="signature" src="@image.DocumentURL" alt="Fathers Signature" />
+                        }
+                    }
+                </td>
+                <td class="photo-cell">
+                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Mother"))
+                    {
+
+                        if (image.DocumentType == "MothersPhoto")
+                        {
+                            <div class="photo-label">Mother</div>
+                            <img class="photo" src="@image.DocumentURL" alt="Mothers Photo" /><br />
+                        }
+                        else if (image.DocumentType == "MothersSignature")
+                        {
+                            <img class="signature" src="@image.DocumentURL" alt="Mothers Signature" />
+                        }
+                    }
+                </td>
+            </tr>
+        </table>
+    </dl>
+}
+@*<dl class="card p-3">
+        <table class="table table-bordered">
+            @foreach (var image in Model.uploadedImagesModel)
+            {
+                <tr>
+                    <th>@image.DocumentType</th>
+                    <td>
+                        @if (!string.IsNullOrEmpty(image.DocumentURL))
+                        {
+                            <img src="@image.DocumentURL" alt="Student Photo" style="max-width: 150px; max-height: 150px;" />
+                        }
+                        else
+                        {
+                            <span>No photo available</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </dl>*@
+
+
+<dl class="card p-3">
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.FirstName)</th>
+                <td>@Model.studentInfoModel.FirstName</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.MiddleName)</th>
+                <td>@Model.studentInfoModel.MiddleName</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.LastName)</th>
+                <td>@Model.studentInfoModel.LastName</td>
+            </tr>
+            <tr>
+                <th scope="row" colspan="1">@Html.LabelFor(model => model.studentInfoModel.FullName)</th>
+                <td colspan="3">@Model.studentInfoModel.FullName</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.DateOfBirth)</th>
+                <td>@(Model.studentInfoModel.DateOfBirth.HasValue ? Model.studentInfoModel.DateOfBirth.Value.ToString("dd-MM-yyyy") : "N/A")</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.Gender)</th>
+                <td>@Model.studentInfoModel.Gender</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.AadharNo)</th>
+                <td>@Model.studentInfoModel.AadharNo</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.IsSingleGirlChild)</th>
+                <td>@(Model.studentInfoModel.IsSingleGirlChild ? "Yes" : "No")</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.BloodGroup)</th>
+                <td>@Model.studentInfoModel.BloodGroup</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.Nationality)</th>
+                <td>@Model.studentInfoModel.Nationality</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.Category)</th>
+                <td>@Model.studentInfoModel.Category</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.MobileNo)</th>
+                <td>@Model.studentInfoModel.MobileNo</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.EmailId)</th>
+                <td>@Model.studentInfoModel.EmailId</td>
+
+                <th scope="row">@Html.LabelFor(model => model.studentInfoModel.Domicile)</th>
+                <td>@Model.studentInfoModel.Domicile</td>
+            </tr>
+        </tbody>
+    </table>
+</dl>
+
+<dl class="card p-3">
+
+    @for (int i = 0; i < Model.ParentInfoFormModel.Parents.Count; i++)
+    {
+        <h3>@Model.ParentInfoFormModel.Parents[i].ParentType.ToString()</h3>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="row" colspan="1">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].FullName)</th>
+                    <td colspan="5">@Model.ParentInfoFormModel.Parents[i].FullName</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].AadharNo)</th>
+                    <td>@Model.ParentInfoFormModel.Parents[i].AadharNo</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].Occupation)</th>
+                    <td>@Model.ParentInfoFormModel.Parents[i].Occupation</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].AnnualIncome)</th>
+                    <td>@Model.ParentInfoFormModel.Parents[i].AnnualIncome</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].MobileNo)</th>
+                    <td>@Model.ParentInfoFormModel.Parents[i].MobileNo</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.ParentInfoFormModel.Parents[i].EmailId)</th>
+                    <td colspan="3">@Model.ParentInfoFormModel.Parents[i].EmailId</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</dl>
+
+<div class="divider"></div>
+
+<dl class="card p-3">
+
+    @for (int i = 0; i < Model.addressInfoFormModel.Address.Count; i++)
+    {
+        <h3>@Model.addressInfoFormModel.Address[i].AddressType.ToString()</h3>
+        if (Model.addressInfoFormModel.Address[i].AddressType.ToString() == "PresentAddress")
+        {
+            <div class="form-group form-check">
+                @Html.CheckBoxFor(m => m.addressInfoFormModel.Address[i].SameAsPermanent, new { @class = "form-check-input", @id = "sameAsPermanent", onclick = "return false;" })
+                @Html.LabelFor(m => m.addressInfoFormModel.Address[i].SameAsPermanent, "Same as Permanent Address", new { @class = "form-check-label" })
+            </div>
+        }
+        <table class="table table-bordered">
+            <tbody>
+                <tr class="">
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].HouseNo)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].HouseNo</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].Area)</th>
+                    <td colspan="3">@Model.addressInfoFormModel.Address[i].Area</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].Village)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].Village</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].PO)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].PO</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].City)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].City</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].District)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].District</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].State)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].State</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.addressInfoFormModel.Address[i].Zip)</th>
+                    <td>@Model.addressInfoFormModel.Address[i].Zip</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</dl>
+
+
+
+
+
+<dl class="card p-3">
+    <h3>10th Class Info</h3>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.ExamName)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.ExamName</td>
+
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.Board)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.Board</td>
+
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.ExamSeatNo)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.ExamSeatNo</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.EligibilityCertNo)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.EligibilityCertNo</td>
+
+                <th scope="row" colspan="1">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.SchoolOrCollege)</th>
+                <td colspan="3">@Model.previousAcademicInfoModel.TenthClass.SchoolOrCollege</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.MonthYearOfPassing)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.MonthYearOfPassing</td>
+
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.TotalMarks)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.TotalMarks</td>
+
+                <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.TenthClass.Percentage)</th>
+                <td>@Model.previousAcademicInfoModel.TenthClass.Percentage</td>
+            </tr>
+        </tbody>
+    </table>
+    @if (Model.previousAcademicInfoModel.EleventhClass.StudentPreviousAcademicInfoId > 0)
+    {
+        <h3>11th Class Info</h3>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.ExamName)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.ExamName</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.Board)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.Board</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.ExamSeatNo)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.ExamSeatNo</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.EligibilityCertNo)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.EligibilityCertNo</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.SchoolOrCollege)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.SchoolOrCollege</td>
+                </tr>
+                <tr>
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.MonthYearOfPassing)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.MonthYearOfPassing</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.TotalMarks)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.TotalMarks</td>
+
+                    <th scope="row">@Html.LabelFor(model => model.previousAcademicInfoModel.EleventhClass.Percentage)</th>
+                    <td>@Model.previousAcademicInfoModel.EleventhClass.Percentage</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</dl>
+
+
+
+<dl class="card p-3">
+    <div class="container">
+        <h3>Subject Selection</h3>
+        <div class="checkbox-grid">
+            <div class="column">
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.English, new { @class = "form-check-input", id = "English", onclick = "return false;" })
+                    <label class="form-check-label" for="English">
+                        English
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.Physics, new { @class = "form-check-input", id = "Physics", onclick = "return false;" })
+                    <label class="form-check-label" for="Physics">
+                        Physics
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.Chemistry, new { @class = "form-check-input", id = "Chemistry", onclick = "return false;" })
+                    <label class="form-check-label" for="Chemistry">
+                        Chemistry
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.subjectSelectionModel.Mathemcatics, new { @class = "form-check-input", id = "Mathemcatics", onclick = "return false;" })
+                    <label class="form-check-label" for="Mathemcatics">Mathematics</label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.subjectSelectionModel.Biology, new { @class = "form-check-input", id = "Biology", onclick = "return false;" })
+                    <label class="form-check-label" for="Biology">Biology</label>
+                </div>
+
+            </div>
+
+            <div class="column" style="border-left: 1px solid #ccc;">
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.subjectSelectionModel.CropScience, new { @class = "form-check-input", id = "CropScience", onclick = "return false;" })
+                    <label class="form-check-label" for="CropScience">Crop Science</label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.subjectSelectionModel.Geography, new { @class = "form-check-input", id = "Geography", onclick = "return false;" })
+                    <label class="form-check-label" for="Geography">Geography</label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.subjectSelectionModel.InformaticsPractices, new { @class = "form-check-input", id = "InformaticsPractices", onclick = "return false;" })
+                    <label class="form-check-label" for="InformaticsPractices">Informatics Practices(IP)</label>
+                </div>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.Marathi, new { @class = "form-check-input", id = "Marathi", onclick = "return false;" })
+                    <label class="form-check-label" for="Marathi">
+                        Marathi
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.Hindi, new { @class = "form-check-input", id = "Hindi", onclick = "return false;" })
+                    <label class="form-check-label" for="Hindi">
+                        Hindi
+                    </label>
+                </div>
+            </div>
+            <div class="column" style="border-left: 1px solid #ccc;">
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.ComputerScience, new { @class = "form-check-input", id = "ComputerScience", onclick = "return false;" })
+                    <label class="form-check-label" for="ComputerScience">
+                        Computer Science(CS)
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.InformationTechnology, new { @class = "form-check-input", id = "InformationTechnology", onclick = "return false;" })
+                    <label class="form-check-label" for="InformationTechnology">
+                        Information Technology(IT)
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.EVS, new { @class = "form-check-input", id = "EVS", onclick = "return false;" })
+                    <label class="form-check-label" for="EVS">
+                        Environment Science(ES)
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.subjectSelectionModel.PhysicalEducation, new { @class = "form-check-input", id = "PhysicalEducation", onclick = "return false;" })
+                    <label class="form-check-label" for="PhysicalEducation">
+                        Physical Education(PE)
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</dl>
+
+
+<dl class="card p-3">
+    <div class="container">
+        <h3>Document Selection</h3>
+        <div class="checkbox-grid">
+            <div class="column">
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXMarksheet, new { @class = "form-check-input", id = "ClassXMarksheet", onclick = "return false;" })
+                    <label class="form-check-label" for="ClassXMarksheet">
+                        Class X Marksheet
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXIMarksheet, new { @class = "form-check-input", id = "ClassXIMarksheet", onclick = "return false;" })
+                    <label class="form-check-label" for="ClassXIMarksheet">
+                        Class XI Marksheet
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.SchoolLC, new { @class = "form-check-input", id = "SchoolLC", onclick = "return false;" })
+                    <label class="form-check-label" for="SchoolLC">
+                        School/Jr College Leaving Certificate (LC)
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.CasteCertificate, new { @class = "form-check-input", id = "CasteCertificate", onclick = "return false;" })
+                    <label class="form-check-label" for="CasteCertificate">
+                        Caste Certificate
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.GapCertificate, new { @class = "form-check-input", id = "GapCertificate", onclick = "return false;" })
+                    <label class="form-check-label" for="GapCertificate">
+                        Gap Certificate
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.SnglieGirlChild, new { @class = "form-check-input", id = "SnglieGirlChild", onclick = "return false;" })
+                    <label class="form-check-label" for="SnglieGirlChild">
+                        Snglie Girl Child Certificate
+                    </label>
+                </div>
+            </div>
+
+            <div class="column" style="border-left: 1px solid #ccc;">
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.ElegibilityCert, new { @class = "form-check-input", id = "ElegibilityCert", onclick = "return false;" })
+                    <label class="form-check-label" for="ElegibilityCert">
+                        Elegibility Certificate
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.AadharCard, new { @class = "form-check-input", id = "AadharCard", onclick = "return false;" })
+                    <label class="form-check-label" for="AadharCard">
+                        Aadhar Card
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.PassingCert, new { @class = "form-check-input", id = "PassingCert", onclick = "return false;" })
+                    <label class="form-check-label" for="PassingCert">
+                        Passing Certificate
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.PassportSizePhoto, new { @class = "form-check-input", id = "PassportSizePhoto", onclick = "return false;" })
+                    <label class="form-check-label" for="PassportSizePhoto">
+                        3 Passport Size Photos
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.CopyOfLOC, new { @class = "form-check-input", id = "CopyOfLOC", onclick = "return false;" })
+                    <label class="form-check-label" for="CopyOfLOC">
+                        Copy Of LOC
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.documentSelectionModel.EBCCertificate, new { @class = "form-check-input", id = "EBCCertificate", onclick = "return false;" })
+                    <label class="form-check-label" for="EBCCertificate">
+                        EBC Certificate
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</dl>
+

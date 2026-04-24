@@ -1,0 +1,113 @@
+﻿@model JaiHindEdutech.Models.FeeReceiptModel
+@{
+    ViewBag.Title = "FeeReceipt";
+}
+
+<h2>FeeReceipt</h2>
+
+@using (Ajax.BeginForm("FeeReceiptPost", "Admission", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessStudentInfo(data)" }, new { id = "frmStudentInfo", name = "frmStudentInfo", @class = "col-md-10 mx-auto" }))
+{
+    @Html.HiddenFor(model => model.AddmissionFormId)
+
+    <h4>Student Name: @Model.FullName </h4>
+    <h4>Std: @Model.ClassName  @Model.Stream </h4>
+    <h4>College Name: @Model.CollegeName</h4>
+
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.AdmissionFee)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.AdmissionFee, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["AdmissionFee"] != null && ViewData.ModelState["AdmissionFee"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Admission Fee" } })
+                    @Html.ValidationMessageFor(model => model.AdmissionFee, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.C1StInstallment)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.C1StInstallment, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["C1StInstallment"] != null && ViewData.ModelState["C1StInstallment"].Errors.Any() ? "is-invalid" : ""), @placeholder = "1St Installment" } })
+                    @Html.ValidationMessageFor(model => model.C1StInstallment, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.C2ndInstallment)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.C2ndInstallment, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["C2ndInstallment"] != null && ViewData.ModelState["C2ndInstallment"].Errors.Any() ? "is-invalid" : ""), @placeholder = "2nd Installment" } })
+                    @Html.ValidationMessageFor(model => model.C2ndInstallment, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.C3rdInstallment)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.C3rdInstallment, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["C3rdInstallment"] != null && ViewData.ModelState["C3rdInstallment"].Errors.Any() ? "is-invalid" : ""), @placeholder = "3rd Installment" } })
+                    @Html.ValidationMessageFor(model => model.C3rdInstallment, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.C4thInstallment)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.C4thInstallment, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["C4thInstallment"] != null && ViewData.ModelState["C4thInstallment"].Errors.Any() ? "is-invalid" : ""), @placeholder = "4th Installment" } })
+                    @Html.ValidationMessageFor(model => model.C4thInstallment, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.BalanceAmount)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.BalanceAmount, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["BalanceAmount"] != null && ViewData.ModelState["BalanceAmount"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Balance Amount" } })
+                    @Html.ValidationMessageFor(model => model.BalanceAmount, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.TotalAmount)
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TotalAmount"] != null && ViewData.ModelState["TotalAmount"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Total Amount" } })
+                    @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "error invalid-feedback" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="clearfix">
+        <button type="submit" class="btn-shadow btn-wide float-left btn-pill btn-hover-shine btn btn-primary">Next</button>
+    </div>
+    <div class="divider"></div>
+}
+

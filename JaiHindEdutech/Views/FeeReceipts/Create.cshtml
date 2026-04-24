@@ -1,0 +1,235 @@
+﻿@model JaiHindEdutech.Models.FeeReceiptModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="container bg-light">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <h4>FeeReceipt</h4>
+            @Html.HiddenFor(model => model.AdmissionFormId)
+            @Html.HiddenFor(model => model.CreatedBy)
+            @Html.HiddenFor(model => model.CreatedOn)
+            @Html.HiddenFor(model => model.ModifiedBy)
+            @Html.HiddenFor(model => model.ModifiedOn)
+            @Html.HiddenFor(model => model.IsDeleted)
+
+            <h4>Student Name: @Model.FullName </h4>
+            <h4>Std: @Model.ClassName  @Model.Stream </h4>
+            <h4>College Name: @Model.CollegeName</h4>
+
+            <hr />
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AdmissionFee, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.AdmissionFee, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.AdmissionFee, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ExamFee, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.ExamFee, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.ExamFee, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Misclellaneous, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.Misclellaneous, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.Misclellaneous, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control", type = "number", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.C1StInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.C1StInstallment, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.C1StInstallment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.C2ndInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.C2ndInstallment, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.C2ndInstallment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.C3rdInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.C3rdInstallment, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                    @Html.ValidationMessageFor(model => model.C3rdInstallment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    @Html.LabelFor(model => model.C4thInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.C4thInstallment, new { htmlAttributes = new { @class = "form-control", type = "number", } })
+                        @Html.ValidationMessageFor(model => model.C4thInstallment, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BalanceAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.BalanceAmount, new { htmlAttributes = new { @class = "form-control", type = "number", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.BalanceAmount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-6">
+                    @*<input type="submit" value="Create" class="btn-shadow btn-wide float-left btn-pill btn-hover-shine btn btn-primary" />*@
+                    <input type="submit" value="Create" class="btn btn-primary btn-block btn-lg gradient-custom-4 text-body" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<br />
+<br />
+
+<div>
+    @Html.ActionLink("Back to List", "GetAllStudents", "Admission")
+</div>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Admission Fee
+        </th>
+        <th>
+            1St Installment
+        </th>
+        <th>
+            2nd Installment
+        </th>
+        <th>
+            3rd Installment
+        </th>
+        @*<th>
+                4th Installment
+            </th>*@
+        <th>
+            Exam Fee
+        </th>
+        <th>
+            Misclellaneous
+        </th>
+        <th>
+            Total Amount
+        </th>
+        <th>
+            Balance Amount
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.FeeReceipts)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdmissionFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1StInstallment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2ndInstallment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C3rdInstallment)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.C4thInstallment)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.ExamFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Misclellaneous)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BalanceAmount)
+            </td>
+            <td>@Html.ActionLink("Print", "FeeReceiptPDF", "FeeReceipts", new { AdmissionFormId = item.AdmissionFormId }, new { @class = "btn btn-sm btn-primary" })</td>
+            @*<td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>*@
+        </tr>
+    }
+
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#AdmissionFee, #ExamFee, #Misclellaneous, #C1StInstallment, #C2ndInstallment, #C3rdInstallment").on("input", function () {
+            //myJsFunction(this.value);
+            FeeCalculate();
+        });
+        //$("#ExamFee").on("change", function () {
+        //    FeeCalculate();
+        //});
+        //$("#Misclellaneous").on("change", function () {
+        //    FeeCalculate();
+        //});
+        ////$("#TotalAmount").on("change", function () {
+        ////});
+        //$("#C1StInstallment").on("change", function () {
+        //    FeeCalculate();
+        //});
+        //$("#C2ndInstallment").on("change", function () {
+        //    FeeCalculate();
+        //});
+        //$("#C3rdInstallment").on("change", function () {
+        //    FeeCalculate();
+        //});
+    });
+
+    function FeeCalculate() {
+        debugger
+        var AdmissionFee = parseFloat($("#AdmissionFee").val()) || 0;
+        var ExamFee = parseFloat($("#ExamFee").val()) || 0;
+        var Misclellaneous = parseFloat($("#Misclellaneous").val()) || 0;
+        var TotalAmount = AdmissionFee + ExamFee + Misclellaneous;
+        $("#TotalAmount").val(TotalAmount);
+
+        var C1StInstallment = parseFloat($("#C1StInstallment").val()) || 0;
+
+        if (C1StInstallment != 0) {
+            var BalanceAmount = TotalAmount - C1StInstallment;
+            var C2ndInstallment = BalanceAmount / 2;
+            var C3rdInstallment = BalanceAmount / 2;
+            $("#C2ndInstallment").val(C2ndInstallment);
+            $("#C3rdInstallment").val(C3rdInstallment);
+            $("#BalanceAmount").val(BalanceAmount);
+        }
+        else {
+            $("#BalanceAmount").val(TotalAmount);
+        }
+    }
+</script>

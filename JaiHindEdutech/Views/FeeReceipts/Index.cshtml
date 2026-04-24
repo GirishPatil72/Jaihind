@@ -1,0 +1,99 @@
+﻿@model IEnumerable<JaiHindEdutech.Entity.FeeReceipt>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AdmissionFee)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.C1StInstallment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.C2ndInstallment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.C3rdInstallment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.C4thInstallment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BalanceAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedOn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedOn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdmissionFee)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.C1StInstallment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.C2ndInstallment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.C3rdInstallment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.C4thInstallment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BalanceAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedOn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedOn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsDeleted)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+        </td>
+    </tr>
+}
+
+</table>
