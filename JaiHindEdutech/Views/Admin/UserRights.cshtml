@@ -1,0 +1,205 @@
+@model JaiHindEdutech.Models.UserRightsViewModel
+@{
+    ViewBag.Title = "User Rights";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<style>
+    .rights-card {
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .rights-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+    }
+
+    .icon-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+    }
+
+    .module-row {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 14px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .rights-header-box {
+        background: #f8fbff;
+        border: 1px solid #e5eaf1;
+        border-radius: 14px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .rights-right-label {
+        font-weight: 700;
+        color: #1f4e79;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="card rights-card">
+        <div class="card-header rights-card-header py-3">
+            <div class="d-flex align-items-center">
+                <div class="icon-badge d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-user-shield fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0 fw-semibold">User Rights</h4>
+                    <div class="text-muted">@Model.FullName (@Model.UserName)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            @using (Html.BeginForm("UserRights", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.UserId)
+                @Html.HiddenFor(m => m.UserName)
+                @Html.HiddenFor(m => m.FullName)
+
+                <div class="rights-header-box">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="fw-semibold text-muted">Module</div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <div class="form-check d-inline-flex align-items-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="selectAllView" />
+                                        <label class="form-check-label rights-right-label" for="selectAllView">View</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div class="form-check d-inline-flex align-items-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="selectAllCreate" />
+                                        <label class="form-check-label rights-right-label" for="selectAllCreate">Create</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div class="form-check d-inline-flex align-items-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="selectAllEdit" />
+                                        <label class="form-check-label rights-right-label" for="selectAllEdit">Edit</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div class="form-check d-inline-flex align-items-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="selectAllDelete" />
+                                        <label class="form-check-label rights-right-label" for="selectAllDelete">Delete</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <div class="module-row">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="fw-semibold">@Model.Items[i].ModuleName</div>
+                                @Html.HiddenFor(m => m.Items[i].ModuleKey)
+                                @Html.HiddenFor(m => m.Items[i].ModuleName)
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-3 text-center">
+                                        <div class="form-check d-inline-block">
+                                            @Html.CheckBoxFor(m => m.Items[i].CanView, new { @class = "form-check-input js-view-right", id = $"view_{i}" })
+                                        </div>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <div class="form-check d-inline-block">
+                                            @Html.CheckBoxFor(m => m.Items[i].CanCreate, new { @class = "form-check-input js-create-right", id = $"create_{i}" })
+                                        </div>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <div class="form-check d-inline-block">
+                                            @Html.CheckBoxFor(m => m.Items[i].CanEdit, new { @class = "form-check-input js-edit-right", id = $"edit_{i}" })
+                                        </div>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <div class="form-check d-inline-block">
+                                            @Html.CheckBoxFor(m => m.Items[i].CanDelete, new { @class = "form-check-input js-delete-right", id = $"delete_{i}" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    @Html.ActionLink("Back to List", "Index", "Admin", null, new { @class = "btn btn-light btn-lg px-4" })
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fa fa-save me-2"></i> Save Rights
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        function setAll(selector, checked) {
+            $(selector).prop("checked", checked);
+        }
+
+        function updateMaster(selector, masterId) {
+            var allChecked = $(selector).length > 0 && $(selector + ":not(:checked)").length === 0;
+            $(masterId).prop("checked", allChecked);
+        }
+
+        $("#selectAllView").on("change", function () {
+            setAll(".js-view-right", this.checked);
+        });
+
+        $("#selectAllCreate").on("change", function () {
+            setAll(".js-create-right", this.checked);
+        });
+
+        $("#selectAllEdit").on("change", function () {
+            setAll(".js-edit-right", this.checked);
+        });
+
+        $("#selectAllDelete").on("change", function () {
+            setAll(".js-delete-right", this.checked);
+        });
+
+        $(".js-view-right").on("change", function () {
+            updateMaster(".js-view-right", "#selectAllView");
+        });
+
+        $(".js-create-right").on("change", function () {
+            updateMaster(".js-create-right", "#selectAllCreate");
+        });
+
+        $(".js-edit-right").on("change", function () {
+            updateMaster(".js-edit-right", "#selectAllEdit");
+        });
+
+        $(".js-delete-right").on("change", function () {
+            updateMaster(".js-delete-right", "#selectAllDelete");
+        });
+
+        updateMaster(".js-view-right", "#selectAllView");
+        updateMaster(".js-create-right", "#selectAllCreate");
+        updateMaster(".js-edit-right", "#selectAllEdit");
+        updateMaster(".js-delete-right", "#selectAllDelete");
+    });
+</script>

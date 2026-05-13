@@ -11,26 +11,26 @@ namespace JaiHindEdutech.Models
         public int ParentInfoId { get; set; }
         public ParentType ParentType { get; set; }
 
-        //[Required(ErrorMessage = "Full Name is required.")]
+        [Required(ErrorMessage = "Full Name is required.")]
         [Display(Name = "Full Name")]
         public string FullName { get; set; }
 
-        //[Required(ErrorMessage = "Occupation is required.")]
+        [Required(ErrorMessage = "Occupation is required.")]
         public string Occupation { get; set; }
 
-        //[Required(ErrorMessage = "Aadhar No is required.")]
+        [Required(ErrorMessage = "Aadhar No is required.")]
         [Display(Name = "Aadhar No")]
         public string AadharNo { get; set; }
 
-        //[Required(ErrorMessage = "Annual Income is required.")]
+        [Required(ErrorMessage = "Annual Income is required.")]
         [Display(Name = "Annual Income")]
         public string AnnualIncome { get; set; }
 
-        //[Required(ErrorMessage = "Mobile No is required.")]
+        [Required(ErrorMessage = "Mobile No is required.")]
         [Display(Name = "Mobile No")]
         public string MobileNo { get; set; }
 
-        //[Required(ErrorMessage = "Email Id is required.")]
+        [Required(ErrorMessage = "Email Id is required.")]
         [Display(Name = "Email Id")]
         public string EmailId { get; set; }
         public Nullable<bool> IsActive { get; set; }

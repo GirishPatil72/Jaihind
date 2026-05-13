@@ -26,38 +26,38 @@ namespace JaiHindEdutech.Models
             return status;
         }
 
-        public static bool CheckLoggedInUserRoleByRoleName(string roleName = "", string[] roleList = null)
-        {
-            List<string> roles = UserSession.GetUserSession().Roles;
-            if (roles != null && roles.Count > 0)
-            {
-                bool IsCompare = false;
-                string role = roles.First();
-                if (role == roleName)
-                {
-                    IsCompare = true;
-                }
-                else
-                {
-                    IsCompare = false;
-                }
+        //public static bool CheckLoggedInUserRoleByRoleName(string roleName = "", string[] roleList = null)
+        //{
+        //    List<string> roles = UserSession.GetUserSession().Roles;
+        //    if (roles != null && roles.Count > 0)
+        //    {
+        //        bool IsCompare = false;
+        //        string role = roles.First();
+        //        if (role == roleName)
+        //        {
+        //            IsCompare = true;
+        //        }
+        //        else
+        //        {
+        //            IsCompare = false;
+        //        }
 
-                if (roleList != null)
-                {
-                    if (roleList.Length == 1)
-                    {
-                        IsCompare = roles.Any(R => R.Contains(roleList[0]));
-                    }
-                    else
-                    {
-                        IsCompare = roleList.Contains(role);
-                    }
-                }
+        //        if (roleList != null)
+        //        {
+        //            if (roleList.Length == 1)
+        //            {
+        //                IsCompare = roles.Any(R => R.Contains(roleList[0]));
+        //            }
+        //            else
+        //            {
+        //                IsCompare = roleList.Contains(role);
+        //            }
+        //        }
 
-                return IsCompare;
-            }
-            else
-                return false;
-        }
+        //        return IsCompare;
+        //    }
+        //    else
+        //        return false;
+        //}
     }
 }

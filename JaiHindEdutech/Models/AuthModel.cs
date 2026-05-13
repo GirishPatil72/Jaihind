@@ -37,7 +37,7 @@ namespace JaiHindEdutech.Models
         public bool isAuthenticated { get; set; }
         public bool? IsFirstTimeLogin { get; set; }
         public List<string> Roles { get; set; }
-        public List<ApplicationList> Applications { get; set; }
+        //public List<ApplicationList> Applications { get; set; }
         public string ErrorMessage { get; set; }
         public int UserId { get; set; }
         public string LogonData { get; set; }

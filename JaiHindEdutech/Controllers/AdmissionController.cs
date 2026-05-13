@@ -1,22 +1,38 @@
 ﻿using JaiHindEdutech.Entity;
+using JaiHindEdutech.Infrastructure;
 using JaiHindEdutech.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace JaiHindEdutech.Controllers
 {
     public class AdmissionController : BaseController
     {
+        private string CurrentUserName
+        {
+            get { return User != null && User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty; }
+        }
+
+        private string CurrentRoleName
+        {
+            get
+            {
+                if (User != null && User.IsInRole("Admin"))
+                    return "Admin";
+                if (User != null && User.IsInRole("Staff"))
+                    return "Staff";
+                return "User";
+            }
+        }
+
         // GET: Admission
+        [PermissionAuthorize(Right = "Create,Edit")]
         public ActionResult Index(int collegeId, string collegeName, int studentInfoId = 0)
         {
-            bool aaaa = Utility.CheckLoggedInUserRoleByRoleName("", null);
             ViewBag.collegeId = collegeId;
             ViewBag.collegeName = collegeName;
             StudentInfoModel studentInfoModel = new StudentInfoModel();
@@ -32,13 +48,40 @@ namespace JaiHindEdutech.Controllers
             return View();
         }
 
-        public ActionResult GetAllStudents()
+        [PermissionAuthorize(Right = "View")]
+        public ActionResult GetAllStudents(int? academicYearId)
         {
             AdmissionBL admission = new AdmissionBL();
-            ViewBag.College = new SelectList(admission.GetAllColleges(), "CollegeInfoId", "CollegeName");
-            return View(admission.GetAllStudents());
+
+            using (var db = new JaiHindEduEntitiesNew())
+            {
+                var academicYears = db.LutAcademicYears
+                    .OrderByDescending(x => x.IsCurrent)
+                    .ThenByDescending(x => x.Year)
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.AcademicYearId.ToString(),
+                        Text = x.Year + (x.IsCurrent == true ? " (Current)" : "")
+                    })
+                    .ToList();
+
+                var currentYear = db.LutAcademicYears.FirstOrDefault(x => x.IsCurrent == true);
+                int selectedAcademicYearId = academicYearId ?? (currentYear != null ? currentYear.AcademicYearId : 0);
+
+                ViewBag.AcademicYears = new SelectList(academicYears, "Value", "Text", selectedAcademicYearId);
+                ViewBag.SelectedAcademicYearId = selectedAcademicYearId;
+                ViewBag.College = new SelectList(admission.GetAllColleges(), "CollegeInfoId", "CollegeName");
+
+                string selectedYearName = db.LutAcademicYears
+                    .Where(x => x.AcademicYearId == selectedAcademicYearId)
+                    .Select(x => x.Year)
+                    .FirstOrDefault();
+
+                return View(admission.GetAllStudents(0, selectedYearName));
+            }
         }
 
+        [PermissionAuthorize(Right = "View")]
         public ActionResult StudentInfo(int studentInfoId)
         {
             StudentInfoModel studentInfoModel = new StudentInfoModel();
@@ -63,10 +106,11 @@ namespace JaiHindEdutech.Controllers
 
             if (ModelState.IsValid)
             {
-                studentInfoModel.CreatedBy = Session["UserName"].ToString();
+                studentInfoModel.CreatedBy = CurrentUserName;
                 studentInfoModel.CreatedOn = DateTime.Now;
-                studentInfoModel.ModifiedBy = Session["UserName"].ToString();
+                studentInfoModel.ModifiedBy = CurrentUserName;
                 studentInfoModel.ModifiedOn = DateTime.Now;
+
                 int studentInfoId = studentInfoBL.CreateStudentInfo(studentInfoModel);
                 bool result = false;
                 if (studentInfoId > 0)
@@ -96,9 +140,9 @@ namespace JaiHindEdutech.Controllers
             {
                 foreach (var parent in parentInfoFormModel.Parents)
                 {
-                    parent.CreatedBy = Session["UserName"].ToString();
+                    parent.CreatedBy = CurrentUserName;
                     parent.CreatedOn = DateTime.Now;
-                    parent.ModifiedBy = Session["UserName"].ToString();
+                    parent.ModifiedBy = CurrentUserName;
                     parent.ModifiedOn = DateTime.Now;
                     parent.StudentInfoId = parentInfoFormModel.StudentInfoId;
                     studentInfoBL.CreateParentInfo(parent);
@@ -204,11 +248,13 @@ namespace JaiHindEdutech.Controllers
             try
             {
                 StudentInfoBL studentInfoBL = new StudentInfoBL();
-                AdmissionConfirmationModel admissionConfirmationModel = new AdmissionConfirmationModel();
-                admissionConfirmationModel.StudentInfoId = studentInfoId;
-                admissionConfirmationModel.studentInfoModel = studentInfoBL.GetStudentInfoById(studentInfoId);
-                admissionConfirmationModel.ParentInfoFormModel = studentInfoBL.GetParentInfoByStudentInfoId(studentInfoId);
-                admissionConfirmationModel.addressInfoFormModel = studentInfoBL.GetAddressInfoByStudentInfoId(studentInfoId);
+                AdmissionConfirmationModel admissionConfirmationModel = new AdmissionConfirmationModel
+                {
+                    StudentInfoId = studentInfoId,
+                    studentInfoModel = studentInfoBL.GetStudentInfoById(studentInfoId),
+                    ParentInfoFormModel = studentInfoBL.GetParentInfoByStudentInfoId(studentInfoId),
+                    addressInfoFormModel = studentInfoBL.GetAddressInfoByStudentInfoId(studentInfoId)
+                };
 
                 StudentAcademicViewModel studentAcademics = new StudentAcademicViewModel();
                 studentAcademics.SelectedClass = studentInfoBL.GetClassInfoByStudentInfoId(studentInfoId).ClassName;
@@ -217,34 +263,78 @@ namespace JaiHindEdutech.Controllers
                 studentAcademics.EleventhClass = studentInfoBL.GetAcademicStudentInfoId(studentInfoId, "Class 11th");
                 admissionConfirmationModel.previousAcademicInfoModel = studentAcademics;
 
-                admissionConfirmationModel.subjectSelectionModel = studentInfoBL.GetSelectedSubject(studentInfoBL.GetClassInfoByStudentInfoId(studentInfoId).AddmissionFormId);
-                admissionConfirmationModel.documentSelectionModel = studentInfoBL.GetSelectedDocument(studentInfoBL.GetClassInfoByStudentInfoId(studentInfoId).AddmissionFormId);
+                admissionConfirmationModel.subjectSelectionModel =
+                    studentInfoBL.GetSelectedSubject(studentInfoBL.GetClassInfoByStudentInfoId(studentInfoId).AddmissionFormId);
+
+                admissionConfirmationModel.documentSelectionModel =
+                    studentInfoBL.GetSelectedDocument(studentInfoBL.GetClassInfoByStudentInfoId(studentInfoId).AddmissionFormId);
 
                 admissionConfirmationModel.uploadedImagesModel = studentInfoBL.GetUploadedImages(studentInfoId);
                 admissionConfirmationModel.collegeInfoModel = studentInfoBL.GetColelgeInfo(studentInfoId);
 
 
-                //return PartialView("GenerateFormPDF", admissionConfirmationModel);
+                ActivityLogHelper.Log(
+                    "Viewed",
+                    "AdmissionForm",
+                    studentInfoId.ToString(),
+                    "Opened admission form for print",
+                    controllerName: "Admission",
+                    actionName: "GenerateFormPDF",
+                    userName: CurrentUserName,
+                    roleName: CurrentRoleName);
 
-                return new Rotativa.ViewAsPdf("GenerateFormPDF", admissionConfirmationModel)
-                {
-                    FileName = "Student-Form.pdf",
-                    PageSize = Rotativa.Options.Size.A4,
-                    PageOrientation = Rotativa.Options.Orientation.Portrait,
-                    PageMargins = new Rotativa.Options.Margins(20, 10, 20, 10)
-                };
+                return View("GenerateFormPDF", admissionConfirmationModel);
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
         }
 
-        public ActionResult AllAddmissionExportToExcel(int CollegeInfoId)
+        private string RenderViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindView(ControllerContext, viewName, null);
+                var viewContext = new ViewContext(ControllerContext, viewResult.View, new ViewDataDictionary(model), TempData, sw);
+
+                viewResult.View.Render(viewContext, sw);
+                viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
+
+                return sw.ToString();
+            }
+        }
+
+        public ActionResult AllAddmissionExportToExcel(int CollegeInfoId, int? academicYearId)
         {
             StudentInfoBL studentInfoBL = new StudentInfoBL();
-            var data = studentInfoBL.GetAllAdmissionData(CollegeInfoId); // Call your stored procedure here
-            return ExportDataToExcel(data);
+
+            using (var db = new JaiHindEduEntitiesNew())
+            {
+                var currentYear = db.LutAcademicYears.FirstOrDefault(x => x.IsCurrent == true);
+                int selectedAcademicYearId = academicYearId ?? (currentYear != null ? currentYear.AcademicYearId : 0);
+
+                string selectedYearName = db.LutAcademicYears
+                    .Where(x => x.AcademicYearId == selectedAcademicYearId)
+                    .Select(x => x.Year)
+                    .FirstOrDefault();
+
+                var data = studentInfoBL.GetAllAdmissionData(CollegeInfoId, selectedYearName);
+
+                ActivityLogHelper.Log(
+                    "Downloaded",
+                    "AdmissionReport",
+                    CollegeInfoId.ToString(),
+                    "Exported admission data to Excel",
+                    controllerName: "Admission",
+                    actionName: "AllAddmissionExportToExcel",
+                    userName: CurrentUserName,
+                    roleName: CurrentRoleName);
+
+                return ExportDataToExcel(data);
+            }
         }
         private ActionResult ExportDataToExcel<T>(List<T> data)
         {
@@ -268,7 +358,7 @@ namespace JaiHindEdutech.Controllers
                     for (int i = 0; i < properties.Length; i++)
                     {
                         var value = properties[i].GetValue(item, null);
-                        worksheet.Cell(currentRow, i + 1).Value = value?.ToString() ?? string.Empty;
+                        worksheet.Cell(currentRow, i + 1).Value = value == null ? string.Empty : value.ToString();
                     }
                 }
 

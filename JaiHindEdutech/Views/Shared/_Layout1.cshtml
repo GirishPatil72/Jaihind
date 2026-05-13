@@ -20,102 +20,416 @@
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
     <style>
-        .app-theme-white.fixed-header .app-header__logo {
-            background: rgba(0, 0, 0, 0) !important;
+        :root {
+            --app-bg: #f4f7fb;
+            --app-surface: #ffffff;
+            --app-surface-alt: #f8fafc;
+            --app-border: #e5eaf1;
+            --app-text: #1f2937;
+            --app-muted: #6b7280;
+            --app-primary: #1f4e79;
+            --app-primary-hover: #163b5c;
+            --app-accent: #02adee;
+            --app-success: #15803d;
+            --app-warning: #b45309;
+            --app-danger: #b91c1c;
+            --app-info: #0f766e;
+            --app-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
         }
 
-        .oval-nav-item {
-            background-color: #ffffff;
-            height: 50px;
-            border-radius: 50px;
-            padding: 7px 20px;
-            display: inline-block;
-            margin-left: 10px;
-            margin-right: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* optional */
+        body {
+            background: var(--app-bg);
+            color: var(--app-text);
         }
 
-            .oval-nav-item .nav-link {
-                color: #000000;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
+        .app-header {
+            background: linear-gradient(90deg, #1f4e79 0%, #163b5c 100%) !important;
+        }
+
+        .border-left-header {
+            color: #ffffff;
+        }
+
+        .app-sidebar,
+        .app-sidebar.sidebar-shadow,
+        .app-sidebar .scrollbar-sidebar,
+        .app-sidebar .app-sidebar__inner {
+            background: #0b1220 !important;
+        }
+
+        .app-sidebar {
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 12px 0 28px rgba(15, 23, 42, 0.12);
+        }
+
+        .app-sidebar__inner {
+            padding: .75rem 0;
+        }
+
+        .vertical-nav-menu {
+            padding: .25rem 0 .75rem;
+        }
+
+            .vertical-nav-menu li {
+                margin: 0;
             }
 
-                .oval-nav-item .nav-link i {
-                    margin-right: 8px;
+                .vertical-nav-menu li a,
+                .vertical-nav-menu li a:visited {
+                    display: flex;
+                    align-items: center;
+                    gap: .65rem;
+                    min-height: 42px;
+                    margin: .2rem .65rem;
+                    padding: .75rem .9rem !important;
+                    border-radius: 12px;
+                    color: #f8fafc !important;
+                    background: transparent !important;
+                    text-decoration: none !important;
+                    opacity: 1 !important;
+                    font-weight: 600;
+                    transition: background-color .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
                 }
 
-        .nav-link .nav-link-icon {
-            color: #DC143C;
+                    .vertical-nav-menu li a:hover,
+                    .vertical-nav-menu li a:focus,
+                    .vertical-nav-menu li a:active {
+                        color: #ffffff !important;
+                        background: linear-gradient(90deg, rgba(2, 173, 238, 0.22) 0%, rgba(31, 78, 121, 0.30) 100%) !important;
+                        text-decoration: none !important;
+                        outline: none !important;
+                        transform: translateX(2px);
+                        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+                    }
+
+                .vertical-nav-menu li.mm-active > a,
+                .vertical-nav-menu li.mm-active > a:visited,
+                .vertical-nav-menu li.mm-active > a:focus,
+                .vertical-nav-menu li.mm-active > a:active {
+                    color: #ffffff !important;
+                    background: linear-gradient(90deg, rgba(255, 122, 24, 0.22) 0%, rgba(220, 20, 60, 0.22) 100%) !important;
+                    font-weight: 700;
+                    box-shadow: inset 4px 0 0 #ff7a18;
+                }
+
+            .vertical-nav-menu .mm-collapse {
+                padding-left: 0;
+            }
+
+                .vertical-nav-menu .mm-collapse li a,
+                .vertical-nav-menu .mm-collapse li a:visited {
+                    color: #e2e8f0 !important;
+                    opacity: 1 !important;
+                    font-size: .92rem;
+                    margin-left: 1rem;
+                }
+
+                    .vertical-nav-menu .mm-collapse li a:hover,
+                    .vertical-nav-menu .mm-collapse li a:focus,
+                    .vertical-nav-menu .mm-collapse li a:active {
+                        color: #ffffff !important;
+                        background: rgba(255, 255, 255, 0.10) !important;
+                        box-shadow: inset 4px 0 0 #02adee;
+                    }
+
+            .vertical-nav-menu li a i,
+            .vertical-nav-menu li a .metismenu-icon,
+            .vertical-nav-menu li a .metismenu-state-icon {
+                color: inherit !important;
+                opacity: 1 !important;
+            }
+
+        .card,
+        .user-card {
+            background: var(--app-surface);
+            border: 1px solid var(--app-border);
+            border-radius: 16px;
+            box-shadow: var(--app-shadow);
         }
 
-        .nav-link:hover .nav-link-icon {
-            color: #DC143C;
+        .card-header {
+            background: var(--app-surface-alt);
+            border-bottom: 1px solid var(--app-border);
         }
 
+        .form-label {
+            color: var(--app-text);
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--app-border);
+            border-radius: 12px;
+            min-height: 46px;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--app-accent);
+                box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.15) !important;
+            }
+
+        .btn-primary {
+            background: var(--app-primary);
+            border-color: var(--app-primary);
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: var(--app-primary-hover);
+                border-color: var(--app-primary-hover);
+            }
+
+        .btn-light {
+            border-radius: 12px;
+            background: #eef2f7;
+            border-color: #e2e8f0;
+        }
+
+        .table {
+            background: var(--app-surface);
+            border-color: var(--app-border);
+        }
+
+            .table thead th {
+                background: #eaf2f8;
+                color: var(--app-primary);
+                font-weight: 700;
+                border-bottom: 1px solid var(--app-border);
+            }
+
+            .table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+            .table td,
+            .table th {
+                border-color: var(--app-border);
+                vertical-align: middle;
+            }
+
+        .badge.bg-success {
+            background: #16a34a !important;
+        }
+
+        .badge.bg-secondary {
+            background: #64748b !important;
+        }
+
+        .badge.bg-warning {
+            background: #d97706 !important;
+        }
+
+        .badge.bg-danger {
+            background: #dc2626 !important;
+        }
+
+        .page-title-subheading,
+        .text-muted,
+        .form-hint {
+            color: var(--app-muted) !important;
+        }
+
+        .oval-nav-item > .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .7rem 1.15rem;
+            min-height: 46px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff7a18 0%, #dc143c 100%);
+            color: #ffffff !important;
+            font-weight: 700;
+            letter-spacing: .02em;
+            box-shadow: 0 8px 18px rgba(220, 20, 60, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+            .oval-nav-item > .nav-link .nav-link-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.18);
+                color: #ffffff !important;
+                font-size: .95rem;
+                flex: 0 0 28px;
+            }
+
+            .oval-nav-item > .nav-link .fa-angle-down {
+                font-size: .95rem;
+                opacity: .95;
+            }
+
+            .oval-nav-item > .nav-link:hover,
+            .oval-nav-item > .nav-link:focus {
+                color: #ffffff !important;
+                box-shadow: 0 10px 24px rgba(220, 20, 60, 0.32);
+                transform: translateY(-1px);
+            }
+
+        .oval-nav-item .popover-custom-content {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            border: 1px solid #e5eaf1;
+        }
+
+        .oval-nav-item .dropdown-mega-menu {
+            background: #ffffff;
+        }
+
+        .oval-nav-item .grid-menu {
+            padding: .75rem;
+        }
+
+        .oval-nav-item .nav-item-header {
+            font-weight: 700;
+            color: #1f4e79;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-size: .78rem;
+            padding: .25rem .5rem .75rem;
+            border-bottom: 1px solid #edf2f7;
+            margin-bottom: .5rem;
+        }
 
         .college-nav-item {
-            background-color: #fff;
-            border: 2px solid #ffe5d1;
-            border-radius: 50px;
-            padding: 8px 20px;
-            display: inline-block;
-            margin: 5px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: .45rem;
         }
 
             .college-nav-item .nav-link {
-                color: #e76f51;
+                display: flex;
+                align-items: center;
+                gap: .55rem;
+                padding: .7rem .85rem;
+                border-radius: 12px;
+                color: #1f2937 !important;
+                background: #f8fbff;
+                border: 1px solid #e5eaf1;
+                transition: all .15s ease;
                 font-weight: 600;
-                text-decoration: none;
+            }
+
+                .college-nav-item .nav-link::before {
+                    content: "\f19d";
+                    font-family: "Font Awesome 5 Free", "Font Awesome 6 Free", "FontAwesome";
+                    font-weight: 900;
+                    color: #02adee;
+                    font-size: .85rem;
+                }
+
+                .college-nav-item .nav-link:hover {
+                    background: #1f4e79;
+                    color: #ffffff !important;
+                    border-color: #1f4e79;
+                    transform: translateX(2px);
+                }
+
+                    .college-nav-item .nav-link:hover::before {
+                        color: #ffffff;
+                    }
+
+                .college-nav-item .nav-link.mm-active {
+                    background: linear-gradient(135deg, #1f4e79 0%, #163b5c 100%);
+                    color: #ffffff !important;
+                    border-color: #163b5c;
+                }
+
+                    .college-nav-item .nav-link.mm-active::before {
+                        color: #ffffff;
+                    }
+
+        .vertical-nav-menu li a {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+            .vertical-nav-menu li a .menu-text {
                 display: inline-block;
+                line-height: 1.2;
+                color: inherit !important;
             }
 
-            .college-nav-item:hover {
-                border-color: #e76f51;
-                box-shadow: 0 0 8px rgba(231, 111, 81, 0.3);
+            .vertical-nav-menu li a .metismenu-icon {
+                position: static !important;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 20px;
+                min-width: 20px;
+                flex: 0 0 20px;
+                margin-right: .25rem !important;
+                color: inherit !important;
             }
 
-            .college-nav-item .nav-link:hover {
-                color: #d94a2b;
+            .vertical-nav-menu li a .metismenu-state-icon {
+                margin-left: auto;
+                color: inherit !important;
             }
 
-        .border-left-header {
-            font-size: 1.9rem;
-            font-weight: 600;
-            color: #ffffff;
-            /*border-left: 5px solid #e76f51;*/
-            padding-left: 15px;
-            margin-bottom: 1rem;
-            max-width: max-content;
-        }
-        .bg-ripe-malin {
-            background-image: linear-gradient(120deg, #f093fb 0%, #ffffff 100%) !important;
+        .sidebar-active-link {
+            color: #ffffff !important;
+            background: linear-gradient(90deg, rgba(255, 122, 24, 0.22) 0%, rgba(220, 20, 60, 0.28) 100%) !important;
+            font-weight: 700;
+            box-shadow: inset 4px 0 0 #ff7a18;
         }
 
-        a:not([href]):not([tabindex]) {
-            color: #fff;
-            text-decoration: none;
-        }
+            .sidebar-active-link:hover,
+            .sidebar-active-link:focus,
+            .sidebar-active-link:active {
+                color: #ffffff !important;
+                background: linear-gradient(90deg, rgba(2, 173, 238, 0.22) 0%, rgba(31, 78, 121, 0.30) 100%) !important;
+            }
     </style>
 </head>
+@using System.Security.Claims
+@using System
+
+@{
+    var claimsPrincipal = User as ClaimsPrincipal;
+    var fullNameClaim = claimsPrincipal != null ? claimsPrincipal.FindFirst("FullName") : null;
+    var fullName = fullNameClaim != null ? fullNameClaim.Value : "";
+
+    var currentController = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+    var currentAction = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+
+    Func<string, string, string> sidebarLinkClass = (controller, action) =>
+        "nav-link" +
+        (string.Equals(currentController, controller, System.StringComparison.OrdinalIgnoreCase) &&
+         string.Equals(currentAction, action, System.StringComparison.OrdinalIgnoreCase)
+            ? " sidebar-active-link"
+            : "");
+
+    var isDashboardMenuActive =
+        string.Equals(currentController, "Admission", System.StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentController, "FeeReceipts", System.StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentController, "Admin", System.StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentController, "CoachingCentres", System.StringComparison.OrdinalIgnoreCase);
+}
 <body>
     <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
         <!--Header START-->
         <div class="app-header header-shadow">
             <div class="app-header__logo">
-                <div class="logo-src"></div>
+                <a href="@Url.Action("Index", "Home")" title="Home" style="display:block; height:100%;">
+                    <div class="logo-src"></div>
+                </a>
                 @*<div class="header__pane ml-auto">
-                    <div>
-                        <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
-                            <span class="hamburger-box">
-                                <span class="hamburger-inner"></span>
-                            </span>
-                        </button>
-                    </div>
-                </div>*@
+                        <div>
+                            <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                                <span class="hamburger-box">
+                                    <span class="hamburger-inner"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>*@
             </div>
             <div class="app-header__mobile-menu">
                 <div>
@@ -137,20 +451,26 @@
             </div>
             <div class="app-header__content">
                 <div class="app-header-left">
-                    
-                   
+
+
                     <h2 class="border-left-header">STUDENT MANAGEMENT SYSTEM</h2>
 
                 </div>
                 <div class="app-header-right">
-                   
+
                     <ul class="header-megamenu nav" style="height:50px; border-left: 2px solid #02ADEE; border-right: 2px solid #02ADEE; ">
-                        @if (Session["LoginRole"] != null && Session["LoginRole"].ToString() == "Admin")
+                        @if (Request.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item oval-nav-item">
-                                <a href="javascript:void(0);" data-placement="bottom" rel="popover-focus" data-offset="300" data-toggle="popover-custom" class="nav-link" style="font-weight: 700; color: #DC143C">
-                                    <i class="nav-link-icon fa fa-university"> </i> Admission Process
-                                    <i class="fa fa-angle-down ml-2 opacity-5"></i>
+                                <a href="javascript:void(0);"
+                                   data-placement="bottom"
+                                   rel="popover-focus"
+                                   data-offset="300"
+                                   data-toggle="popover-custom"
+                                   class="nav-link">
+                                    <i class="nav-link-icon fa fa-university"></i>
+                                    <span>Admission Process</span>
+                                    <i class="fa fa-angle-down ms-1"></i>
                                 </a>
                                 <div class="rm-max-width">
                                     <div class="d-none popover-custom-content">
@@ -203,7 +523,7 @@
                                 </div>
                             </li>
                         }
-                        @if (Session["LoginRole"] != null && Session["LoginRole"].ToString() == "Staff")
+                        @if (Request.IsAuthenticated && User.IsInRole("Staff"))
                         {
                             var collegeData = ViewBag.CollegeInfoSharedData as List<JaiHindEdutech.Entity.CollegeInfo>;
                             List<JaiHindEdutech.Entity.CollegeInfo> firstFive;
@@ -285,9 +605,9 @@
                                                                 </div>
                                                                 <div class="widget-content-left">
                                                                     <div class="widget-heading">
-                                                                        @if (Convert.ToString(Session["FullName"]).Trim() != "")
+                                                                        @if (!string.IsNullOrWhiteSpace(fullName))
                                                                         {
-                                                                            @Session["FullName"].ToString();
+                                                                            @fullName
                                                                         }
                                                                     </div>
                                                                 </div>
@@ -322,14 +642,14 @@
 
                                 <div class="widget-content-left  ml-3 header-user-info" style="color:#fff">
                                     <div class="widget-heading">
-                                        @if (Convert.ToString(Session["FullName"]).Trim() != "")
+                                        @if (!string.IsNullOrWhiteSpace(fullName))
                                         {
-                                            @Session["FullName"].ToString();
+                                            @fullName
                                         }
                                     </div>
                                     @*<div class="widget-subheading">
-                            VP People Manager
-                        </div>*@
+                                            VP People Manager
+                                        </div>*@
                                 </div>
 
                             </div>
@@ -518,25 +838,7 @@
                         </h3>
                         <div class="p-3">
                             <ul class="list-group">
-                                <!--<li class="list-group-item">
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left mr-3">
-                                                <div class="switch has-switch" data-on-label="ON" data-off-label="OFF">
-                                                    <div class="switch-animate switch-off">
-                                                        <input type="checkbox" data-toggle="toggle" data-onstyle="success">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">Sidebar Background Image
-                                                </div>
-                                                <div class="widget-subheading">Enable background images for sidebar!
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>-->
+
                                 <li class="list-group-item">
                                     <h5 class="pb-2">
                                         Choose Color Scheme
@@ -610,7 +912,7 @@
                                         </div>
                                         <div class="swatch-holder bg-grow-early switch-sidebar-cs-class" data-class="bg-grow-early sidebar-text-light">
                                         </div>
-                                        <div class="swatch-holder bg-love-kiss switch-sidebar-cs-class" data-class="bg-love-kiss sidebar-text-light">
+                                        <div class="swatch-holder bg-love-kiss switch-sidebar-cs-class" data-class="bg-love-kiss sidebar-text.light">
                                         </div>
                                         <div class="swatch-holder bg-premium-dark switch-sidebar-cs-class" data-class="bg-premium-dark sidebar-text-light">
                                         </div>
@@ -618,89 +920,6 @@
                                         </div>
                                     </div>
                                 </li>
-                                <!--<li class="theme-settings-swatches d-none list-group-item">
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">Background Opacity
-                                                </div>
-                                            </div>
-                                            <div class="widget-content-right">
-                                                <div role="group" class="btn-group-sm btn-group">
-                                                    <button type="button" class="btn-shadow opacity-3 active btn btn-primary">4%
-                                                    </button>
-                                                    <button type="button" class="btn-shadow opacity-4 btn btn-primary">6%
-                                                    </button>
-                                                    <button type="button" class="btn-shadow opacity-5 btn btn-primary">8%
-                                                    </button>
-                                                    <button type="button" class="btn-shadow opacity-6 btn btn-primary">10%
-                                                    </button>
-                                                    <button type="button" class="btn-shadow opacity-7 btn btn-primary">15%
-                                                    </button>
-                                                    <button type="button" class="btn-shadow opacity-8 btn btn-primary">20%
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>-->
-                                <!--<li class="theme-settings-swatches d-none list-group-item">
-                                    <h5>Sidebar Image Background
-                                    </h5>
-                                    <div class="divider">
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img active">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/city1.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/city2.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/city3.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/city4.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/city5.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/abstract1.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/abstract2.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/abstract3.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/abstract4.jpg">
-                                        </a>
-                                    </div>
-                                    <div class="swatch-holder swatch-holder-img">
-                                        <a class="img-holder switch-trigger">
-                                            <img alt=" " src="../assets/images/sidebar/abstract5.jpg">
-                                        </a>
-                                    </div>
-                                </li>-->
-                            </ul>
                         </div>
                         <h3 class="themeoptions-heading">
                             <div>Main Content Options</div>
@@ -710,44 +929,6 @@
                         </h3>
                         <div class="p-3">
                             <ul class="list-group">
-                                <!--<li class="list-group-item">
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left mr-3">
-                                                <div class="switch has-switch" data-on-label="ON" data-off-label="OFF">
-                                                    <div class="switch-animate switch-on">
-                                                        <input type="checkbox" data-toggle="toggle" data-onstyle="success">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">Page Title Icon
-                                                </div>
-                                                <div class="widget-subheading">Enable the icon box for page titles!
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left mr-3">
-                                                <div class="switch has-switch" data-on-label="ON" data-off-label="OFF">
-                                                    <div class="switch-animate switch-on">
-                                                        <input type="checkbox" data-toggle="toggle" data-onstyle="success">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">Page Title Description
-                                                </div>
-                                                <div class="widget-subheading">Enable the description below page title!
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>-->
                                 <li class="list-group-item">
                                     <h5 class="pb-2">
                                         Page Section Tabs
@@ -822,34 +1003,47 @@
                         <ul class="vertical-nav-menu metismenu">
                             <li class="app-sidebar__heading">Menu</li>
                             <li class="mm-active">
-                                <a href="#" aria-expanded="false">
-                                    <i class="metismenu-icon pe-7s-rocket"></i> Dashboards
+                                <a href="#" aria-expanded="true">
+                                    <i class="metismenu-icon pe-7s-rocket"></i>
+                                    <span class="menu-text">Dashboards</span>
                                     <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                                 </a>
-                                <ul class="mm-collapse">
-                                    @if (Session["LoginRole"] != null && Session["LoginRole"].ToString() == "Admin")
-                                    {
+
+                                @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <ul class="mm-collapse mm-show">
                                         <li>
-                                            @Html.ActionLink("All Students", "GetAllStudents", "Admission")
+                                            @Html.ActionLink("All Students", "GetAllStudents", "Admission", null,
+                                                new { @class = sidebarLinkClass("Admission", "GetAllStudents") })
                                         </li>
-                                    }
-                                </ul>
-                                <ul class="mm-collapse">
-                                    @if (Session["LoginRole"] != null && Session["LoginRole"].ToString() == "Admin")
-                                    {
                                         <li>
-                                            @Html.ActionLink("Coaching Centers", "Index", "CoachingCentres")
+                                            @Html.ActionLink("Fee Receipt", "AllFeeRecords", "FeeReceipts", null,
+                                                new { @class = sidebarLinkClass("FeeReceipts", "AllFeeRecords") })
                                         </li>
-                                    }
-                                </ul>
-                                <ul class="mm-collapse">
-                                    @if (Session["LoginRole"] != null && Session["LoginRole"].ToString() == "Admin")
-                                    {
                                         <li>
-                                            @Html.ActionLink("Fee Receipt", "AllFeeRecords", "FeeReceipts")
+                                            @Html.ActionLink("User Management", "Index", "Admin", null,
+                                                new { @class = sidebarLinkClass("Admin", "Index") })
                                         </li>
-                                    }
-                                </ul>
+                                        <li>
+                                            @Html.ActionLink("Activity Logs", "ActivityLogs", "Admin", null,
+                                                new { @class = sidebarLinkClass("Admin", "ActivityLogs") })
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Coaching Centers", "Index", "CoachingCentres", null,
+                                                new { @class = sidebarLinkClass("CoachingCentres", "Index") })
+                                        </li>
+                                    </ul>
+                                }
+
+                                @if (Request.IsAuthenticated && User.IsInRole("Staff"))
+                                {
+                                    <ul class="mm-collapse mm-show">
+                                        <li>
+                                            @Html.ActionLink("My Students", "GetStudentsByAdvisor", "Admission", null,
+                                                new { @class = sidebarLinkClass("Admission", "GetStudentsByAdvisor") })
+                                        </li>
+                                    </ul>
+                                }
                             </li>
 
                         </ul>
@@ -860,14 +1054,21 @@
                 <div class="app-main__inner">
                     @RenderBody()
                 </div>
-                <div class="app-wrapper-footer" style="color:#fff">
+                <div class="app-wrapper-footer">
                     <div class="app-footer">
-                        <div class="app-footer__inner">
+                        <div class="app-footer__inner" style="background: linear-gradient(90deg, #163b5c 0%, #1f4e79 100%); color: #ffffff; padding: 12px 18px;">
                             <div class="app-footer-left">
-                                <div class="page-title-subheading">Design & Developed By KPM Softech</div>
+                                <div class="page-title-subheading" style="color:#ffffff !important; font-weight:600;">
+                                    Design &amp; Developed By KPM Softech
+                                </div>
                             </div>
-                            <div class="app-footer-right">
-                                <div class="page-title-subheading">&#169; All rights reserved @DateTime.Now.Year</div>
+                            <div class="app-footer-right text-end">
+                                <div class="page-title-subheading" style="color:#ffffff !important; font-weight:600;">
+                                    Version @typeof(JaiHindEdutech.MvcApplication).Assembly.GetName().Version
+                                </div>
+                                <div class="page-title-subheading" style="color:#ffffff !important;">
+                                    &#169; All rights reserved @DateTime.Now.Year
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1071,7 +1272,7 @@
                                             <div class="widget-subheading">
                                                 <div>
                                                     By Johnny
-                                                    <div class="badge badge-pill badge-info ml-2">NEW</div>
+                                                    <span class="badge badge-pill badge-info ml-2">NEW</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1277,9 +1478,12 @@
     <div class="app-drawer-overlay d-none animated fadeIn"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("college_"+'@ViewBag.collegeId')?.classList.add("mm-active");
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+        var collegeElement = document.getElementById("college_" + '@ViewBag.collegeId');
+        if (collegeElement != null) {
+            collegeElement.classList.add("mm-active");
+        }
+    });
     </script>
     <!--DRAWER END-->
     <!--SCRIPTS INCLUDES-->
@@ -1313,7 +1517,7 @@
 
     <!--Datepickers-->
     <script src="~/Content/assets/js/vendors/form-components/datepicker.js"></script>
-    <script src="~/Content/assets/js/vendors/form-components/daterangepicker.js"></script>
+    <script src="~/Content/assets/js/vendors/form-components/daterange-picker.js"></script>
     <script src="~/Content/assets/js/vendors/form-components/moment.js"></script>
     <script src="~/Content/assets/js/scripts-init/form-components/datepicker.js"></script>
 

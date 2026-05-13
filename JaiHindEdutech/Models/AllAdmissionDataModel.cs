@@ -74,5 +74,7 @@ namespace JaiHindEdutech.Models
         public string InformationTechnology { get; set; }
         public string CropScience { get; set; }
         public string InformaticsPractices { get; set; }
+
+        public string Remark { get; set; }
     }
 }

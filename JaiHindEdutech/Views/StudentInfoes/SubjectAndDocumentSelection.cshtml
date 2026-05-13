@@ -1,290 +1,552 @@
 ﻿@model JaiHindEdutech.Models.SubjectsAndDocumentsSelectionModel
 
+<style>
+    :root {
+        --app-bg: #f4f7fb;
+        --app-surface: #ffffff;
+        --app-border: #e5eaf1;
+        --app-text: #1f2937;
+        --app-muted: #6b7280;
+        --app-primary: #1f4e79;
+        --app-primary-hover: #163b5c;
+        --app-accent: #02adee;
+        --app-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
 
-@using (Ajax.BeginForm("SubjectAndDocumentSelectionPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessSubjectSelection(data)", UpdateTargetId = "wizardContainer" }, new { id = "frmSubjectSelection", name = "frmSubjectSelection", @class = "col-md-10 mx-auto" }))
+    .selection-shell {
+        padding: 1.25rem .5rem;
+    }
+
+    .selection-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: var(--app-shadow);
+        overflow: hidden;
+        background: var(--app-surface);
+    }
+
+    .selection-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid var(--app-border);
+        padding: 1rem 1.25rem;
+    }
+
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: var(--app-muted);
+        font-size: .95rem;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid var(--app-border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        margin-bottom: 1rem;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--app-muted);
+        margin-bottom: .85rem;
+    }
+
+    .section-note {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: .95rem 1rem;
+        color: #334155;
+        margin-bottom: 1rem;
+    }
+
+    .section-note .note-title {
+        font-weight: 700;
+        color: var(--app-primary);
+        margin-bottom: .25rem;
+    }
+
+    .subheading-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .42rem .75rem;
+        border-radius: 999px;
+        background: #eef6ff;
+        color: var(--app-primary);
+        font-weight: 700;
+        font-size: .9rem;
+        margin-bottom: .85rem;
+    }
+
+    .check-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .5rem 1rem;
+    }
+
+    .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: .55rem;
+        padding: .55rem .65rem;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        background: #fdfefe;
+    }
+
+    .check-item:hover {
+        background: #f8fbff;
+        border-color: #dbeafe;
+    }
+
+    .form-check {
+        margin-bottom: 0;
+        padding-left: 0;
+    }
+
+    .form-check-input {
+        width: 1.05rem;
+        height: 1.05rem;
+        margin-top: .2rem;
+        flex: 0 0 auto;
+    }
+
+    .form-check-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0;
+        line-height: 1.35;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--app-border);
+        margin: 1.25rem 0;
+    }
+
+    .action-bar {
+        background: #f8fbff;
+        border: 1px solid var(--app-border);
+        border-radius: 14px;
+        padding: .9rem 1rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-hover) 100%);
+        border-color: var(--app-primary);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--app-primary-hover) 0%, #0f2d46 100%);
+        border-color: var(--app-primary-hover);
+    }
+
+    .btn-outline-secondary {
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .help-text {
+        color: var(--app-muted);
+        font-size: .9rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        .selection-shell {
+            padding: .75rem .25rem;
+        }
+
+        .check-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@using (Ajax.BeginForm("SubjectAndDocumentSelectionPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessSubjectSelection(data)", UpdateTargetId = "wizardContainer" }, new { id = "frmSubjectSelection", name = "frmSubjectSelection", @class = "selection-shell" }))
 {
     @Html.HiddenFor(model => model.StudentInfoId)
 
-<div class="container">
-    <h4>Subject Selection</h4>
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.English, new { @class = "form-check-input", id = "English" })
-                <label class="form-check-label" for="English">
-                    English
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.Physics, new { @class = "form-check-input", id = "Physics" })
-                <label class="form-check-label" for="Physics">
-                    Physics
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.Chemistry, new { @class = "form-check-input", id = "Chemistry" })
-                <label class="form-check-label" for="Chemistry">
-                    Chemistry
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(m => m.subjectSelectionModel.Mathemcatics, new { @class = "form-check-input", id = "Mathemcatics" })
-                <label class="form-check-label" for="Mathemcatics">Mathematics</label>
-            </div>
-        </div>
-        <div class="col-md-3 border-start" style="border-left: 1px solid #ccc;">
-            <div class="form-check">
-                @Html.CheckBoxFor(m => m.subjectSelectionModel.Biology, new { @class = "form-check-input", id = "Biology" })
-                <label class="form-check-label" for="Biology">Biology</label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(m => m.subjectSelectionModel.CropScience, new { @class = "form-check-input", id = "CropScience" })
-                <label class="form-check-label" for="CropScience">Crop Science</label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(m => m.subjectSelectionModel.Geography, new { @class = "form-check-input", id = "Geography" })
-                <label class="form-check-label" for="Geography">Geography</label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(m => m.subjectSelectionModel.InformaticsPractices, new { @class = "form-check-input", id = "InformaticsPractices" })
-                <label class="form-check-label" for="InformaticsPractices">Informatics Practices(IP)</label>
-            </div>
-        </div>
-        <div class="col-md-3 border-start" style="border-left: 1px solid #ccc;">
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.Marathi, new { @class = "form-check-input", id = "Marathi" })
-                <label class="form-check-label" for="Marathi">
-                    Marathi
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.Hindi, new { @class = "form-check-input", id = "Hindi" })
-                <label class="form-check-label" for="Hindi">
-                    Hindi
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.ComputerScience, new { @class = "form-check-input", id = "ComputerScience" })
-                <label class="form-check-label" for="ComputerScience">
-                    Computer Science(CS)
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.InformationTechnology, new { @class = "form-check-input", id = "InformationTechnology" })
-                <label class="form-check-label" for="InformationTechnology">
-                    Information Technology(IT)
-                </label>
-            </div>
-        </div>
-
-        <div class="col-md-3 border-start">
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.EVS, new { @class = "form-check-input", id = "EVS" })
-                <label class="form-check-label" for="EVS">
-                    Environment Science(ES)
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.subjectSelectionModel.PhysicalEducation, new { @class = "form-check-input", id = "PhysicalEducation" })
-                <label class="form-check-label" for="PhysicalEducation">
-                    Physical Education(PE)
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="divider"></div>
-    <h4>Document Selection</h4>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXMarksheet, new { @class = "form-check-input", id = "ClassXMarksheet" })
-                <label class="form-check-label" for="ClassXMarksheet">
-                    Class X Marksheet
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXIMarksheet, new { @class = "form-check-input", id = "ClassXIMarksheet" })
-                <label class="form-check-label" for="ClassXIMarksheet">
-                    Class XI Marksheet
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.SchoolLC, new { @class = "form-check-input", id = "SchoolLC" })
-                <label class="form-check-label" for="SchoolLC">
-                    School/Jr College Leaving Certificate (LC)
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.CasteCertificate, new { @class = "form-check-input", id = "CasteCertificate" })
-                <label class="form-check-label" for="CasteCertificate">
-                    Caste Certificate
-                </label>
-            </div>
-
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.GapCertificate, new { @class = "form-check-input", id = "GapCertificate" })
-                <label class="form-check-label" for="GapCertificate">
-                    Gap Certificate
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.SnglieGirlChild, new { @class = "form-check-input", id = "SnglieGirlChild" })
-                <label class="form-check-label" for="SnglieGirlChild">
-                    Snglie Girl Child Certificate
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.AadharFather, new { @class = "form-check-input", id = "AadharFather" })
-                <label class="form-check-label" for="AadharFather">
-                    Aadhar (Father)
-                </label>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.ElegibilityCert, new { @class = "form-check-input", id = "ElegibilityCert" })
-                <label class="form-check-label" for="ElegibilityCert">
-                    Elegibility Certificate
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.AadharCard, new { @class = "form-check-input", id = "AadharCard" })
-                <label class="form-check-label" for="AadharCard">
-                    Aadhar Card
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.PassingCert, new { @class = "form-check-input", id = "PassingCert" })
-                <label class="form-check-label" for="PassingCert">
-                    Passing Certificate
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.PassportSizePhoto, new { @class = "form-check-input", id = "PassportSizePhoto" })
-                <label class="form-check-label" for="PassportSizePhoto">
-                    3 Passport Size Photos
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.CopyOfLOC, new { @class = "form-check-input", id = "CopyOfLOC" })
-                <label class="form-check-label" for="SnglieGirlChild">
-                    Copy Of LOC
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.EBCCertificate, new { @class = "form-check-input", id = "EBCCertificate" })
-                <label class="form-check-label" for="EBCCertificate">
-                    EBC Certificate
-                </label>
-            </div>
-            <div class="form-check">
-                @Html.CheckBoxFor(model => model.documentSelectionModel.AadharMother, new { @class = "form-check-input", id = "AadharMother" })
-                <label class="form-check-label" for="AadharMother">
-                    Aadhar (Mother)
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    @*<div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h4>Compulsory Subjects</h4>
-                    <div class="form-check">
-                        @Html.CheckBoxFor(model => model.EVS, new { @class = "form-check-input", id = "EVS", onclick = "return false;" })
-                        <label class="form-check-label" for="EVS">
-                            Environment Science
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.CheckBoxFor(model => model.PhysicalEducation, new { @class = "form-check-input", id = "PhysicalEducation", onclick = "return false;" })
-                        <label class="form-check-label" for="PhysicalEducation">
-                            Physical Education
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.CheckBoxFor(model => model.English, new { @class = "form-check-input", id = "English", onclick = "return false;" })
-                        <label class="form-check-label" for="English">
-                            English
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.CheckBoxFor(model => model.Physics, new { @class = "form-check-input", id = "Physics", onclick = "return false;" })
-                        <label class="form-check-label" for="Physics">
-                            Physics
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.CheckBoxFor(model => model.Chemistry, new { @class = "form-check-input", id = "Chemistry", onclick = "return false;" })
-                        <label class="form-check-label" for="Chemistry">
-                            Chemistry
-                        </label>
-                    </div>
+    <div class="card selection-card mx-auto col-md-10">
+        <div class="selection-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-list-check fa-lg"></i>
                 </div>
-                <div class="col-md-4 border-start" style="border-left: 1px solid #ccc;">
-                    <h4>Select Any one subject from below</h4>
-                    @Html.ValidationMessageFor(m => m.Group1Subject, "", new { @class = "text-danger" })
-                    <div class="form-check">
-                        @Html.RadioButtonFor(model => model.Group1Subject, "Marathi", new { @class = "form-check-input", id = "Marathi" })
-                        <label class="form-check-label" for="Marathi">
-                            Marathi
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.RadioButtonFor(model => model.Group1Subject, "Hindi", new { @class = "form-check-input", id = "Hindi" })
-                        <label class="form-check-label" for="Hindi">
-                            Hindi
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.RadioButtonFor(model => model.Group1Subject, "ComputerScience", new { @class = "form-check-input", id = "ComputerScience" })
-                        <label class="form-check-label" for="ComputerScience">
-                            Computer Science
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        @Html.RadioButtonFor(model => model.Group1Subject, "InformationTechnology", new { @class = "form-check-input", id = "InformationTechnology" })
-                        <label class="form-check-label" for="InformationTechnology">
-                            Information Technology
-                        </label>
-                    </div>
+                <div>
+                    <h4 class="header-title">Subject & Document Selection</h4>
+                    <div class="header-subtitle">Select applicable subjects and supporting admission documents.</div>
                 </div>
-                <div class="col-md-4 border-start" style="border-left: 1px solid #ccc;">
-                    <h4>Select Any two subject from below</h4>
-                    @Html.ValidationMessage("Group2SubjectError", "", new { @class = "text-danger" })
-                    <div class="form-check">
-                        @Html.CheckBoxFor(m => m.CropScience, new { @class = "form-check-input Group2Subject", id = "CropScience" })
-                        <label class="form-check-label" for="CropScience">Crop Science</label>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div class="section-note">
+                <div class="note-title">
+                    <i class="fa fa-info-circle me-1"></i> Selection Notes
+                </div>
+                <div class="small">
+                    Please review the subject and document checklist carefully before proceeding to the next step.
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-label">Subject Selection</div>
+                <div class="subheading-pill">
+                    <i class="fa fa-book"></i> Choose Subjects
+                </div>
+
+                <div class="check-grid">
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.English, new { @class = "form-check-input", id = "English" })
+                            <label class="form-check-label ms-2" for="English">English</label>
+                        </div>
                     </div>
 
-                    <div class="form-check">
-                        @Html.CheckBoxFor(m => m.Mathemcatics, new { @class = "form-check-input Group2Subject", id = "Mathemcatics" })
-                        <label class="form-check-label" for="Mathemcatics">Mathematics</label>
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.Physics, new { @class = "form-check-input", id = "Physics" })
+                            <label class="form-check-label ms-2" for="Physics">Physics</label>
+                        </div>
                     </div>
 
-                    <div class="form-check">
-                        @Html.CheckBoxFor(m => m.Biology, new { @class = "form-check-input Group2Subject", id = "Biology" })
-                        <label class="form-check-label" for="Biology">Biology</label>
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.Chemistry, new { @class = "form-check-input", id = "Chemistry" })
+                            <label class="form-check-label ms-2" for="Chemistry">Chemistry</label>
+                        </div>
                     </div>
 
-                    <div class="form-check">
-                        @Html.CheckBoxFor(m => m.Geography, new { @class = "form-check-input Group2Subject", id = "Geography" })
-                        <label class="form-check-label" for="Geography">Geography</label>
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.subjectSelectionModel.Mathemcatics, new { @class = "form-check-input", id = "Mathemcatics" })
+                            <label class="form-check-label ms-2" for="Mathemcatics">Mathematics</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.subjectSelectionModel.Biology, new { @class = "form-check-input", id = "Biology" })
+                            <label class="form-check-label ms-2" for="Biology">Biology</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.subjectSelectionModel.CropScience, new { @class = "form-check-input", id = "CropScience" })
+                            <label class="form-check-label ms-2" for="CropScience">Crop Science</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.subjectSelectionModel.Geography, new { @class = "form-check-input", id = "Geography" })
+                            <label class="form-check-label ms-2" for="Geography">Geography</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(m => m.subjectSelectionModel.InformaticsPractices, new { @class = "form-check-input", id = "InformaticsPractices" })
+                            <label class="form-check-label ms-2" for="InformaticsPractices">Informatics Practices(IP)</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.Marathi, new { @class = "form-check-input", id = "Marathi" })
+                            <label class="form-check-label ms-2" for="Marathi">Marathi</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.Hindi, new { @class = "form-check-input", id = "Hindi" })
+                            <label class="form-check-label ms-2" for="Hindi">Hindi</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.ComputerScience, new { @class = "form-check-input", id = "ComputerScience" })
+                            <label class="form-check-label ms-2" for="ComputerScience">Computer Science(CS)</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.InformationTechnology, new { @class = "form-check-input", id = "InformationTechnology" })
+                            <label class="form-check-label ms-2" for="InformationTechnology">Information Technology(IT)</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.EVS, new { @class = "form-check-input", id = "EVS" })
+                            <label class="form-check-label ms-2" for="EVS">Environment Science(ES)</label>
+                        </div>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.subjectSelectionModel.PhysicalEducation, new { @class = "form-check-input", id = "PhysicalEducation" })
+                            <label class="form-check-label ms-2" for="PhysicalEducation">Physical Education(PE)</label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>*@
-    <div class="divider"></div>
-    <div class="clearfix">
-        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
-        @*<button type="button" onclick="loadStep(7)" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>*@
-        <button type="button" onclick="loadStep(5)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+
+            <div class="divider"></div>
+
+            <div class="section-card">
+                <div class="section-label">Document Selection</div>
+                <div class="subheading-pill">
+                    <i class="fa fa-folder-open"></i> Required Documents
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="check-grid">
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXMarksheet, new { @class = "form-check-input", id = "ClassXMarksheet" })
+                                    <label class="form-check-label ms-2" for="ClassXMarksheet">Class X Marksheet</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.ClassXIMarksheet, new { @class = "form-check-input", id = "ClassXIMarksheet" })
+                                    <label class="form-check-label ms-2" for="ClassXIMarksheet">Class XI Marksheet</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.SchoolLC, new { @class = "form-check-input", id = "SchoolLC" })
+                                    <label class="form-check-label ms-2" for="SchoolLC">School/Jr College Leaving Certificate (LC)</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.CasteCertificate, new { @class = "form-check-input", id = "CasteCertificate" })
+                                    <label class="form-check-label ms-2" for="CasteCertificate">Caste Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.GapCertificate, new { @class = "form-check-input", id = "GapCertificate" })
+                                    <label class="form-check-label ms-2" for="GapCertificate">Gap Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.SnglieGirlChild, new { @class = "form-check-input", id = "SnglieGirlChild" })
+                                    <label class="form-check-label ms-2" for="SnglieGirlChild">Single Girl Child Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.AadharFather, new { @class = "form-check-input", id = "AadharFather" })
+                                    <label class="form-check-label ms-2" for="AadharFather">Aadhar (Father)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="check-grid">
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.ElegibilityCert, new { @class = "form-check-input", id = "ElegibilityCert" })
+                                    <label class="form-check-label ms-2" for="ElegibilityCert">Eligibility Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.AadharCard, new { @class = "form-check-input", id = "AadharCard" })
+                                    <label class="form-check-label ms-2" for="AadharCard">Aadhar Card</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.PassingCert, new { @class = "form-check-input", id = "PassingCert" })
+                                    <label class="form-check-label ms-2" for="PassingCert">Passing Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.PassportSizePhoto, new { @class = "form-check-input", id = "PassportSizePhoto" })
+                                    <label class="form-check-label ms-2" for="PassportSizePhoto">3 Passport Size Photos</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.CopyOfLOC, new { @class = "form-check-input", id = "CopyOfLOC" })
+                                    <label class="form-check-label ms-2" for="CopyOfLOC">Copy Of LOC</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.EBCCertificate, new { @class = "form-check-input", id = "EBCCertificate" })
+                                    <label class="form-check-label ms-2" for="EBCCertificate">EBC Certificate</label>
+                                </div>
+                            </div>
+
+                            <div class="check-item">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(model => model.documentSelectionModel.AadharMother, new { @class = "form-check-input", id = "AadharMother" })
+                                    <label class="form-check-label ms-2" for="AadharMother">Aadhar (Mother)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="action-bar">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="help-text mb-0">
+                        Review the selected subjects and documents before submitting.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" onclick="loadStep(5)" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fa fa-arrow-left me-2"></i> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-arrow-right me-2"></i> Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
+@*<div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h4>Compulsory Subjects</h4>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.EVS, new { @class = "form-check-input", id = "EVS", onclick = "return false;" })
+                    <label class="form-check-label" for="EVS">
+                        Environment Science
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.PhysicalEducation, new { @class = "form-check-input", id = "PhysicalEducation", onclick = "return false;" })
+                    <label class="form-check-label" for="PhysicalEducation">
+                        Physical Education
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.English, new { @class = "form-check-input", id = "English", onclick = "return false;" })
+                    <label class="form-check-label" for="English">
+                        English
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.Physics, new { @class = "form-check-input", id = "Physics", onclick = "return false;" })
+                    <label class="form-check-label" for="Physics">
+                        Physics
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.CheckBoxFor(model => model.Chemistry, new { @class = "form-check-input", id = "Chemistry", onclick = "return false;" })
+                    <label class="form-check-label" for="Chemistry">
+                        Chemistry
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4 border-start" style="border-left: 1px solid #ccc;">
+                <h4>Select Any one subject from below</h4>
+                @Html.ValidationMessageFor(m => m.Group1Subject, "", new { @class = "text-danger" })
+                <div class="form-check">
+                    @Html.RadioButtonFor(model => model.Group1Subject, "Marathi", new { @class = "form-check-input", id = "Marathi" })
+                    <label class="form-check-label" for="Marathi">
+                        Marathi
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(model => model.Group1Subject, "Hindi", new { @class = "form-check-input", id = "Hindi" })
+                    <label class="form-check-label" for="Hindi">
+                        Hindi
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(model => model.Group1Subject, "ComputerScience", new { @class = "form-check-input", id = "ComputerScience" })
+                    <label class="form-check-label" for="ComputerScience">
+                        Computer Science
+                    </label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(model => model.Group1Subject, "InformationTechnology", new { @class = "form-check-input", id = "InformationTechnology" })
+                    <label class="form-check-label" for="InformationTechnology">
+                        Information Technology
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4 border-start" style="border-left: 1px solid #ccc;">
+                <h4>Select Any two subject from below</h4>
+                @Html.ValidationMessage("Group2SubjectError", "", new { @class = "text-danger" })
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.CropScience, new { @class = "form-check-input Group2Subject", id = "CropScience" })
+                    <label class="form-check-label" for="CropScience">Crop Science</label>
+                </div>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.Mathemcatics, new { @class = "form-check-input Group2Subject", id = "Mathemcatics" })
+                    <label class="form-check-label" for="Mathemcatics">Mathematics</label>
+                </div>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.Biology, new { @class = "form-check-input Group2Subject", id = "Biology" })
+                    <label class="form-check-label" for="Biology">Biology</label>
+                </div>
+
+                <div class="form-check">
+                    @Html.CheckBoxFor(m => m.Geography, new { @class = "form-check-input Group2Subject", id = "Geography" })
+                    <label class="form-check-label" for="Geography">Geography</label>
+                </div>
+            </div>
+        </div>
+    </div>*@
 <script type="text/javascript">
     function ajaxSuccessSubjectSelection(data) {
         if (data.result == true) {
@@ -292,22 +554,22 @@
         }
     };
 
-                    //$(function () {
-                    //    const checkboxes = $('.Group2Subject');
+    //$(function () {
+    //    const checkboxes = $('.Group2Subject');
 
-                    //    function updateCheckboxStates() {
-                    //        debugger
-                    //        const checkedCount = checkboxes.filter(':checked').length;
+    //    function updateCheckboxStates() {
+    //        debugger
+    //        const checkedCount = checkboxes.filter(':checked').length;
 
-                    //        checkboxes.each(function () {
-                    //            if (!this.checked) {
-                    //                this.disabled = checkedCount >= 2;
-                    //            }
-                    //        });
-                    //    }
+    //        checkboxes.each(function () {
+    //            if (!this.checked) {
+    //                this.disabled = checkedCount >= 2;
+    //            }
+    //        });
+    //    }
 
-                    //    checkboxes.on('change', updateCheckboxStates);
+    //    checkboxes.on('change', updateCheckboxStates);
 
-                    //    updateCheckboxStates(); // Run on load
-                    //});
+    //    updateCheckboxStates(); // Run on load
+    //});
 </script>

@@ -31,5 +31,8 @@ namespace JaiHindEdutech.Entity
         public string Stream { get; set; }
         public Nullable<int> CoachingCentreId { get; set; }
         public string Remark { get; set; }
+        public Nullable<decimal> TotalFees { get; set; }
+        public Nullable<decimal> Scholarship { get; set; }
+        public Nullable<decimal> FeesPayable { get; set; }
     }
 }

@@ -1,114 +1,379 @@
 ﻿@model JaiHindEdutech.Entity.FeeReceipt
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Fee Receipt Details";
 }
 
-<h2>Details</h2>
+<style>
+    .details-shell {
+        padding: 1.25rem .5rem;
+    }
 
-<div>
-    <h4>FeeReceipt</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.AdmissionFee)
-        </dt>
+    .details-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        background: #fff;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.AdmissionFee)
-        </dd>
+    .details-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid #e5eaf1;
+        padding: 1rem 1.25rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.C1StInstallment)
-        </dt>
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.C1StInstallment)
-        </dd>
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.C2ndInstallment)
-        </dt>
+    .header-subtitle {
+        color: #64748b;
+        font-size: .95rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.C2ndInstallment)
-        </dd>
+    .section-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        height: 100%;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.C3rdInstallment)
-        </dt>
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+        margin-bottom: .85rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.C3rdInstallment)
-        </dd>
+    .summary-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        height: 100%;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.C4thInstallment)
-        </dt>
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        padding: .6rem .75rem;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        margin-bottom: .6rem;
+        color: #334155;
+        font-weight: 600;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.C4thInstallment)
-        </dd>
+    .summary-item i {
+        width: 18px;
+        text-align: center;
+        color: #1f4e79;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BalanceAmount)
-        </dt>
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.BalanceAmount)
-        </dd>
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: .8rem;
+        padding: .8rem .9rem;
+        border: 1px solid #e5eaf1;
+        border-radius: 12px;
+        background: #fff;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalAmount)
-        </dt>
+    .detail-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(31, 78, 121, 0.10);
+        color: #1f4e79;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 34px;
+        margin-top: 1px;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.TotalAmount)
-        </dd>
+    .detail-label {
+        font-size: .78rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: .15rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
+    .detail-value {
+        font-size: .98rem;
+        font-weight: 600;
+        color: #0f172a;
+        word-break: break-word;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .45rem .75rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: .9rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedIn)
-        </dt>
+    .status-active {
+        background: #ecfdf5;
+        color: #166534;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedIn)
-        </dd>
+    .status-deleted {
+        background: #fef2f2;
+        color: #991b1b;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedBy)
-        </dt>
+    .actions-card {
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedBy)
-        </dd>
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedOn)
-        </dt>
+    .btn-primary {
+        background: linear-gradient(135deg, #1f4e79 0%, #163b5c 100%);
+        border-color: #1f4e79;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedOn)
-        </dd>
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #163b5c 0%, #0f2d46 100%);
+        border-color: #163b5c;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
+    .btn-light {
+        background: #eef2f7;
+        border-color: #e2e8f0;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
+    .section-divider {
+        height: 1px;
+        background: #e5eaf1;
+        margin: 1.25rem 0;
+    }
 
-    </dl>
+    @@media (max-width: 768px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container-fluid details-shell">
+    <div class="card details-card">
+        <div class="details-card-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                        <i class="fa fa-receipt fa-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="header-title">Fee Receipt Details</h4>
+                        <div class="header-subtitle">View fee structure, audit details, and receipt status.</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    @Html.ActionLink("Edit", "Edit", new { FeeReceiptId = Model.FeeReceiptId }, new { @class = "btn btn-primary px-4" })
+                    @Html.ActionLink("Back to List", "GetAllStudents", "Admission", null, new { @class = "btn btn-light px-4" })
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <div class="summary-box">
+                        <div class="section-label">Receipt Summary</div>
+
+                        <div class="summary-item">
+                            <i class="fa fa-money-bill-wave"></i>
+                            <span>Total Amount: @Html.DisplayFor(model => model.TotalAmount)</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fa fa-wallet"></i>
+                            <span>Balance Amount: @Html.DisplayFor(model => model.BalanceAmount)</span>
+                        </div>
+                        <div class="summary-item mb-0">
+                            <i class="fa fa-file-invoice"></i>
+                            <span>Admission Fee: @Html.DisplayFor(model => model.AdmissionFee)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="section-card">
+                        <div class="section-label">Installment Overview</div>
+                        <div class="detail-grid">
+                            <div class="detail-row">
+                                <div class="detail-icon"><i class="fa fa-1"></i></div>
+                                <div>
+                                    <div class="detail-label">@Html.DisplayNameFor(model => model.C1StInstallment)</div>
+                                    <div class="detail-value">@Html.DisplayFor(model => model.C1StInstallment)</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-icon"><i class="fa fa-2"></i></div>
+                                <div>
+                                    <div class="detail-label">@Html.DisplayNameFor(model => model.C2ndInstallment)</div>
+                                    <div class="detail-value">@Html.DisplayFor(model => model.C2ndInstallment)</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-icon"><i class="fa fa-3"></i></div>
+                                <div>
+                                    <div class="detail-label">@Html.DisplayNameFor(model => model.C3rdInstallment)</div>
+                                    <div class="detail-value">@Html.DisplayFor(model => model.C3rdInstallment)</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-icon"><i class="fa fa-4"></i></div>
+                                <div>
+                                    <div class="detail-label">@Html.DisplayNameFor(model => model.C4thInstallment)</div>
+                                    <div class="detail-value">@Html.DisplayFor(model => model.C4thInstallment)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card mb-4">
+                <div class="section-label">Fee Details</div>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.AdmissionFee)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.AdmissionFee)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-coins"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.TotalAmount)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.TotalAmount)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-hand-holding-usd"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.BalanceAmount)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.BalanceAmount)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-ban"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.IsDeleted)</div>
+                            <div class="detail-value">
+                                @if (Model.IsDeleted == true)
+                                {
+                                    <span class="status-badge status-deleted">
+                                        <i class="fa fa-trash"></i> Deleted
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-active">
+                                        <i class="fa fa-check-circle"></i> Active
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card mb-4">
+                <div class="section-label">Audit Information</div>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-user"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.CreatedBy)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.CreatedBy)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-calendar-plus"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.CreatedIn)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.CreatedIn)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-user-edit"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.ModifiedBy)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.ModifiedBy)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fa fa-calendar-check"></i></div>
+                        <div>
+                            <div class="detail-label">@Html.DisplayNameFor(model => model.ModifiedOn)</div>
+                            <div class="detail-value">@Html.DisplayFor(model => model.ModifiedOn)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="text-muted">
+                    Review the receipt information before making changes.
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    @Html.ActionLink("Edit", "Edit", new { FeeReceiptId = Model.FeeReceiptId }, new { @class = "btn btn-primary px-4" })
+                    @Html.ActionLink("Back to List", "GetAllStudents", "Admission", null, new { @class = "btn btn-light px-4" })
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { FeeReceiptId = Model.FeeReceiptId }) |
-    @Html.ActionLink("Back to List", "GetAllStudents", "Admission")
-</p>

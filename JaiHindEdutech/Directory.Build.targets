@@ -1,0 +1,10 @@
+<Project>
+  <ItemGroup>
+    <Reference Update="PdfSharp">
+      <HintPath>$(MSBuildThisFileDirectory)..\packages\PDFsharp.1.32.3057\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Update="PdfSharp.Charting">
+      <HintPath>$(MSBuildThisFileDirectory)..\packages\PDFsharp.1.32.3057\lib\net20\PdfSharp.Charting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

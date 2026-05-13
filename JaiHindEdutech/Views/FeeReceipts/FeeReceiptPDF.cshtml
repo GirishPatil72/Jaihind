@@ -1,8 +1,11 @@
 ﻿@model JaiHindEdutech.Models.FeeReceiptModel
 @{
     Layout = null;
+    var receipt = Model.FeeReceipts != null && Model.FeeReceipts.Any() ? Model.FeeReceipts.FirstOrDefault() : null;
+    var formattedDate = receipt != null && receipt.ModifiedOn.HasValue
+        ? receipt.ModifiedOn.Value.ToString("dd/MM/yyyy")
+        : "";
 }
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,13 +14,44 @@
     <style>
         @@page {
             size: A4;
-            margin: 20mm;
+            margin: 12mm;
+        }
+
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+
+            a[href]::after {
+                content: "" !important;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .receipt-container,
+            table,
+            tr,
+            td,
+            th {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
         }
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .no-print {
+            text-align: right;
+            margin: 10px 0 15px 0;
         }
 
         .receipt-container {
@@ -26,15 +60,6 @@
             width: 100%;
             box-sizing: border-box;
         }
-
-        .header h2 {
-            margin: 0;
-        }
-
-        .header h4 {
-            margin: 5px 0;
-        }
-
 
         table {
             width: 100%;
@@ -49,6 +74,7 @@
         th, td {
             padding: 8px;
             text-align: center;
+            vertical-align: top;
         }
 
         .footer-table th, .footer-table td {
@@ -59,24 +85,14 @@
             margin-top: 20px;
             font-style: italic;
         }
-
-        .signatures {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap; /* allow wrapping */
-            gap: 40px; /* space between signatures */
-            margin-top: 40px;
-        }
-
-        .signature-block {
-            flex: 1 1 45%; /* each takes up to ~45% of container */
-            text-align: left;
-        }
     </style>
 </head>
 <body>
-    <div class="receipt-container">
+    <div class="no-print">
+        <button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
+    </div>
 
+    <div class="receipt-container">
         <table style="width: 100%; border: none;">
             <tr>
                 <td style="width: 100px; vertical-align: middle; border: none;">
@@ -106,14 +122,8 @@
                     Received from <strong>@Model.FullName</strong><br />
                     Std. @Model.ClassName @Model.Stream
                 </td>
-                @{
-                    var receipt = Model.FeeReceipts != null && Model.FeeReceipts.Any() ? Model.FeeReceipts.FirstOrDefault() : null;
-                    var formattedDate = receipt != null && receipt.ModifiedOn.HasValue
-                                        ? receipt.ModifiedOn.Value.ToString("dd/MM/yyyy")
-                                        : "";
-                }
                 <td style="text-align: right; width: 50%; border: none;">
-                    Receipt No. @Model.FeeReceipts.FirstOrDefault().FeeReceiptId<br />
+                    Receipt No. @(receipt != null ? receipt.FeeReceiptId.ToString() : "")<br />
                     Date: @formattedDate
                 </td>
             </tr>
@@ -125,12 +135,12 @@
                 <th>DESCRIPTION</th>
                 <th>Amount</th>
             </tr>
-            <tr><td>1.</td><td>Admission Fee</td><td>@Model.FeeReceipts.FirstOrDefault().AdmissionFee</td></tr>
-            <tr><td>2.</td><td>1<sup>st</sup> Installment</td><td>@Model.FeeReceipts.FirstOrDefault().C1StInstallment</td></tr>
-            <tr><td>3.</td><td>2<sup>nd</sup> Installment</td><td>@Model.FeeReceipts.FirstOrDefault().C2ndInstallment</td></tr>
-            <tr><td>4.</td><td>3<sup>rd</sup> Installment</td><td>@Model.FeeReceipts.FirstOrDefault().C3rdInstallment</td></tr>
-            <tr><td>5.</td><td>Exam Fee</td><td>@Model.FeeReceipts.FirstOrDefault().ExamFee</td></tr>
-            <tr><td>6.</td><td>Miscellaneous</td><td>@Model.FeeReceipts.FirstOrDefault().Misclellaneous</td></tr>
+            <tr><td>1.</td><td>Admission Fee</td><td>@(receipt != null ? receipt.AdmissionFee : null)</td></tr>
+            <tr><td>2.</td><td>1<sup>st</sup> Installment</td><td>@(receipt != null ? receipt.C1StInstallment : null)</td></tr>
+            <tr><td>3.</td><td>2<sup>nd</sup> Installment</td><td>@(receipt != null ? receipt.C2ndInstallment : null)</td></tr>
+            <tr><td>4.</td><td>3<sup>rd</sup> Installment</td><td>@(receipt != null ? receipt.C3rdInstallment : null)</td></tr>
+            <tr><td>5.</td><td>Exam Fee</td><td>@(receipt != null ? receipt.ExamFee : null)</td></tr>
+            <tr><td>6.</td><td>Miscellaneous</td><td>@(receipt != null ? receipt.Misclellaneous : null)</td></tr>
         </table>
 
         <table class="footer-table">
@@ -142,11 +152,11 @@
                 <th>Balance Fee</th>
             </tr>
             <tr>
-                <td>@Model.FeeReceipts.FirstOrDefault().TotalAmount</td>
-                <td>@Model.FeeReceipts.FirstOrDefault().C1StInstallment</td>
-                <td>@Model.FeeReceipts.FirstOrDefault().C2ndInstallment</td>
-                <td>@Model.FeeReceipts.FirstOrDefault().C3rdInstallment</td>
-                <td>@Model.FeeReceipts.FirstOrDefault().BalanceAmount</td>
+                <td>@(receipt != null ? receipt.TotalAmount : null)</td>
+                <td>@(receipt != null ? receipt.C1StInstallment : null)</td>
+                <td>@(receipt != null ? receipt.C2ndInstallment : null)</td>
+                <td>@(receipt != null ? receipt.C3rdInstallment : null)</td>
+                <td>@(receipt != null ? receipt.BalanceAmount : null)</td>
             </tr>
         </table>
 

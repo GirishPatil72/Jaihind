@@ -1,4 +1,7 @@
-﻿using System;
+﻿using JaiHindEdutech.Entity;
+using JaiHindEdutech.Infrastructure;
+using JaiHindEdutech.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,22 +9,26 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using JaiHindEdutech.Entity;
-using JaiHindEdutech.Models;
 
 namespace JaiHindEdutech.Controllers
 {
-    public class CoachingCentresController : Controller
+    public class CoachingCentresController : BaseController
     {
         private JaiHindEduEntitiesNew db = new JaiHindEduEntitiesNew();
 
+        private string CurrentUserName
+        {
+            get { return User != null && User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty; }
+        }
         // GET: CoachingCentres
+        [PermissionAuthorize(Right = "View")]
         public ActionResult Index()
         {
             return View(db.CoachingCentres.ToList());
         }
 
         // GET: CoachingCentres/Details/5
+        [PermissionAuthorize(Right = "View")]
         public ActionResult Details(int id)
         {
             if (id == null)
@@ -33,6 +40,7 @@ namespace JaiHindEdutech.Controllers
         }
 
         // GET: CoachingCentres/Create
+        [PermissionAuthorize(Right = "Create")]
         public ActionResult Create()
         {
             return View();
@@ -48,9 +56,9 @@ namespace JaiHindEdutech.Controllers
             AdminModel adminModel = new AdminModel();
             if (ModelState.IsValid)
             {
-                coachingCentre.CreatedBy = Session["UserName"].ToString();
+                coachingCentre.CreatedBy = CurrentUserName;
                 coachingCentre.CreatedOn = DateTime.Now;
-                coachingCentre.ModifiedBy = Session["UserName"].ToString();
+                coachingCentre.ModifiedBy = CurrentUserName;
                 coachingCentre.ModifiedOn = DateTime.Now;
 
                 adminModel.CreateCoachingCentre(coachingCentre);
@@ -61,6 +69,8 @@ namespace JaiHindEdutech.Controllers
         }
 
         // GET: CoachingCentres/Edit/5
+
+        [PermissionAuthorize(Right = "Edit")]
         public ActionResult Edit(int id)
         {
             if (id == null)
@@ -68,7 +78,7 @@ namespace JaiHindEdutech.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             AdminModel adminModel = new AdminModel();
-            var coachingCentre =adminModel.GetCoachingCentreInfo(id);
+            var coachingCentre = adminModel.GetCoachingCentreInfo(id);
             if (coachingCentre == null)
             {
                 return HttpNotFound();
@@ -85,7 +95,7 @@ namespace JaiHindEdutech.Controllers
         {
             if (ModelState.IsValid)
             {
-                coachingCentre.ModifiedBy = Session["UserName"].ToString();
+                coachingCentre.ModifiedBy = CurrentUserName;
                 coachingCentre.ModifiedOn = DateTime.Now;
                 AdminModel adminModel = new AdminModel();
                 adminModel.CreateCoachingCentre(coachingCentre);
@@ -95,6 +105,7 @@ namespace JaiHindEdutech.Controllers
         }
 
         // GET: CoachingCentres/Delete/5
+        [PermissionAuthorize(Right = "Edit")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

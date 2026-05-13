@@ -1,129 +1,380 @@
 ﻿@model JaiHindEdutech.Entity.FeeReceipt
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Fee Receipt";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
 }
 
-<h2>Edit</h2>
+<style>
+    .page-shell {
+        padding: 1.25rem .5rem;
+    }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>FeeReceipt</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.FeeReceiptId)
+    .receipt-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        background: #fff;
+    }
 
-        @Html.HiddenFor(model => model.AdmissionFormId)
+    .receipt-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid #e5eaf1;
+        padding: 1rem 1.25rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.AdmissionFee, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AdmissionFee, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AdmissionFee, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.C1StInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.C1StInstallment, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.C1StInstallment, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.C2ndInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.C2ndInstallment, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.C2ndInstallment, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .header-subtitle {
+        color: #64748b;
+        font-size: .95rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.C3rdInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.C3rdInstallment, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.C3rdInstallment, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .section-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        height: 100%;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.C4thInstallment, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.C4thInstallment, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.C4thInstallment, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+        margin-bottom: .85rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BalanceAmount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BalanceAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BalanceAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-label {
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: .35rem;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TotalAmount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control {
+        border-radius: 12px;
+        border-color: #dbe3ee;
+        min-height: 46px;
+        box-shadow: none !important;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control:focus {
+        border-color: #02adee;
+        box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedIn, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedIn, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedIn, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .form-control[readonly] {
+        background-color: #f8fafc;
+        opacity: 1;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ModifiedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ModifiedBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ModifiedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .summary-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        height: 100%;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ModifiedOn, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ModifiedOn, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ModifiedOn, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    .summary-item {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        padding: .6rem .75rem;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        margin-bottom: .6rem;
+        font-weight: 600;
+        color: #334155;
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsDeleted, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsDeleted)
-                    @Html.ValidationMessageFor(model => model.IsDeleted, "", new { @class = "text-danger" })
+    .summary-item i {
+        width: 18px;
+        text-align: center;
+        color: #1f4e79;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        color: #334155;
+    }
+
+    .info-box .info-title {
+        font-weight: 700;
+        color: #1f4e79;
+        margin-bottom: .35rem;
+    }
+
+    .field-hint {
+        font-size: .82rem;
+        color: #64748b;
+        margin-top: .35rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-light {
+        background: #eef2f7;
+        border-color: #e2e8f0;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1f4e79 0%, #163b5c 100%);
+        border-color: #1f4e79;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #163b5c 0%, #0f2d46 100%);
+        border-color: #163b5c;
+    }
+
+    .section-divider {
+        height: 1px;
+        background: #e5eaf1;
+        margin: 1.25rem 0;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .42rem .72rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: .9rem;
+    }
+
+    .status-active {
+        background: #ecfdf5;
+        color: #166534;
+    }
+
+    .status-deleted {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+</style>
+
+<div class="container-fluid page-shell">
+    <div class="card receipt-card">
+        <div class="receipt-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-edit fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="header-title">Edit Fee Receipt</h4>
+                    <div class="header-subtitle">Update fee receipt values, installments, and audit details.</div>
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+        <div class="card-body p-4 p-lg-5">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(model => model.FeeReceiptId)
+                @Html.HiddenFor(model => model.AdmissionFormId)
+
+                @Html.HiddenFor(model => model.CreatedBy)
+                @Html.HiddenFor(model => model.CreatedOn)
+                @Html.HiddenFor(model => model.ModifiedBy)
+                @Html.HiddenFor(model => model.ModifiedOn)
+                @Html.HiddenFor(model => model.IsDeleted)
+
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger border-0 rounded-3" })
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-4">
+                        <div class="summary-box">
+                            <div class="section-label">Receipt Summary</div>
+
+                            <div class="summary-item">
+                                <i class="fa fa-hashtag"></i>
+                                <span>Admission Form ID: @Model.AdmissionFormId</span>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fa fa-receipt"></i>
+                                <span>Receipt ID: @Model.FeeReceiptId</span>
+                            </div>
+                            <div class="summary-item mb-0">
+                                <i class="fa fa-info-circle"></i>
+                                <span>Status:
+                                    @if (Model.IsDeleted == true)
+                                    {
+                                        <span class="status-pill status-deleted ms-1">
+                                            <i class="fa fa-trash"></i> Deleted
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-pill status-active ms-1">
+                                            <i class="fa fa-check-circle"></i> Active
+                                        </span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="info-box h-100">
+                            <div class="info-title">
+                                <i class="fa fa-info-circle me-1"></i> Edit Notes
+                            </div>
+                            <div class="small">
+                                Adjust fee values as needed. Total amount and balance fields are calculated or maintained according to the receipt structure.
+                                Keep audit values unchanged unless your process requires updates.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card mb-4">
+                    <div class="section-label">Fee Details</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.AdmissionFee, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.AdmissionFee, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Admission fee" })
+                            @Html.ValidationMessageFor(model => model.AdmissionFee, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.ExamFee, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.ExamFee, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Exam fee" })
+                            @Html.ValidationMessageFor(model => model.ExamFee, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Misclellaneous, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.Misclellaneous, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Miscellaneous" })
+                            @Html.ValidationMessageFor(model => model.Misclellaneous, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.TotalAmount, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.TotalAmount, new { @class = "form-control bg-light", type = "number", step = "0.01", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger small" })
+                            <div class="field-hint">Calculated total amount.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card mb-4">
+                    <div class="section-label">Installments</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.C1StInstallment, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.C1StInstallment, new { @class = "form-control", type = "number", step = "0.01", placeholder = "1st installment" })
+                            @Html.ValidationMessageFor(model => model.C1StInstallment, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.C2ndInstallment, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.C2ndInstallment, new { @class = "form-control bg-light", type = "number", step = "0.01", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.C2ndInstallment, "", new { @class = "text-danger small" })
+                            <div class="field-hint">Auto-calculated.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.C3rdInstallment, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.C3rdInstallment, new { @class = "form-control bg-light", type = "number", step = "0.01", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.C3rdInstallment, "", new { @class = "text-danger small" })
+                            <div class="field-hint">Auto-calculated.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.C4thInstallment, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.C4thInstallment, new { @class = "form-control", type = "number", step = "0.01", placeholder = "4th installment" })
+                            @Html.ValidationMessageFor(model => model.C4thInstallment, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.BalanceAmount, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.BalanceAmount, new { @class = "form-control bg-light", type = "number", step = "0.01", @readonly = true })
+                            @Html.ValidationMessageFor(model => model.BalanceAmount, "", new { @class = "text-danger small" })
+                            <div class="field-hint">Remaining balance.</div>
+                        </div>
+
+                        @*<div class="col-md-4">
+                            @Html.LabelFor(model => model.IsDeleted, new { @class = "form-label fw-semibold d-block" })
+                            <div class="form-check form-switch mt-2">
+                                @Html.CheckBoxFor(model => model.IsDeleted, new { @class = "form-check-input", id = "IsDeleted" })
+                                <label class="form-check-label fw-semibold" for="IsDeleted">Marked as deleted</label>
+                            </div>
+                            <div class="form-hint mt-2">Use only when the receipt should be hidden from normal lists.</div>
+                        </div>*@
+                    </div>
+                </div>
+
+                <div class="section-card mb-4">
+                    <div class="section-label">Audit Information</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.CreatedBy, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control bg-light", @readonly = true })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.CreatedOn, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.CreatedOn, new { @class = "form-control bg-light", @readonly = true })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.ModifiedBy, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.ModifiedBy, new { @class = "form-control bg-light", @readonly = true })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.ModifiedOn, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.ModifiedOn, new { @class = "form-control bg-light", @readonly = true })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="field-hint mb-0">
+                        Review the changes before saving.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        @Html.ActionLink("Back to List", "Index", "FeeReceipts", null, new { @class = "btn btn-light btn-lg px-4" })
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-save me-2"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>

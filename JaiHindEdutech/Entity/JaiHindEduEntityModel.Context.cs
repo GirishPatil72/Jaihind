@@ -48,6 +48,8 @@ namespace JaiHindEdutech.Entity
         public virtual DbSet<StudentPreviousAcademicInfo> StudentPreviousAcademicInfoes { get; set; }
         public virtual DbSet<SubjectsChoosen> SubjectsChoosens { get; set; }
         public virtual DbSet<FeeReceipt> FeeReceipts { get; set; }
+        public virtual DbSet<UserPermission> UserPermissions { get; set; }
+        public virtual DbSet<UserActivityLog> UserActivityLogs { get; set; }
     
         public virtual ObjectResult<GetAllApplicantStudentsByStudentId_Result> GetAllApplicantStudentsByStudentId(Nullable<int> studentInfoId, string academicYear)
         {

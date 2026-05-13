@@ -9,87 +9,99 @@ using System.Web.Security;
 
 namespace JaiHindEdutech.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        // GET: Account
-        public ActionResult Index()
-        {
-            return View();
-        }
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Login()
         {
-            if (Session["UserExist"] == null)
-                return View();
-            else if (Session["UserExist"] != null)
+            if (Request.IsAuthenticated)
+            {
                 return RedirectToAction("Index", "Home");
-            else
-                return RedirectToAction("Index", "Home");
+            }
+
+            return View();
         }
+
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(AuthLogin authLogin)
         {
-            bool Success = false;
-            if (ModelState.IsValid)
-            {
-                string hashpassword = Utility.GetPasswordHash(authLogin.Password);
-                using (JaiHindEduEntitiesNew db = new JaiHindEduEntitiesNew())
-                {
-                    var user = db.AspNetUsers.Where(x => x.UserName == authLogin.Username && x.IsActive == true).SingleOrDefault();
-                    if (user != null)
-                    {
-                        Success = Utility.VerifyPassword(user.PasswordHash, authLogin.Password);
-                        if (Success)
-                        {
-                            List<string> userRoles = (from ar in db.AspNetUserRoles
-                                                      join r in db.AspNetRoles on ar.RoleId equals r.RoleId
-                                                      where ar.UserId == user.UserId
-                                                      select r.Name).ToList();
-
-                            Session["LoginUser"] = user.UserName;
-                            AppUser.SetUserInSession(
-                                new AppUser
-                                {
-                                    Roles = userRoles,
-                                    LoginRole = userRoles.FirstOrDefault(),
-                                    IDMUserID = user.UserId,
-                                    UserName = user.UserName,
-                                    Email = user.Email,
-                                    FullName = user.FirstName + " " + user.LastName,
-                                    FirstName = user.FirstName,
-                                    LastName = user.LastName
-                                }
-                            );
-                            FormsAuthentication.SetAuthCookie(user.UserName, false);
-                            return RedirectToAction("Index", "Home");
-                        }
-                        else
-                        {
-                            ViewBag.InvalidUser = "Invalid Password.";
-                            return View();
-                        }
-                    }
-                    else
-                    {
-                        ViewBag.InvalidUser = "Invalid UserName.";
-                        return View();
-                    }
-                }
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 ViewBag.InvalidUser = "Invalid UserName and Password.";
                 return View();
             }
+
+            using (JaiHindEduEntitiesNew db = new JaiHindEduEntitiesNew())
+            {
+                var user = db.AspNetUsers.SingleOrDefault(x => x.UserName == authLogin.Username && x.IsActive == true);
+
+                if (user == null)
+                {
+                    ViewBag.InvalidUser = "Invalid UserName.";
+                    return View();
+                }
+
+                bool success = Utility.VerifyPassword(user.PasswordHash, authLogin.Password);
+                if (!success)
+                {
+                    ViewBag.InvalidUser = "Invalid Password.";
+                    return View();
+                }
+
+                List<string> userRoles = (from ar in db.AspNetUserRoles
+                                          join r in db.AspNetRoles on ar.RoleId equals r.RoleId
+                                          where ar.UserId == user.UserId
+                                          select r.Name).Distinct().ToList();
+
+                string fullName = string.Join(" ", new[] { user.FirstName, user.LastName }
+                    .Where(x => !string.IsNullOrWhiteSpace(x)))
+                    .Trim();
+
+                SetAuthCookie(user.UserName, fullName, userRoles, false);
+
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult Logout()
         {
-            Session["UserExist"] = null;
-            Session["LoginUser"] = null;
             FormsAuthentication.SignOut();
             return RedirectToAction("Login", "Account");
+        }
+
+        private void SetAuthCookie(string userName, string fullName, IEnumerable<string> roles, bool isPersistent)
+        {
+            string roleData = string.Join(",", roles ?? Enumerable.Empty<string>());
+            string userData = string.Format("{0}|{1}", fullName ?? string.Empty, roleData);
+
+            var ticket = new FormsAuthenticationTicket(
+                1,
+                userName,
+                DateTime.Now,
+                DateTime.Now.AddMinutes(30),
+                isPersistent,
+                userData
+            );
+
+            string encryptedTicket = FormsAuthentication.Encrypt(ticket);
+
+            var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket)
+            {
+                HttpOnly = true,
+                Path = FormsAuthentication.FormsCookiePath
+            };
+
+            if (isPersistent)
+            {
+                cookie.Expires = ticket.Expiration;
+            }
+
+            Response.Cookies.Add(cookie);
         }
     }
 }

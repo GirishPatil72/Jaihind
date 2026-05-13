@@ -1,66 +1,287 @@
 ﻿@model IEnumerable<JaiHindEdutech.Models.ApplicantStudentDto>
+@using System.Linq
 @{
     ViewBag.Title = "GetAllStudents";
+    var totalStudents = Model != null ? Model.Count() : 0;
 }
-<!-- DataTables CSS -->
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-
-<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+<style>
+    .page-shell {
+        padding: 16px 5px;
+    }
 
-<div class="container jumbotron bg-amy-crisp">
-    <div class="row">
-        <div class="col-md-2"><h5>Export Data</h5></div>
-        <div class="col-md-3">
-            @Html.DropDownList("CollegeInfoId", ViewBag.College as SelectList, "Select a College", new { @class = "form-control" })
+    .panel-card {
+        background: #fff;
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .panel-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid #e5eaf1;
+        padding: 16px;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .icon-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 42px;
+    }
+
+    .section-title {
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 0;
+    }
+
+    .muted-text {
+        color: #6b7280;
+        font-size: .92rem;
+    }
+
+    .stat-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .4rem .75rem;
+        border-radius: 999px;
+        background: #eef6ff;
+        color: #1f4e79;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .filter-box {
+        background: #f8fbff;
+        border: 1px solid #e5eaf1;
+        border-radius: 12px;
+        padding: .65rem .75rem;
+        min-width: 180px;
+    }
+
+    .filter-box .form-control {
+        height: 36px;
+        font-size: .92rem;
+    }
+
+    .table-wrap {
+        padding: 0;
+        overflow-x: auto;
+    }
+
+    table.dataTable {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    #studentsTable {
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    .table thead th {
+        background: #eaf2f8 !important;
+        color: #1f4e79;
+        font-weight: 700;
+        white-space: nowrap;
+        border-bottom: 1px solid #dbe3ee !important;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fbff !important;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+        border-color: #e5eaf1;
+    }
+
+    .student-name {
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .badge-soft {
+        border-radius: 999px;
+        padding: .4rem .65rem;
+        font-weight: 600;
+        background: #eef6ff;
+        color: #1f4e79;
+        display: inline-block;
+    }
+
+    .action-group .btn {
+        border-radius: 9px;
+        min-width: 82px;
+        margin-right: .3rem;
+        margin-bottom: .3rem;
+    }
+
+    .top-controls .form-control,
+    .top-controls .btn {
+        height: 40px;
+    }
+
+    .toolbar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .toolbar-right {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 12px;
+    }
+</style>
+
+<div class="container-fluid page-shell">
+
+    <!-- Export toolbar -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="toolbar-row">
+                <div class="d-flex align-items-center">
+                    <div class="icon-badge d-inline-flex align-items-center justify-content-center me-3">
+                        <i class="fa fa-download fa-lg"></i>
+                    </div>
+                    <div>
+                        <div class="section-title">Export Data</div>
+                        <div class="muted-text">Export student records by college.</div>
+                    </div>
+                </div>
+
+                <div class="toolbar-right">
+                    @Html.DropDownList(
+                        "CollegeInfoId",
+                        ViewBag.College as SelectList,
+                        "Select a College",
+                        new { @class = "form-control", style = "min-width:180px;", id = "CollegeInfoId" })
+
+                    @Html.DropDownList(
+                        "academicYearId",
+                        ViewBag.AcademicYears as SelectList,
+                        "-- Select Academic Year --",
+                        new { @class = "form-control", style = "min-width:180px;", id = "exportAcademicYearId" })
+
+                    <a href="#" id="exportBtn" class="btn btn-success px-4 text-nowrap">
+                        <i class="fa fa-download me-1"></i> Export to Excel
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <a href="#" id="exportBtn" class="btn btn-success">
-                <i class="fa fa-download"></i> Export to Excel
-            </a>
+    </div>
+
+    <!-- Grid panel -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="toolbar-row top-controls">
+                <div class="d-flex align-items-center">
+                    <div class="icon-badge d-inline-flex align-items-center justify-content-center me-3">
+                        <i class="fa fa-list fa-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-semibold">All Students</h4>
+                        <div class="muted-text">Showing records for the selected academic year.</div>
+                    </div>
+                </div>
+
+                <div class="toolbar-right">
+                    <span class="stat-pill">
+                        <i class="fa fa-graduation-cap"></i>
+                        @totalStudents Students
+                    </span>
+
+                    @using (Html.BeginForm("GetAllStudents", "Admission", FormMethod.Get, new { id = "frmAcademicYear" }))
+                    {
+                        <div class="filter-box">
+                            <label class="form-label fw-semibold mb-1">Academic Year</label>
+                            @Html.DropDownList(
+                                "academicYearId",
+                                ViewBag.AcademicYears as SelectList,
+                                "-- Select Academic Year --",
+                                new { @class = "form-control", onchange = "this.form.submit();" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body table-wrap">
+            <div class="table-responsive">
+                <table id="studentsTable" class="table table-striped table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">S.No.</th>
+                            <th>Full Name</th>
+                            <th>Mobile No</th>
+                            <th>Email Id</th>
+                            <th>Date Of Birth</th>
+                            <th>College Name</th>
+                            <th>Roll No</th>
+                            <th style="width: 260px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var serialNo = 1;
+                        }
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td>@serialNo</td>
+                                <td><div class="student-name">@student.FullName</div></td>
+                                <td>@student.MobileNo</td>
+                                <td>@student.EmailId</td>
+                                <td>@student.DateOfBirth</td>
+                                <td>@student.CollegeName</td>
+                                <td><span class="badge-soft">@student.RollNumber</span></td>
+                                <td>
+                                    <div class="action-group d-flex flex-wrap">
+                                        @Html.ActionLink("Edit", "Index", "StudentInfoes",
+                                            new { collegeId = student.CollegeInfoId, collegeName = student.CollegeName, studentInfoId = student.StudentInfoId },
+                                            new { @class = "btn btn-sm btn-primary" })
+
+                                        @Html.ActionLink("Print", "GenerateFormPDF", "Admission",
+                                            new { studentInfoId = student.StudentInfoId },
+                                            new { @class = "btn btn-sm btn-outline-primary print-btn", data_student_id = student.StudentInfoId, target = "_blank" })
+
+                                        @Html.ActionLink("Fee Info", "Create", "FeeReceipts",
+                                            new { AdmissionFormId = student.AddmissionFormId },
+                                            new { @class = "btn btn-sm btn-success" })
+                                    </div>
+                                </td>
+                            </tr>
+
+                            serialNo++;
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-@*<a href="@Url.Action("AllAddmissionExportToExcel", "Admission")" class="btn btn-success">
-        <i class="fa fa-download"></i> Export to Excel
-    </a>*@
-
-<h3>All Students</h3>
-<table id="studentsTable" class="display" style="width:100%">
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>Mobile No</th>
-            <th>Email Id</th>
-            <th>Date Of Birth</th>
-            <th>College Name</th>
-            <th>Roll No</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var student in Model)
-        {
-            <tr>
-                <td>@student.FullName</td>
-                <td>@student.MobileNo</td>
-                <td>@student.EmailId</td>
-                <td>@student.DateOfBirth</td>
-                <td>@student.CollegeName</td>
-                <td>@student.RollNumber</td>
-                <td>
-                    @Html.ActionLink("Edit", "Index", "StudentInfoes", new { collegeId = @student.CollegeInfoId, collegeName = @student.CollegeName, studentInfoId = student.StudentInfoId }, new { @class = "btn btn-sm btn-primary" })
-                    |@Html.ActionLink("Print", "GenerateFormPDF", "Admission", new { studentInfoId = student.StudentInfoId }, new { @class = "btn btn-sm btn-primary" })
-                    <br /><br /> @Html.ActionLink("Fee Receipt", "Create", "FeeReceipts", new { AdmissionFormId = student.AddmissionFormId }, new { @class = "btn btn-sm btn-primary" })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 <script>
     $(document).ready(function () {
@@ -69,16 +290,8 @@
             searching: true,
             ordering: true,
             info: true,
-            columnDefs: [
-                { targets: 0, width: "150px" }, // Full Name
-                { targets: 1, width: "100px" }, // Mobile No
-                { targets: 2, width: "180px" }, // Email Id
-                { targets: 3, width: "120px" }, // Date Of Birth
-                { targets: 4, width: "300px" }, // College Name
-                { targets: 5, width: "150px" }, // Roll No
-                { targets: 6, width: "120px" }  // Actions
-            ],
-            autoWidth: false  // VERY important to prevent auto override
+            pageLength: 10,
+            autoWidth: false
         });
     });
 
@@ -86,11 +299,33 @@
         e.preventDefault();
 
         var CollegeInfoId = $("#CollegeInfoId").val();
+        var academicYearId = $("#exportAcademicYearId").val();
+
         if (!CollegeInfoId) {
             alert("Please select a College first.");
             return;
         }
 
-        window.location.href = '@Url.Action("AllAddmissionExportToExcel", "Admission")' + '?CollegeInfoId=' + CollegeInfoId;
+        if (!academicYearId) {
+            alert("Please select an Academic Year first.");
+            return;
+        }
+
+        if (typeof toastr !== 'undefined') {
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: "toast-bottom-right",
+                timeOut: "2000",
+                extendedTimeOut: "500"
+            };
+            toastr.info("Export is in progress. Please wait...");
+        }
+
+        setTimeout(function () {
+            window.location.href = '@Url.Action("AllAddmissionExportToExcel", "Admission")'
+                + '?CollegeInfoId=' + CollegeInfoId
+                + '&academicYearId=' + academicYearId;
+        }, 300);
     });
 </script>

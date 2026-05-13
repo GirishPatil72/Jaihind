@@ -1,55 +1,387 @@
 ﻿@model int
-@using (Ajax.BeginForm("UploadImages", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessUploadInfo(data)", OnBegin = "onUploadBegin", UpdateTargetId = "wizardContainer" }, new { enctype = "multipart/form-data", id = "frmuploadImages", name = "frmuploadImages", @class = "col-md-10 mx-auto" }))
-{
-    @Html.Hidden("studentInfoId", new { Value = Model })
-    <div class="form-group">
-        <label>Student Photo</label>
-        <input type="file" name="StudentPhoto" id="StudentPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'studentPhotoPreview')" />
-        <span class="text-danger" id="StudentPhotoError"></span>
-        <img id="studentPhotoPreview" src="@ViewBag.StudentPhoto" alt="Student Photo Preview" style="@(string.IsNullOrEmpty(ViewBag.StudentPhoto) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px;" />
-    </div>
-
-    <div class="form-group">
-        <label>Student Signature</label>
-        <input type="file" name="StudentSignature" id="StudentSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'studentSignaturePreview')" />
-        <span class="text-danger" id="StudentSignatureError"></span>
-        <img id="studentSignaturePreview" src="@ViewBag.StudentSignature" alt="Student Signature Preview" style="@(string.IsNullOrEmpty(ViewBag.StudentSignature) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px; " />
-    </div>
-
-    <div class="form-group">
-        <label>Father Photo</label>
-        <input type="file" name="FatherPhoto" id="FatherPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'fatherPhotoPreview')" />
-        <span class="text-danger" id="FatherPhotoError"></span>
-        <img id="fatherPhotoPreview" src="@ViewBag.FathersPhoto" alt="Father Photo Preview" style="@(string.IsNullOrEmpty(ViewBag.FathersPhoto) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px; " />
-    </div>
-    <div class="form-group">
-        <label>Father Signature</label>
-        <input type="file" name="FatherSignature" id="FatherSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'fatherSignaturePreview')" />
-        <span class="text-danger" id="FatherSignatureError"></span>
-        <img id="fatherSignaturePreview" src="@ViewBag.FathersSignature" alt="Father Signature Preview" style="@(string.IsNullOrEmpty(ViewBag.FathersSignature) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px; " />
-    </div>
-    <div class="form-group">
-        <label>Mother Photo</label>
-        <input type="file" name="MotherPhoto" id="MotherPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'motherPhotoPreview')" />
-        <span class="text-danger" id="MotherPhotoError"></span>
-        <img id="motherPhotoPreview" src="@ViewBag.MothersPhoto" alt="Mother Photo Preview" style="@(string.IsNullOrEmpty(ViewBag.MothersPhoto) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px; " />
-    </div>
-
-    <div class="form-group">
-        <label>Mother Signature</label>
-        <input type="file" name="MotherSignature" id="MotherSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'motherSignaturePreview')" />
-        <span class="text-danger" id="MotherSignatureError"></span>
-        <img id="motherSignaturePreview" src="@ViewBag.MothersSignature" alt="Mother Signature Preview" style="@(string.IsNullOrEmpty(ViewBag.MothersSignature) ? "display: none;" : "display: block;") max-width: 150px; max-height: 150px; margin-top: 10px;" />
-    </div>
-
-    <div class="divider"></div>
-    <div class="clearfix">
-        <button type="submit" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Next</button>
-
-        <button type="button" onclick="loadStep(3)" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Previous</button>
-    </div>
+@{
+    var hasStudentPhoto = !string.IsNullOrWhiteSpace(ViewBag.StudentPhoto as string);
+    var hasStudentSignature = !string.IsNullOrWhiteSpace(ViewBag.StudentSignature as string);
+    var hasFatherPhoto = !string.IsNullOrWhiteSpace(ViewBag.FathersPhoto as string);
+    var hasFatherSignature = !string.IsNullOrWhiteSpace(ViewBag.FathersSignature as string);
+    var hasMotherPhoto = !string.IsNullOrWhiteSpace(ViewBag.MothersPhoto as string);
+    var hasMotherSignature = !string.IsNullOrWhiteSpace(ViewBag.MothersSignature as string);
 }
 
+<style>
+    :root {
+        --app-bg: #f4f7fb;
+        --app-surface: #ffffff;
+        --app-border: #e5eaf1;
+        --app-text: #1f2937;
+        --app-muted: #6b7280;
+        --app-primary: #1f4e79;
+        --app-primary-hover: #163b5c;
+        --app-accent: #02adee;
+        --app-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .upload-shell {
+        padding: 1.25rem .5rem;
+    }
+
+    .upload-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: var(--app-shadow);
+        overflow: hidden;
+        background: var(--app-surface);
+    }
+
+    .upload-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid var(--app-border);
+        padding: 1rem 1.25rem;
+    }
+
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: var(--app-muted);
+        font-size: .95rem;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid var(--app-border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        margin-bottom: 1rem;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--app-muted);
+        margin-bottom: .85rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: .35rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border-color: #dbe3ee;
+        min-height: 46px;
+        box-shadow: none !important;
+    }
+
+    .form-control:focus {
+        border-color: var(--app-accent);
+        box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+    }
+
+    .upload-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .upload-item {
+        border: 1px solid var(--app-border);
+        border-radius: 16px;
+        background: #fff;
+        padding: 1rem;
+    }
+
+    .upload-item-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        margin-bottom: .8rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .upload-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .34rem .68rem;
+        border-radius: 999px;
+        background: #eef6ff;
+        color: var(--app-primary);
+        font-size: .82rem;
+        font-weight: 700;
+    }
+
+    .preview-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        border: 1px dashed #cfd8e3;
+        border-radius: 14px;
+        background: #f8fbff;
+        padding: .75rem;
+        overflow: hidden;
+    }
+
+    .preview-box img {
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        background: #fff;
+    }
+
+    .preview-empty {
+        color: var(--app-muted);
+        font-size: .92rem;
+        text-align: center;
+    }
+
+    .error-text {
+        color: #dc3545;
+        font-size: .85rem;
+        min-height: 1.1rem;
+        display: block;
+        margin-top: .35rem;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--app-border);
+        margin: 1.25rem 0;
+    }
+
+    .action-bar {
+        background: #f8fbff;
+        border: 1px solid var(--app-border);
+        border-radius: 14px;
+        padding: .9rem 1rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-hover) 100%);
+        border-color: var(--app-primary);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--app-primary-hover) 0%, #0f2d46 100%);
+        border-color: var(--app-primary-hover);
+    }
+
+    .btn-outline-secondary {
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .help-text {
+        color: var(--app-muted);
+        font-size: .9rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        .upload-shell {
+            padding: .75rem .25rem;
+        }
+
+        .upload-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@using (Ajax.BeginForm("UploadImages", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessUploadInfo(data)", OnBegin = "onUploadBegin", UpdateTargetId = "wizardContainer" }, new { enctype = "multipart/form-data", id = "frmuploadImages", name = "frmuploadImages", @class = "upload-shell" }))
+{
+    @Html.Hidden("studentInfoId", Model)
+
+    <div class="card upload-card mx-auto col-md-10">
+        <div class="upload-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-images fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="header-title">Upload Student & Parent Images</h4>
+                    <div class="header-subtitle">Upload photos and signatures for the student, father, and mother.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div class="section-card">
+                <div class="section-label">Upload Guidelines</div>
+                <div class="help-text">
+                    Supported files: images only. Each file should be within 200 KB.
+                </div>
+            </div>
+
+            <div class="upload-grid">
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Student Photo</span>
+                        <span class="upload-badge"><i class="fa fa-user"></i> Photo</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="StudentPhoto" id="StudentPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'studentPhotoPreview')" />
+                    <span class="error-text" id="StudentPhotoError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasStudentPhoto)
+                        {
+                            <img id="studentPhotoPreview" src="@ViewBag.StudentPhoto" alt="Student Photo Preview" />
+                        }
+                        else
+                        {
+                            <div id="studentPhotoPreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Student Signature</span>
+                        <span class="upload-badge"><i class="fa fa-pen"></i> Signature</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="StudentSignature" id="StudentSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'studentSignaturePreview')" />
+                    <span class="error-text" id="StudentSignatureError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasStudentSignature)
+                        {
+                            <img id="studentSignaturePreview" src="@ViewBag.StudentSignature" alt="Student Signature Preview" />
+                        }
+                        else
+                        {
+                            <div id="studentSignaturePreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Father Photo</span>
+                        <span class="upload-badge"><i class="fa fa-user-tie"></i> Photo</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="FatherPhoto" id="FatherPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'fatherPhotoPreview')" />
+                    <span class="error-text" id="FatherPhotoError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasFatherPhoto)
+                        {
+                            <img id="fatherPhotoPreview" src="@ViewBag.FathersPhoto" alt="Father Photo Preview" />
+                        }
+                        else
+                        {
+                            <div id="fatherPhotoPreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Father Signature</span>
+                        <span class="upload-badge"><i class="fa fa-pen"></i> Signature</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="FatherSignature" id="FatherSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'fatherSignaturePreview')" />
+                    <span class="error-text" id="FatherSignatureError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasFatherSignature)
+                        {
+                            <img id="fatherSignaturePreview" src="@ViewBag.FathersSignature" alt="Father Signature Preview" />
+                        }
+                        else
+                        {
+                            <div id="fatherSignaturePreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Mother Photo</span>
+                        <span class="upload-badge"><i class="fa fa-user"></i> Photo</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="MotherPhoto" id="MotherPhoto" accept="image/*" class="form-control" onchange="previewImage(this, 'motherPhotoPreview')" />
+                    <span class="error-text" id="MotherPhotoError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasMotherPhoto)
+                        {
+                            <img id="motherPhotoPreview" src="@ViewBag.MothersPhoto" alt="Mother Photo Preview" />
+                        }
+                        else
+                        {
+                            <div id="motherPhotoPreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-title">
+                        <span>Mother Signature</span>
+                        <span class="upload-badge"><i class="fa fa-pen"></i> Signature</span>
+                    </div>
+                    <label class="form-label">Choose image</label>
+                    <input type="file" name="MotherSignature" id="MotherSignature" accept="image/*" class="form-control" onchange="previewImage(this, 'motherSignaturePreview')" />
+                    <span class="error-text" id="MotherSignatureError"></span>
+                    <div class="preview-box mt-3">
+                        @if (hasMotherSignature)
+                        {
+                            <img id="motherSignaturePreview" src="@ViewBag.MothersSignature" alt="Mother Signature Preview" />
+                        }
+                        else
+                        {
+                            <div id="motherSignaturePreview" class="preview-empty">No preview available</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="action-bar">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="help-text mb-0">
+                        Click Next to continue after verifying all uploaded images.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" onclick="loadStep(3)" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fa fa-arrow-left me-2"></i> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-arrow-right me-2"></i> Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <script type="text/javascript">
     function ajaxSuccessUploadInfo(data) {
@@ -79,7 +411,7 @@
                 input.value = "";
 
                 xhr.abort();
-                return false; 
+                return false;
             }
         });
         return true;
@@ -95,8 +427,12 @@
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
+                if (preview.tagName && preview.tagName.toLowerCase() === "img") {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                } else {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview" />';
+                }
             };
             reader.readAsDataURL(input.files[0]);
         }

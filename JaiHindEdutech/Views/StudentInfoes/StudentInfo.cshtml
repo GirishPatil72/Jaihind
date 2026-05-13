@@ -4,7 +4,7 @@
 }
 @{
     ViewBag.BloodGroups = new List<SelectListItem>
-{
+    {
         new SelectListItem { Text = "Select", Value = "" },
         new SelectListItem { Text = "A+", Value = "A+" },
         new SelectListItem { Text = "A-", Value = "A-" },
@@ -17,19 +17,266 @@
     };
 
     var GenderList = new SelectList(
-    new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Male", Value = "Male" },
-        new SelectListItem { Text = "Female", Value = "Female" }
-                                                                                                                                                                            }, "Value", "Text", Model.Gender);
+        new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Male", Value = "Male" },
+            new SelectListItem { Text = "Female", Value = "Female" }
+        }, "Value", "Text", Model.Gender);
 
+    var categoryList = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Select", Value = "" },
+        new SelectListItem { Text = "General", Value = "General" },
+        new SelectListItem { Text = "Open", Value = "Open" },
+        new SelectListItem { Text = "Scheduled Caste", Value = "Scheduled Caste" },
+        new SelectListItem { Text = "Scheduled Tribes", Value = "Scheduled Tribes" },
+        new SelectListItem { Text = "OBC", Value = "OBC" },
+        new SelectListItem { Text = "Other", Value = "Other" }
+    };
+
+    var isAdmin = Request.IsAuthenticated && User.IsInRole("Admin");
+
+    var nationalityItems = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Select", Value = "" },
+        new SelectListItem { Text = "Indian", Value = "Indian" },
+        new SelectListItem { Text = "Afghan", Value = "Afghan" },
+        new SelectListItem { Text = "American", Value = "American" },
+        new SelectListItem { Text = "Argentine", Value = "Argentine" },
+        new SelectListItem { Text = "Australian", Value = "Australian" },
+        new SelectListItem { Text = "Austrian", Value = "Austrian" },
+        new SelectListItem { Text = "Bangladeshi", Value = "Bangladeshi" },
+        new SelectListItem { Text = "Belgian", Value = "Belgian" },
+        new SelectListItem { Text = "Brazilian", Value = "Brazilian" },
+        new SelectListItem { Text = "British", Value = "British" },
+        new SelectListItem { Text = "Canadian", Value = "Canadian" },
+        new SelectListItem { Text = "Chinese", Value = "Chinese" },
+        new SelectListItem { Text = "Danish", Value = "Danish" },
+        new SelectListItem { Text = "Dutch", Value = "Dutch" },
+        new SelectListItem { Text = "Egyptian", Value = "Egyptian" },
+        new SelectListItem { Text = "French", Value = "French" },
+        new SelectListItem { Text = "German", Value = "German" },
+        new SelectListItem { Text = "Greek", Value = "Greek" },
+        new SelectListItem { Text = "Hungarian", Value = "Hungarian" },
+        new SelectListItem { Text = "Indonesian", Value = "Indonesian" },
+        new SelectListItem { Text = "Iranian", Value = "Iranian" },
+        new SelectListItem { Text = "Iraqi", Value = "Iraqi" },
+        new SelectListItem { Text = "Irish", Value = "Irish" },
+        new SelectListItem { Text = "Italian", Value = "Italian" },
+        new SelectListItem { Text = "Japanese", Value = "Japanese" },
+        new SelectListItem { Text = "Kenyan", Value = "Kenyan" },
+        new SelectListItem { Text = "Korean", Value = "Korean" },
+        new SelectListItem { Text = "Malaysian", Value = "Malaysian" },
+        new SelectListItem { Text = "Mexican", Value = "Mexican" },
+        new SelectListItem { Text = "Nepalese", Value = "Nepalese" },
+        new SelectListItem { Text = "New Zealander", Value = "New Zealander" },
+        new SelectListItem { Text = "Nigerian", Value = "Nigerian" },
+        new SelectListItem { Text = "Norwegian", Value = "Norwegian" },
+        new SelectListItem { Text = "Pakistani", Value = "Pakistani" },
+        new SelectListItem { Text = "Philippine", Value = "Philippine" },
+        new SelectListItem { Text = "Polish", Value = "Polish" },
+        new SelectListItem { Text = "Portuguese", Value = "Portuguese" },
+        new SelectListItem { Text = "Russian", Value = "Russian" },
+        new SelectListItem { Text = "Singaporean", Value = "Singaporean" },
+        new SelectListItem { Text = "South African", Value = "South African" },
+        new SelectListItem { Text = "Spanish", Value = "Spanish" },
+        new SelectListItem { Text = "Sri Lankan", Value = "Sri Lankan" },
+        new SelectListItem { Text = "Swedish", Value = "Swedish" },
+        new SelectListItem { Text = "Swiss", Value = "Swiss" },
+        new SelectListItem { Text = "Thai", Value = "Thai" },
+        new SelectListItem { Text = "Turkish", Value = "Turkish" },
+        new SelectListItem { Text = "Ukrainian", Value = "Ukrainian" },
+        new SelectListItem { Text = "UAE National", Value = "UAE National" },
+        new SelectListItem { Text = "Vietnamese", Value = "Vietnamese" }
+    };
+
+    ViewBag.NationalityList = new SelectList(nationalityItems, "Value", "Text", Model.Nationality);
 }
-@using (Ajax.BeginForm("StudentInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessStudentInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmStudentInfo", name = "frmStudentInfo", @class = "col-md-10 mx-auto" }))
+
+<style>
+    :root {
+        --app-bg: #f4f7fb;
+        --app-surface: #ffffff;
+        --app-border: #e5eaf1;
+        --app-text: #1f2937;
+        --app-muted: #6b7280;
+        --app-primary: #1f4e79;
+        --app-primary-hover: #163b5c;
+        --app-accent: #02adee;
+        --app-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    body {
+        background: var(--app-bg);
+        color: var(--app-text);
+    }
+
+    .student-shell {
+        padding: 1.25rem .5rem;
+    }
+
+    .student-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: var(--app-shadow);
+        overflow: hidden;
+        background: var(--app-surface);
+    }
+
+    .student-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid var(--app-border);
+        padding: 1rem 1.25rem;
+    }
+
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: var(--app-muted);
+        font-size: .95rem;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid var(--app-border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        height: 100%;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--app-muted);
+        margin-bottom: .85rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: .35rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border-color: #dbe3ee;
+        min-height: 46px;
+        box-shadow: none !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--app-accent);
+        box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+    }
+
+    .form-check-input {
+        width: 1.1rem;
+        height: 1.1rem;
+        margin-top: .25rem;
+    }
+
+    .field-hint {
+        font-size: .82rem;
+        color: var(--app-muted);
+        margin-top: .35rem;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        color: #334155;
+    }
+
+    .info-box .info-title {
+        font-weight: 700;
+        color: var(--app-primary);
+        margin-bottom: .35rem;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--app-border);
+        margin: 1.25rem 0;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-hover) 100%);
+        border-color: var(--app-primary);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--app-primary-hover) 0%, #0f2d46 100%);
+        border-color: var(--app-primary-hover);
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .4rem .72rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: .88rem;
+        background: #eef6ff;
+        color: var(--app-primary);
+    }
+
+    .section-note {
+        background: #f8fbff;
+        border: 1px solid #e5eaf1;
+        border-radius: 14px;
+        padding: .9rem 1rem;
+        color: #475569;
+    }
+
+    .invalid-feedback {
+        display: block;
+    }
+
+    @@media (max-width: 991.98px) {
+        .student-shell {
+            padding: .75rem .25rem;
+        }
+    }
+</style>
+
+@using (Ajax.BeginForm("StudentInfoPost", "StudentInfoes", null, new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    OnSuccess = "ajaxSuccessStudentInfo(data)",
+    UpdateTargetId = "wizardContainer"
+}, new { encType = Model.encType, id = "frmStudentInfo", name = "frmStudentInfo", @class = "student-shell" }))
 {
     @Html.HiddenFor(model => model.ClassName, new { id = "hdnClassName" })
     @Html.HiddenFor(model => model.Stream, new { id = "hdnStreamName" })
     @Html.HiddenFor(model => model.CoachingCentreId, new { id = "hdnCoachingCentre" })
-
 
     @Html.HiddenFor(model => model.AddmissionFormId)
     @Html.HiddenFor(model => model.CollegeInfoId, new { Value = ViewBag.collegeId ?? Model.CollegeInfoId })
@@ -42,203 +289,309 @@
     @Html.HiddenFor(model => model.IsActive)
     @Html.HiddenFor(model => model.IsDeleted)
     @Html.HiddenFor(model => model.FullName)
-    <!--<form id="signupForm" class="col-md-10 mx-auto" method="post" action="" novalidate="novalidate">-->
+
+    @*<form id="signupForm" class="col-md-10 mx-auto" method="post" action="" novalidate="novalidate">*@
     @*@{
             var isInvalidClass = (ViewData.ModelState["FirstName"] != null && ViewData.ModelState["FirstName"].Errors.Any()) ? "is-invalid" : "";
         }*@
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.FirstName)
-                <div>
-                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["FirstName"] != null && ViewData.ModelState["FirstName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "First name" } })
-                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.MiddleName)
-                <div>
-                    @Html.EditorFor(model => model.MiddleName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["MiddleName"] != null && ViewData.ModelState["MiddleName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Middle name" } })
-                    @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "error invalid-feedback" })
-                    @*<input type="text" class="form-control is-invalid" id="lastname" name="lastname" placeholder="Last name" aria-describedby="lastname-error"><em id="lastname-error" class="error invalid-feedback">Please enter your lastname</em>*@
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.LastName)
-                <div>
-                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["LastName"] != null && ViewData.ModelState["LastName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Middle name" } })
-                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.DateOfBirth)
-                <div>
-                    @*@Html.TextBoxFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Date Of Birth", @maxlength = "10" } })*@
 
-                    @Html.TextBoxFor(model => model.DateOfBirth, new
-                   {
-                       @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""),
-                       @placeholder = "Date Of Birth",
-                       @maxlength = "10",
-                       @Value = Model.DateOfBirth.HasValue ? Model.DateOfBirth.Value.ToString("dd/MM/yyyy") : ""
-                   })
+    <div class="card student-card mx-auto col-md-10">
+        <div class="student-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-user-graduate fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="header-title">Student Information</h4>
+                    <div class="header-subtitle">Enter the student profile, demographic details, and fee information.</div>
+                </div>
+            </div>
+        </div>
 
-                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Gender)
-                <div>
-                    @Html.DropDownListFor(model => model.Gender, (SelectList)GenderList, "-- Select Gender --", new { @class = "form-control " + (ViewData.ModelState["Gender"] != null && ViewData.ModelState["Gender"].Errors.Any() ? "is-invalid" : "") })
+        <div class="card-body p-4 p-lg-5">
+            @*@Html.ValidationSummary(true, "", new { @class = "alert alert-danger border-0 rounded-3" })*@
 
-                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "error invalid-feedback" })
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Name Details</div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.FirstName, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["FirstName"] != null && ViewData.ModelState["FirstName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "First name" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.MiddleName, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.MiddleName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["MiddleName"] != null && ViewData.ModelState["MiddleName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Middle name" } })
+                                    @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "error invalid-feedback" })
+                                    @*<input type="text" class="form-control is-invalid" id="lastname" name="lastname" placeholder="Last name" aria-describedby="lastname-error"><em id="lastname-error" class="error invalid-feedback">Please enter your lastname</em>*@
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.LastName, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["LastName"] != null && ViewData.ModelState["LastName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Last name" } })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.AadharNo)
-                <div>
-                    @Html.EditorFor(model => model.AadharNo, new
-                    {
-                        htmlAttributes = new
-                        {
-                            @class = "form-control " + (ViewData.ModelState["AadharNo"] != null && ViewData.ModelState["AadharNo"].Errors.Any() ? "is-invalid" : ""),
-                            @placeholder = "Aadhar No",
-                            type = "number",
-                            maxlength = "12",
-                   oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-               }
-                    })
-                    @Html.ValidationMessageFor(model => model.AadharNo, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div>
-            <div class="form-check">
-                @*<input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">*@
-                @Html.CheckBoxFor(model => model.IsSingleGirlChild, new { @class = "form-check-input" })
-                @Html.LabelFor(model => model.IsSingleGirlChild)
-                @Html.ValidationMessageFor(model => model.IsSingleGirlChild, "", new { @class = "error invalid-feedback" })
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.BloodGroup)
-                <div>
-                    @Html.DropDownListFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { @class = "form-control " + (ViewData.ModelState["BloodGroup"] != null && ViewData.ModelState["BloodGroup"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Blood Group" })
-                    @*@Html.EditorFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { htmlAttributes = new { @class = "form-control is-invalid", @placeholder = "Blood Group" } })*@
-                    @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Nationality)
-                <div>
-                    @Html.EditorFor(model => model.Nationality, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Nationality"] != null && ViewData.ModelState["Nationality"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Nationality" } })
-                    @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Category)
-                <div>
-                    @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Category"] != null && ViewData.ModelState["Category"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Category" } })
-                    @Html.ValidationMessageFor(model => model.Category, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.MobileNo)
-                <div>
-                    @Html.EditorFor(model => model.MobileNo, new
-                    {
-                        htmlAttributes = new
-                        {
-                            @class = "form-control " + (ViewData.ModelState["MobileNo"] != null && ViewData.ModelState["MobileNo"].Errors.Any() ? "is-invalid" : ""),
-                            @placeholder = "Mobile No",
-                   maxlength = "10",
-                   type = "number",
-                   oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-               }
-                    })
-                    @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.EmailId)
-                <div>
-                    @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EmailId"] != null && ViewData.ModelState["EmailId"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Email Id", type = "email" } })
-                    @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Domicile)
-                <div>
-                    @Html.EditorFor(model => model.Domicile, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Domicile"] != null && ViewData.ModelState["Domicile"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Domicile" } })
-                    @Html.ValidationMessageFor(model => model.Domicile, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Remark)
-                <div>
-                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Remark"] != null && ViewData.ModelState["Remark"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Remark" } })
-                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
 
-    @*<div class="form-group">
-            <div>
-                <div class="form-check">
-                    <input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">
-                    <label class="form-check-label">Please agree to our policy</label><em id="agree-error" class="error invalid-feedback">Please accept our policy</em>
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Personal Details</div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.DateOfBirth, new { @class = "form-label" })
+                                    @*@Html.TextBoxFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Date Of Birth", @maxlength = "10" } })*@
+
+                                    @Html.TextBoxFor(model => model.DateOfBirth, new
+                                    {
+                                        @class = "form-control" + (ViewData.ModelState["DateOfBirth"] != null && ViewData.ModelState["DateOfBirth"].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Date Of Birth",
+                                        @maxlength = "10",
+                                        @Value = Model.DateOfBirth.HasValue ? Model.DateOfBirth.Value.ToString("dd/MM/yyyy") : ""
+                                    })
+
+                                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Gender, new { @class = "form-label" })
+                                    @Html.DropDownListFor(model => model.Gender, (SelectList)GenderList, "-- Select Gender --", new { @class = "form-control " + (ViewData.ModelState["Gender"] != null && ViewData.ModelState["Gender"].Errors.Any() ? "is-invalid" : "") })
+                                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.AadharNo, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.AadharNo, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control " + (ViewData.ModelState["AadharNo"] != null && ViewData.ModelState["AadharNo"].Errors.Any() ? "is-invalid" : ""),
+                                            @placeholder = "Aadhar No",
+                                            type = "number",
+                                            maxlength = "12",
+                                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                        }
+                                    })
+                                    @Html.ValidationMessageFor(model => model.AadharNo, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="form-check">
+                                @*<input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">*@
+                                @Html.CheckBoxFor(model => model.IsSingleGirlChild, new { @class = "form-check-input" })
+                                @Html.LabelFor(model => model.IsSingleGirlChild, new { @class = "form-check-label" })
+                                @Html.ValidationMessageFor(model => model.IsSingleGirlChild, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Classification Details</div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BloodGroup, new { @class = "form-label" })
+                                    @Html.DropDownListFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { @class = "form-control " + (ViewData.ModelState["BloodGroup"] != null && ViewData.ModelState["BloodGroup"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Blood Group" })
+                                    @*@Html.EditorFor(model => model.BloodGroup, (IEnumerable<SelectListItem>)ViewBag.BloodGroups, new { htmlAttributes = new { @class = "form-control is-invalid", @placeholder = "Blood Group" } })*@
+                                    @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Nationality, new { @class = "form-label" })
+                                    @*@Html.EditorFor(model => model.Nationality, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Nationality"] != null && ViewData.ModelState["Nationality"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Nationality" } })*@
+                                    @Html.DropDownListFor(model => model.Nationality,
+                                     (SelectList)ViewBag.NationalityList,
+                                     "-- Select Nationality --",
+                                     new { @class = "form-control " + (ViewData.ModelState["Nationality"] != null && ViewData.ModelState["Nationality"].Errors.Any() ? "is-invalid" : "") })
+                                    @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            @*<div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Category)
+                                    <div>
+                                        @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Category"] != null && ViewData.ModelState["Category"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Category" } })
+                                        @Html.ValidationMessageFor(model => model.Category, "", new { @class = "error invalid-feedback" })
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Category, new { @class = "form-label" })
+                                    @Html.DropDownListFor(model => model.Category,
+                                     new SelectList(categoryList, "Value", "Text", Model.Category),
+                                     "-- Select Category --",
+                                     new { @class = "form-control " + (ViewData.ModelState["Category"] != null && ViewData.ModelState["Category"].Errors.Any() ? "is-invalid" : "") })
+                                    @Html.ValidationMessageFor(model => model.Category, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Contact Details</div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.MobileNo, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.MobileNo, new
+                                    {
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control " + (ViewData.ModelState["MobileNo"] != null && ViewData.ModelState["MobileNo"].Errors.Any() ? "is-invalid" : ""),
+                                            @placeholder = "Mobile No",
+                                            maxlength = "10",
+                                            type = "number",
+                                            oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                        }
+                                    })
+                                    @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.EmailId, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EmailId"] != null && ViewData.ModelState["EmailId"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Email Id", type = "email" } })
+                                    @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Domicile, new { @class = "form-label" })
+                                    @Html.EditorFor(model => model.Domicile, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Domicile"] != null && ViewData.ModelState["Domicile"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Domicile" } })
+                                    @Html.ValidationMessageFor(model => model.Domicile, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Additional Notes</div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Remark, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["Remark"] != null && ViewData.ModelState["Remark"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Remark" } })
+                            @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="section-card">
+                        <div class="section-label">Fee Information</div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.TotalFees, new { @class = "form-label" })
+                                    @Html.TextBoxFor(model => model.TotalFees, new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState["TotalFees"] != null && ViewData.ModelState["TotalFees"].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Total Fees",
+                                        type = "number",
+                                        step = "0.01",
+                                        oninput = "calculateFees()",
+                                        id = "TotalFees"
+                                    })
+                                    @Html.ValidationMessageFor(model => model.TotalFees, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Scholarship, new { @class = "form-label" })
+                                    <div>
+                                        @{var scholarshipAttributes = new System.Collections.Generic.Dictionary<string, object>
+                                        {
+                                            { "class", "form-control " + (ViewData.ModelState["Scholarship"] != null && ViewData.ModelState["Scholarship"].Errors.Any() ? "is-invalid" : "") + (!isAdmin ? " bg-light" : "") },
+                                            { "placeholder", "Scholarship" },
+                                            { "type", "number" },
+                                            { "step", "0.01" },
+                                            { "oninput", "calculateFees()" },
+                                            { "id", "Scholarship" }
+                                        };
+
+                                            if (!isAdmin)
+                                            {
+                                                scholarshipAttributes["readonly"] = "readonly";
+                                            }
+                                        }
+
+                                        @Html.TextBoxFor(model => model.Scholarship, scholarshipAttributes)
+                                        @Html.ValidationMessageFor(model => model.Scholarship, "", new { @class = "error invalid-feedback" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.FeesPayable, new { @class = "form-label" })
+                                    @Html.TextBoxFor(model => model.FeesPayable, new
+                                    {
+                                        @class = "form-control bg-light " + (ViewData.ModelState["FeesPayable"] != null && ViewData.ModelState["FeesPayable"].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Fees Payable",
+                                        type = "number",
+                                        step = "0.01",
+                                        id = "FeesPayable",
+                                        @readonly = "readonly"
+                                    })
+                                    @Html.ValidationMessageFor(model => model.FeesPayable, "", new { @class = "error invalid-feedback" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                    <div>
+                        <div class="form-check">
+                            <input type="checkbox" id="agree" name="agree" value="agree" class="form-check-input is-invalid" aria-describedby="agree-error">
+                            <label class="form-check-label">Please agree to our policy</label><em id="agree-error" class="error invalid-feedback">Please accept our policy</em>
+                        </div>
+                    </div>
+                </div>*@
+                @*<div class="form-group">
+                    <button type="submit" class="btn btn-primary" name="signup" value="Sign up">Sign up</button>
+                </div>*@
+                @*</form>*@
+
+                <div class="section-note mt-4">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div class="text-muted">
+                            Review the entered details before proceeding to the next step.
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn-shadow btn-wide btn-pill btn-hover-shine btn btn-primary">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    @Html.ValidationMessageFor(model => model.ClassName, "", new { @class = "text-danger" })<br />
+                    @Html.ValidationMessageFor(model => model.Stream, "", new { @class = "text-danger" })
                 </div>
             </div>
-        </div>*@
-    @*<div class="form-group">
-            <button type="submit" class="btn btn-primary" name="signup" value="Sign up">Sign up</button>
-        </div>*@
-    @*</form>*@
-    <div class="form-group">
-        @Html.ValidationMessageFor(model => model.ClassName, "", new { @class = "text-danger" })<br />
-        @Html.ValidationMessageFor(model => model.Stream, "", new { @class = "text-danger" })
-    </div>
-    <div class="divider"></div>
-    <div class="clearfix">
-        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+        </div>
     </div>
 }
-
-
 
 <script type="text/javascript">
     $('#DateOfBirth').datepicker({
@@ -247,11 +600,13 @@
         changeYear: true,
         yearRange: "1980:2015"
     });
+
     function ajaxSuccessStudentInfo(data) {
         if (data.result == true) {
             loadStep(2, 1, data.StudentInfoId);
         }
     };
+
     $(document).ready(function () {
         var selectedClass = $('#hdnClassName').val();
         if (selectedClass) {
@@ -267,13 +622,21 @@
         if (selectedCoachingCentre != 0) {
             $('#CoachingCentreId').val(selectedCoachingCentre);
         }
-
-
     });
 
+    function calculateFees() {
+        var totalFees = parseFloat($('#TotalFees').val()) || 0;
+        var scholarship = parseFloat($('#Scholarship').val()) || 0;
+        var payable = totalFees - scholarship;
+
+        if (payable < 0) {
+            payable = 0;
+        }
+
+        $('#FeesPayable').val(payable.toFixed(2));
+    }
+
+    $(document).ready(function () {
+        calculateFees();
+    });
 </script>
-
-
-
-
-

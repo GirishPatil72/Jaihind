@@ -1,0 +1,271 @@
+@model JaiHindEdutech.Models.EditUserViewModel
+@{
+    ViewBag.Title = "Edit User";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<style>
+    .page-shell {
+        padding: 1.25rem .5rem;
+    }
+
+    .user-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .user-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid #e5eaf1;
+        padding: 1rem 1.25rem;
+    }
+
+    .icon-badge {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: #64748b;
+        font-size: .95rem;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        height: 100%;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+        margin-bottom: .85rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: .35rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border-color: #dbe3ee;
+        min-height: 46px;
+        box-shadow: none !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #02adee;
+        box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+    }
+
+    .form-check-input {
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: .2rem;
+    }
+
+    .form-hint {
+        font-size: .82rem;
+        color: #64748b;
+        margin-top: .35rem;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        color: #334155;
+    }
+
+    .info-box .info-title {
+        font-weight: 700;
+        color: #1f4e79;
+        margin-bottom: .35rem;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1f4e79 0%, #163b5c 100%);
+        border-color: #1f4e79;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #163b5c 0%, #0f2d46 100%);
+        border-color: #163b5c;
+    }
+
+    .btn-light {
+        background: #eef2f7;
+        border-color: #e2e8f0;
+    }
+
+    .section-divider {
+        height: 1px;
+        background: #e5eaf1;
+        margin: 1.25rem 0;
+    }
+</style>
+
+<div class="container-fluid page-shell">
+    <div class="card user-card">
+        <div class="user-card-header">
+            <div class="d-flex align-items-center">
+                <div class="icon-badge d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-user-edit fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="header-title">Edit User</h4>
+                    <div class="header-subtitle">Update user profile, role assignment, and access status.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            @using (Html.BeginForm("EditUser", "Admin", FormMethod.Post, new { @class = "needs-validation" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.UserId)
+
+                if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger border-0 rounded-3">
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-5">
+                        <div class="section-card h-30">
+                            <div class="section-label">User Summary</div>
+
+                            <div class="info-box">
+                                <div class="info-title">
+                                    <i class="fa fa-info-circle me-1"></i> Account Details
+                                </div>
+                                <div class="small">
+                                    Update the user information carefully. The selected role controls access permissions across the application.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="section-card h-30">
+                            <div class="section-label">Security Note</div>
+
+                            <div class="info-box">
+                                <div class="info-title">
+                                    <i class="fa fa-shield-alt me-1"></i> Password Update
+                                </div>
+                                <div class="small">
+                                    Leave the password field blank if the current password should remain unchanged.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card mb-4">
+                    <div class="section-label">Account Details</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.UserName, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control form-control-lg", placeholder = "Enter username" })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg", placeholder = "Enter email address" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.FirstName, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control form-control-lg", placeholder = "Enter first name" })
+                            @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.LastName, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control form-control-lg", placeholder = "Enter last name" })
+                            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.SelectedRoleId, "Role", new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.SelectedRoleId, ViewBag.Roles as SelectList, "-- Select Role --", new { @class = "form-select form-select-lg" })
+                            @Html.ValidationMessageFor(m => m.SelectedRoleId, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(m => m.IsActive, "Status", new { @class = "form-label d-block" })
+                            <div class="form-check form-switch mt-2">
+                                @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", id = "IsActive" })
+                                <label class="form-check-label fw-semibold" for="IsActive">Active user</label>
+                            </div>
+                            <div class="form-hint">Inactive users cannot sign in.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card mb-4">
+                    <div class="section-label">Security</div>
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            @Html.LabelFor(m => m.Password, "New Password", new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-lg", placeholder = "Leave blank to keep current password" })
+                            <div class="form-hint">Leave this empty if the password should not be changed.</div>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="form-hint mb-0">
+                        Review the updates before saving the user record.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        @Html.ActionLink("Back to List", "Index", "Admin", null, new { @class = "btn btn-light btn-lg px-4" })
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-save me-2"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

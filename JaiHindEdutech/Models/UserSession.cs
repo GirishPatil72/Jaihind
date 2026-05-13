@@ -16,7 +16,7 @@ namespace JaiHindEdutech.Models
         public string UserImage { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
-        public List<ApplicationList> ApplictaionList { get; set; }
+        //public List<ApplicationList> ApplictaionList { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
@@ -24,23 +24,23 @@ namespace JaiHindEdutech.Models
         /// Gets the user session.
         /// </summary>       
         /// <returns>The user session.</returns>
-        public static AppUser GetUserSession()
-        {
-            AppUser userSession = null;
-            if (System.Web.HttpContext.Current == null)
-            {
-                userSession = new AppUser();
-                userSession.IDMUserID = 1;
-                return userSession;
-            }
-            userSession = System.Web.HttpContext.Current.Session["AppUser"] as AppUser;
-            if (userSession == null)
-            {
-                userSession = new AppUser();
-                HttpContext.Current.Session["LoginUser"] = userSession;
-            }
-            return userSession;
-        }
+        //public static AppUser GetUserSession()
+        //{
+        //    AppUser userSession = null;
+        //    if (System.Web.HttpContext.Current == null)
+        //    {
+        //        userSession = new AppUser();
+        //        userSession.IDMUserID = 1;
+        //        return userSession;
+        //    }
+        //    userSession = System.Web.HttpContext.Current.Session["AppUser"] as AppUser;
+        //    if (userSession == null)
+        //    {
+        //        userSession = new AppUser();
+        //        HttpContext.Current.Session["LoginUser"] = userSession;
+        //    }
+        //    return userSession;
+        //}
 
         /// <summary>
         /// Sets the user session.
@@ -58,25 +58,25 @@ namespace JaiHindEdutech.Models
             }
         }
 
-        public static string GetValueFromSession(string key)
-        {
-            string value = null;
+        //public static string GetValueFromSession(string key)
+        //{
+        //    string value = null;
 
-            switch (key.ToLower())
-            {
-                case "userid":
-                    value = GetUserSession().IDMUserID.ToString();
-                    break;
-                case "role":
-                    value = string.Join(",", GetUserSession().Roles);
-                    break;
-                default:
-                    value = Convert.ToString(HttpContext.Current.Session[key]);
-                    //value = (string)HttpContext.Current.Session[key];
-                    break;
-            }
+        //    switch (key.ToLower())
+        //    {
+        //        case "userid":
+        //            value = GetUserSession().IDMUserID.ToString();
+        //            break;
+        //        case "role":
+        //            value = string.Join(",", GetUserSession().Roles);
+        //            break;
+        //        default:
+        //            value = Convert.ToString(HttpContext.Current.Session[key]);
+        //            //value = (string)HttpContext.Current.Session[key];
+        //            break;
+        //    }
 
-            return value;
-        }
+        //    return value;
+        //}
     }
 }

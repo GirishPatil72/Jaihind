@@ -28,6 +28,8 @@
         <AssociationConnector Association="JaiHindEduModel.AssStudentAddressStudentInfo_FK" ManuallyRouted="false" />
         <AssociationConnector Association="JaiHindEduModel.AssStudentParentInfo_FK" ManuallyRouted="false" />
         <EntityTypeShape EntityType="JaiHindEduModel.FeeReceipt" Width="1.5" PointX="0.75" PointY="14.75" />
+        <EntityTypeShape EntityType="JaiHindEduModel.UserPermission" Width="1.5" PointX="3.375" PointY="14.75" />
+        <EntityTypeShape EntityType="JaiHindEduModel.UserActivityLog" Width="1.5" PointX="5.375" PointY="15.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

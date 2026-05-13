@@ -4,80 +4,294 @@
     ViewBag.Title = "Details";
 }
 
+<style>
+    .details-shell {
+        padding: 1.25rem .5rem;
+    }
 
-<div>
-    <h4>Coaching Centre Details</h4>
-    <hr />
+    .details-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        background: #fff;
+    }
 
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.CoachingCentreName):</b>
-            @Html.DisplayFor(model => model.CoachingCentreName)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.AddressLine1):</b>
-            @Html.DisplayFor(model => model.AddressLine1)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.AddressLine2):</b>
-            @Html.DisplayFor(model => model.AddressLine2)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.City):</b>
-            @Html.DisplayFor(model => model.City)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.State):</b>
-            @Html.DisplayFor(model => model.State)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.Zip):</b>
-            @Html.DisplayFor(model => model.Zip)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.ContactNo1):</b>
-            @Html.DisplayFor(model => model.ContactNo1)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.CreatedOn):</b>
-            @Html.DisplayFor(model => model.CreatedOn)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.CreatedBy):</b>
-            @Html.DisplayFor(model => model.CreatedBy)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.ModifiedOn):</b>
-            @Html.DisplayFor(model => model.ModifiedOn)
-        </span>
-    </div>
-    <div class="row">
-        <span>
-            <b>@Html.LabelFor(model => model.ModifiedBy):</b>
-            @Html.DisplayFor(model => model.ModifiedBy)
-        </span>
-    </div>
+    .details-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid #e5eaf1;
+        padding: 1rem 1.25rem;
+    }
 
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: #64748b;
+        font-size: .95rem;
+    }
+
+    .info-panel {
+        background: #f8fbff;
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        height: 100%;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #64748b;
+        margin-bottom: .85rem;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+        gap: .85rem;
+        padding: .7rem .85rem;
+        border: 1px solid #e5eaf1;
+        border-radius: 12px;
+        background: #fff;
+        margin-bottom: .7rem;
+    }
+
+    .detail-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .detail-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(31, 78, 121, 0.10);
+        color: #1f4e79;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 34px;
+        margin-top: 1px;
+    }
+
+    .detail-label {
+        font-size: .78rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: .15rem;
+    }
+
+    .detail-value {
+        font-size: .98rem;
+        font-weight: 600;
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .actions-card {
+        border: 1px solid #e5eaf1;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1f4e79 0%, #163b5c 100%);
+        border-color: #1f4e79;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #163b5c 0%, #0f2d46 100%);
+        border-color: #163b5c;
+    }
+
+    .btn-light {
+        background: #eef2f7;
+        border-color: #e2e8f0;
+    }
+
+    .compact-detail-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .55rem .75rem;
+        border: 1px solid #e5eaf1;
+        border-radius: 12px;
+        background: #fff;
+        margin-bottom: 0;
+        min-height: 72px;
+    }
+
+    .compact-detail-row .detail-icon {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        margin-top: 0;
+    }
+
+    .compact-detail-row .detail-label {
+        margin-bottom: .1rem;
+    }
+
+    .compact-detail-row .detail-value {
+        line-height: 1.25;
+    }
+</style>
+
+<div class="container-fluid details-shell">
+    <div class="card details-card">
+        <div class="details-card-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                        <i class="fa fa-building fa-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="header-title">Coaching Centre Details</h4>
+                        <div class="header-subtitle">Review the coaching centre profile and contact information.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.CoachingCentreId }, new { @class = "btn btn-primary px-4" })
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-light px-4" })
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="info-panel">
+                        <div class="section-label">Centre Information</div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-signature"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.CoachingCentreName)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.CoachingCentreName)</div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-map-marker-alt"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.AddressLine1)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.AddressLine1)</div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-road"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.AddressLine2)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.AddressLine2)</div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="detail-row h-30 mb-0">
+                                    <div class="detail-icon"><i class="fa fa-city"></i></div>
+                                    <div>
+                                        <div class="detail-label">@Html.LabelFor(model => model.City)</div>
+                                        <div class="detail-value">@Html.DisplayFor(model => model.City)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="detail-row h-30 mb-0">
+                                    <div class="detail-icon"><i class="fa fa-map"></i></div>
+                                    <div>
+                                        <div class="detail-label">@Html.LabelFor(model => model.State)</div>
+                                        <div class="detail-value">@Html.DisplayFor(model => model.State)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="detail-row h-30 mb-0">
+                                    <div class="detail-icon"><i class="fa fa-mail-bulk"></i></div>
+                                    <div>
+                                        <div class="detail-label">@Html.LabelFor(model => model.Zip)</div>
+                                        <div class="detail-value">@Html.DisplayFor(model => model.Zip)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row mt-3">
+                            <div class="detail-icon"><i class="fa fa-phone"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.ContactNo1)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.ContactNo1)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="info-panel">
+                        <div class="section-label">Audit Information</div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-calendar-alt"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.CreatedOn)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.CreatedOn)</div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-user"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.CreatedBy)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.CreatedBy)</div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-icon"><i class="fa fa-edit"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.ModifiedOn)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.ModifiedOn)</div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row mb-0">
+                            <div class="detail-icon"><i class="fa fa-user-edit"></i></div>
+                            <div>
+                                <div class="detail-label">@Html.LabelFor(model => model.ModifiedBy)</div>
+                                <div class="detail-value">@Html.DisplayFor(model => model.ModifiedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.CoachingCentreId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

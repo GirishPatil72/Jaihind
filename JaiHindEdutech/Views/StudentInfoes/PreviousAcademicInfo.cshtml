@@ -1,185 +1,386 @@
 ﻿@model JaiHindEdutech.Models.StudentAcademicViewModel
 
-@using (Ajax.BeginForm("PreviousAcademicInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessAcademicInfo(data)", UpdateTargetId = "wizardContainer" }, new { id = "frmSetAcademicInfo", name = "frmSetAcademicInfo", @class = "col-md-10 mx-auto" }))
+@using (Ajax.BeginForm("PreviousAcademicInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessAcademicInfo(data)", UpdateTargetId = "wizardContainer" }, new { id = "frmSetAcademicInfo", name = "frmSetAcademicInfo", @class = "academic-shell" }))
 {
     @Html.HiddenFor(model => model.StudentInfoId)
     @Html.HiddenFor(model => model.SelectedClass)
-    <h2>10th Class Info</h2>
 
-    @Html.HiddenFor(model => model.TenthClass.StudentPreviousAcademicInfoId)
+    <style>
+        :root {
+            --app-bg: #f4f7fb;
+            --app-surface: #ffffff;
+            --app-border: #e5eaf1;
+            --app-text: #1f2937;
+            --app-muted: #6b7280;
+            --app-primary: #1f4e79;
+            --app-primary-hover: #163b5c;
+            --app-accent: #02adee;
+            --app-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        }
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.ExamName)
+        .academic-shell {
+            padding: 1.25rem .5rem;
+        }
+
+        .academic-card {
+            border: 0;
+            border-radius: 18px;
+            box-shadow: var(--app-shadow);
+            overflow: hidden;
+            background: var(--app-surface);
+        }
+
+        .academic-card-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border-bottom: 1px solid var(--app-border);
+            padding: 1rem 1.25rem;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(2, 173, 238, 0.12);
+            color: #02ADEE;
+            flex: 0 0 46px;
+        }
+
+        .header-title {
+            font-weight: 700;
+            margin-bottom: 0;
+            color: #0f172a;
+        }
+
+        .header-subtitle {
+            color: var(--app-muted);
+            font-size: .95rem;
+        }
+
+        .section-card {
+            background: #fff;
+            border: 1px solid var(--app-border);
+            border-radius: 16px;
+            padding: 1rem 1.1rem;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+            margin-bottom: 1rem;
+        }
+
+        .section-label {
+            font-size: .78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--app-muted);
+            margin-bottom: .85rem;
+        }
+
+        .subheading-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .42rem .75rem;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: var(--app-primary);
+            font-weight: 700;
+            font-size: .9rem;
+            margin-bottom: .85rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 1rem 1.1rem;
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+
+        .info-box .info-title {
+            font-weight: 700;
+            color: var(--app-primary);
+            margin-bottom: .35rem;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: .35rem;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border-color: #dbe3ee;
+            min-height: 46px;
+            box-shadow: none !important;
+        }
+
+        .form-control:focus {
+            border-color: var(--app-accent);
+            box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+        }
+
+        .form-control[readonly] {
+            background-color: #f8fafc;
+            opacity: 1;
+        }
+
+        .invalid-feedback {
+            display: block;
+        }
+
+        .field-hint {
+            font-size: .82rem;
+            color: var(--app-muted);
+            margin-top: .35rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--app-border);
+            margin: 1.25rem 0;
+        }
+
+        .action-bar {
+            background: #f8fbff;
+            border: 1px solid var(--app-border);
+            border-radius: 14px;
+            padding: .9rem 1rem;
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 700;
+            padding: .7rem 1.15rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-hover) 100%);
+            border-color: var(--app-primary);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--app-primary-hover) 0%, #0f2d46 100%);
+            border-color: var(--app-primary-hover);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        @@media (max-width: 991.98px) {
+            .academic-shell {
+                padding: .75rem .25rem;
+            }
+        }
+    </style>
+
+    <div class="card academic-card mx-auto col-md-10">
+        <div class="academic-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-book-open fa-lg"></i>
+                </div>
                 <div>
-                    @Html.EditorFor(model => model.TenthClass.ExamName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.ExamName"] != null && ViewData.ModelState["TenthClass.ExamName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam name", @readonly = "readonly", Value = "Class 10th" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.ExamName, "", new { @class = "error invalid-feedback" })
+                    <h4 class="header-title">Previous Academic Information</h4>
+                    <div class="header-subtitle">Enter Class 10th and Class 11th academic details.</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.Board)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.Board, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.Board"] != null && ViewData.ModelState["TenthClass.Board"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Board" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.Board, "", new { @class = "error invalid-feedback" })
+
+        <div class="card-body p-4 p-lg-5">
+            <div class="info-box">
+                <div class="info-title">
+                    <i class="fa fa-info-circle me-1"></i> Academic Details
+                </div>
+                <div class="small">
+                    Fill the previous examination details carefully. Class 11th information will appear only for applicable students.
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.ExamSeatNo)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.ExamSeatNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.ExamSeatNo"] != null && ViewData.ModelState["TenthClass.ExamSeatNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam Seat No" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.ExamSeatNo, "", new { @class = "error invalid-feedback" })
+
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger border-0 rounded-3" })
+
+            <div class="section-card">
+                <div class="subheading-pill">
+                    <i class="fa fa-graduation-cap"></i> 10th Class Info
+                </div>
+
+                @Html.HiddenFor(model => model.TenthClass.StudentPreviousAcademicInfoId)
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.ExamName, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.ExamName, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control " + (ViewData.ModelState["TenthClass.ExamName"] != null && ViewData.ModelState["TenthClass.ExamName"].Errors.Any() ? "is-invalid" : ""),
+                                    @placeholder = "Exam name",
+                                    @readonly = "readonly",
+                                    Value = "Class 10th"
+                                }
+                            })
+                            @Html.ValidationMessageFor(model => model.TenthClass.ExamName, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.Board, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.Board, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.Board"] != null && ViewData.ModelState["TenthClass.Board"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Board" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.Board, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.ExamSeatNo, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.ExamSeatNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.ExamSeatNo"] != null && ViewData.ModelState["TenthClass.ExamSeatNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam Seat No" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.ExamSeatNo, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.EligibilityCertNo, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.EligibilityCertNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.EligibilityCertNo"] != null && ViewData.ModelState["TenthClass.EligibilityCertNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Eligibility Certificate No" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.EligibilityCertNo, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.SchoolOrCollege, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.SchoolOrCollege, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.SchoolOrCollege"] != null && ViewData.ModelState["TenthClass.SchoolOrCollege"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Name of School Or College" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.SchoolOrCollege, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.MonthYearOfPassing, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.MonthYearOfPassing, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.MonthYearOfPassing"] != null && ViewData.ModelState["TenthClass.MonthYearOfPassing"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Month & Year Of Passing" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.MonthYearOfPassing, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.TotalMarks, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.TotalMarks, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.TotalMarks"] != null && ViewData.ModelState["TenthClass.TotalMarks"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Total Marks Obtained" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.TotalMarks, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TenthClass.Percentage, new { @class = "form-label" })
+                            @Html.EditorFor(model => model.TenthClass.Percentage, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.Percentage"] != null && ViewData.ModelState["TenthClass.Percentage"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Percentage" } })
+                            @Html.ValidationMessageFor(model => model.TenthClass.Percentage, "", new { @class = "error invalid-feedback" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="eleventhClassForm" style="display:none;">
+                <div class="divider"></div>
+
+                <div class="section-card">
+                    <div class="subheading-pill">
+                        <i class="fa fa-book"></i> 11th Class Info
+                    </div>
+
+                    @Html.HiddenFor(model => model.EleventhClass.StudentPreviousAcademicInfoId)
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.ExamName, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.ExamName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.ExamName"] != null && ViewData.ModelState["EleventhClass.ExamName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam name", @readonly = "readonly", Value = "Class 11th" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.ExamName, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.Board, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.Board, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.Board"] != null && ViewData.ModelState["EleventhClass.Board"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Board" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.Board, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.ExamSeatNo, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.ExamSeatNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.ExamSeatNo"] != null && ViewData.ModelState["EleventhClass.ExamSeatNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam Seat No" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.ExamSeatNo, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.EligibilityCertNo, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.EligibilityCertNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.EligibilityCertNo"] != null && ViewData.ModelState["EleventhClass.EligibilityCertNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Eligibility Certificate No" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.EligibilityCertNo, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.SchoolOrCollege, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.SchoolOrCollege, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.SchoolOrCollege"] != null && ViewData.ModelState["EleventhClass.SchoolOrCollege"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Name of School Or College" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.SchoolOrCollege, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.MonthYearOfPassing, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.MonthYearOfPassing, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.MonthYearOfPassing"] != null && ViewData.ModelState["EleventhClass.MonthYearOfPassing"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Month & Year Of Passing" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.MonthYearOfPassing, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.TotalMarks, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.TotalMarks, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.TotalMarks"] != null && ViewData.ModelState["EleventhClass.TotalMarks"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Total Marks Obtained" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.TotalMarks, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.EleventhClass.Percentage, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.EleventhClass.Percentage, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.Percentage"] != null && ViewData.ModelState["EleventhClass.Percentage"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Percentage" } })
+                                @Html.ValidationMessageFor(model => model.EleventhClass.Percentage, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="action-bar">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="field-hint mb-0">
+                        Review the academic details before continuing to the next step.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" onclick="loadStep(4)" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fa fa-arrow-left me-2"></i> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-arrow-right me-2"></i> Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.EligibilityCertNo)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.EligibilityCertNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.EligibilityCertNo"] != null && ViewData.ModelState["TenthClass.EligibilityCertNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Eligibility Certificate No" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.EligibilityCertNo, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.SchoolOrCollege)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.SchoolOrCollege, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.SchoolOrCollege"] != null && ViewData.ModelState["TenthClass.SchoolOrCollege"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Name of School Or College" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.SchoolOrCollege, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.MonthYearOfPassing)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.MonthYearOfPassing, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.MonthYearOfPassing"] != null && ViewData.ModelState["TenthClass.MonthYearOfPassing"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Month & Year Of Passing" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.MonthYearOfPassing, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.TotalMarks)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.TotalMarks, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.TotalMarks"] != null && ViewData.ModelState["TenthClass.TotalMarks"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Total Marks Obtained" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.TotalMarks, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                @Html.LabelFor(model => model.TenthClass.Percentage)
-                <div>
-                    @Html.EditorFor(model => model.TenthClass.Percentage, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["TenthClass.Percentage"] != null && ViewData.ModelState["TenthClass.Percentage"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Percentage" } })
-                    @Html.ValidationMessageFor(model => model.TenthClass.Percentage, "", new { @class = "error invalid-feedback" })
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="eleventhClassForm" style="display:none;">
-        <div class="divider"></div>
-        <h2>11th Class Info</h2>
-
-        @Html.HiddenFor(model => model.EleventhClass.StudentPreviousAcademicInfoId)
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.ExamName)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.ExamName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.ExamName"] != null && ViewData.ModelState["EleventhClass.ExamName"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam name", @readonly = "readonly", Value = "Class 11th" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.ExamName, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.Board)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.Board, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.Board"] != null && ViewData.ModelState["EleventhClass.Board"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Board" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.Board, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.ExamSeatNo)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.ExamSeatNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.ExamSeatNo"] != null && ViewData.ModelState["EleventhClass.ExamSeatNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Exam Seat No" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.ExamSeatNo, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.EligibilityCertNo)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.EligibilityCertNo, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.EligibilityCertNo"] != null && ViewData.ModelState["EleventhClass.EligibilityCertNo"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Eligibility Certificate No" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.EligibilityCertNo, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.SchoolOrCollege)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.SchoolOrCollege, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.SchoolOrCollege"] != null && ViewData.ModelState["EleventhClass.SchoolOrCollege"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Name of School Or College" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.SchoolOrCollege, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.MonthYearOfPassing)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.MonthYearOfPassing, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.MonthYearOfPassing"] != null && ViewData.ModelState["EleventhClass.MonthYearOfPassing"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Month & Year Of Passing" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.MonthYearOfPassing, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.TotalMarks)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.TotalMarks, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.TotalMarks"] != null && ViewData.ModelState["EleventhClass.TotalMarks"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Total Marks Obtained" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.TotalMarks, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.EleventhClass.Percentage)
-                    <div>
-                        @Html.EditorFor(model => model.EleventhClass.Percentage, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState["EleventhClass.Percentage"] != null && ViewData.ModelState["EleventhClass.Percentage"].Errors.Any() ? "is-invalid" : ""), @placeholder = "Percentage" } })
-                        @Html.ValidationMessageFor(model => model.EleventhClass.Percentage, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="clearfix">
-        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
-        <button type="button" onclick="loadStep(4)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
-    </div>
-
 }
 
 <script type="text/javascript">
@@ -188,9 +389,13 @@
             loadStep(6, 5, data.StudentInfoId);
         }
     };
+
     $(function () {
         function toggleEleventhClassForm() {
-            if ($('#SelectedClass').val().includes("12th")) {
+            var selectedClass = ($('#SelectedClass').val() || '').toLowerCase();
+
+            // Show 11th class details only when current class implies 12th admission flow.
+            if (selectedClass.indexOf("12th") !== -1 || selectedClass.indexOf("xi") !== -1) {
                 $('#eleventhClassForm').slideDown();
             } else {
                 $('#eleventhClassForm').slideUp();
@@ -198,6 +403,6 @@
         }
 
         $('#SelectedClass').change(toggleEleventhClassForm);
-        toggleEleventhClassForm(); // Call on load
+        toggleEleventhClassForm();
     });
 </script>

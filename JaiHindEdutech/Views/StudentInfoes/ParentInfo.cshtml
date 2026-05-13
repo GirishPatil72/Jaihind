@@ -1,120 +1,351 @@
-﻿
-@model JaiHindEdutech.Models.ParentInfoFormModel
+﻿@model JaiHindEdutech.Models.ParentInfoFormModel
 
-@using (Ajax.BeginForm("ParentInfoPost", "StudentInfoes", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessParentInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "col-md-10 mx-auto" }))
-{
-    @Html.HiddenFor(m => m.StudentInfoId)
-    for (int i = 0; i < Model.Parents.Count; i++)
-    {
-        @Html.HiddenFor(model => model.Parents[i].ParentInfoId)
-        @Html.HiddenFor(model => model.Parents[i].ParentType)
-        @Html.HiddenFor(model => model.Parents[i].CreatedBy)
-        @Html.HiddenFor(model => model.Parents[i].CreatedOn)
-        @Html.HiddenFor(model => model.Parents[i].ModifiedBy)
-        @Html.HiddenFor(model => model.Parents[i].ModifiedOn)
-        @Html.HiddenFor(model => model.Parents[i].IsActive)
-        @Html.HiddenFor(model => model.Parents[i].IsDeleted)
-
-        <h2>@Model.Parents[i].ParentType.ToString()</h2>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].FullName)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].FullName, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].FullName", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].FullName", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Full Name" } })
-                        @Html.ValidationMessageFor(model => model.Parents[i].FullName, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].Occupation)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].Occupation, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Occupation" } })
-                        @Html.ValidationMessageFor(model => model.Parents[i].Occupation, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].AadharNo)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].AadharNo, new
-                   {
-                       htmlAttributes = new
-                       {
-                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)].Errors.Any() ? "is-invalid" : ""),
-                           @placeholder = "Aadhar No",
-                           type = "number",
-                           maxlength = "12",
-                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                       }
-                   })
-                        @Html.ValidationMessageFor(model => model.Parents[i].AadharNo, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].AnnualIncome)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].AnnualIncome, new
-                   {
-                       htmlAttributes = new
-                       {
-                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)].Errors.Any() ? "is-invalid" : ""),
-                           @placeholder = "Annual Income",
-                           type = "number",
-                           maxlength = "12",
-                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                       }
-                   })
-                        @Html.ValidationMessageFor(model => model.Parents[i].AnnualIncome, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].MobileNo)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].MobileNo, new
-                   {
-                       htmlAttributes = new
-                       {
-                           @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)].Errors.Any() ? "is-invalid" : ""),
-                           @placeholder = "Mobile No",
-                           maxlength = "10",
-                           type = "number",
-                           oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
-                       }
-                   })
-                        @Html.ValidationMessageFor(model => model.Parents[i].MobileNo, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Parents[i].EmailId)
-                    <div>
-                        @Html.EditorFor(model => model.Parents[i].EmailId, new { htmlAttributes = new { @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)].Errors.Any() ? "is-invalid" : ""), @placeholder = "Email Id", type = "email" } })
-                        @Html.ValidationMessageFor(model => model.Parents[i].EmailId, "", new { @class = "error invalid-feedback" })
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    <div class="divider"></div>
-    <div class="clearfix">
-        <button type="submit" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
-
-        <button type="button" onclick="loadStep(1)" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
-    </div>
+@{
+    Layout = null;
 }
 
+<style>
+    :root {
+        --app-bg: #f4f7fb;
+        --app-surface: #ffffff;
+        --app-border: #e5eaf1;
+        --app-text: #1f2937;
+        --app-muted: #6b7280;
+        --app-primary: #1f4e79;
+        --app-primary-hover: #163b5c;
+        --app-accent: #02adee;
+        --app-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .parent-shell {
+        padding: 1.25rem .5rem;
+    }
+
+    .parent-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: var(--app-shadow);
+        overflow: hidden;
+        background: var(--app-surface);
+    }
+
+    .parent-card-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid var(--app-border);
+        padding: 1rem 1.25rem;
+    }
+
+    .header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(2, 173, 238, 0.12);
+        color: #02ADEE;
+        flex: 0 0 46px;
+    }
+
+    .header-title {
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #0f172a;
+    }
+
+    .header-subtitle {
+        color: var(--app-muted);
+        font-size: .95rem;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid var(--app-border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        margin-bottom: 1rem;
+    }
+
+    .section-label {
+        font-size: .78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: var(--app-muted);
+        margin-bottom: .85rem;
+    }
+
+    .parent-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .42rem .75rem;
+        border-radius: 999px;
+        background: #eef6ff;
+        color: var(--app-primary);
+        font-weight: 700;
+        font-size: .9rem;
+        margin-bottom: .85rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: .35rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border-color: #dbe3ee;
+        min-height: 46px;
+        box-shadow: none !important;
+    }
+
+    .form-control:focus {
+        border-color: var(--app-accent);
+        box-shadow: 0 0 0 0.2rem rgba(2, 173, 238, 0.12) !important;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .invalid-feedback {
+        display: block;
+    }
+
+    .field-hint {
+        font-size: .82rem;
+        color: var(--app-muted);
+        margin-top: .35rem;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        color: #334155;
+    }
+
+    .info-box .info-title {
+        font-weight: 700;
+        color: var(--app-primary);
+        margin-bottom: .35rem;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--app-border);
+        margin: 1.25rem 0;
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: .7rem 1.15rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-hover) 100%);
+        border-color: var(--app-primary);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--app-primary-hover) 0%, #0f2d46 100%);
+        border-color: var(--app-primary-hover);
+    }
+
+    .btn-outline-secondary {
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .action-bar {
+        background: #f8fbff;
+        border: 1px solid var(--app-border);
+        border-radius: 14px;
+        padding: .9rem 1rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        .parent-shell {
+            padding: .75rem .25rem;
+        }
+    }
+</style>
+
+@using (Ajax.BeginForm("ParentInfoPost", "StudentInfoes", null,
+    new AjaxOptions
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        OnSuccess = "ajaxSuccessParentInfo(data)",
+        UpdateTargetId = "wizardContainer"
+    },
+    new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "parent-shell" }))
+{
+    @Html.HiddenFor(m => m.StudentInfoId)
+
+    <div class="card parent-card mx-auto col-md-10">
+        <div class="parent-card-header">
+            <div class="d-flex align-items-center">
+                <div class="header-icon d-inline-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-users fa-lg"></i>
+                </div>
+                <div>
+                    <h4 class="header-title">Parent Information</h4>
+                    <div class="header-subtitle">Enter guardian details, contact information, and identification data.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            @*@Html.ValidationSummary(true, "", new { @class = "alert alert-danger border-0 rounded-3" })*@
+
+            @for (int i = 0; i < Model.Parents.Count; i++)
+            {
+                @Html.HiddenFor(model => model.Parents[i].ParentInfoId)
+                @Html.HiddenFor(model => model.Parents[i].ParentType)
+                @Html.HiddenFor(model => model.Parents[i].CreatedBy)
+                @Html.HiddenFor(model => model.Parents[i].CreatedOn)
+                @Html.HiddenFor(model => model.Parents[i].ModifiedBy)
+                @Html.HiddenFor(model => model.Parents[i].ModifiedOn)
+                @Html.HiddenFor(model => model.Parents[i].IsActive)
+                @Html.HiddenFor(model => model.Parents[i].IsDeleted)
+
+                <div class="section-card">
+                    <div class="parent-badge">
+                        <i class="fa fa-id-card"></i>
+                        @Model.Parents[i].ParentType.ToString()
+                    </div>
+
+                    <div class="section-label">Basic Details</div>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].FullName, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].FullName, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].FullName", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].FullName", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Full Name"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].FullName, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].Occupation, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].Occupation, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].Occupation", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Occupation"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].Occupation, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].AadharNo, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].AadharNo, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AadharNo", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Aadhar No",
+                                        type = "number",
+                                        maxlength = "12",
+                                        oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].AadharNo, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].AnnualIncome, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].AnnualIncome, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].AnnualIncome", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Annual Income",
+                                        type = "number",
+                                        maxlength = "12",
+                                        oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].AnnualIncome, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-label mt-4">Contact Details</div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].MobileNo, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].MobileNo, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].MobileNo", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Mobile No",
+                                        maxlength = "10",
+                                        type = "number",
+                                        oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].MobileNo, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Parents[i].EmailId, new { @class = "form-label" })
+                                @Html.EditorFor(model => model.Parents[i].EmailId, new
+                                {
+                                    htmlAttributes = new
+                                    {
+                                        @class = "form-control " + (ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)] != null && ViewData.ModelState[string.Format("Parents[{0}].EmailId", i)].Errors.Any() ? "is-invalid" : ""),
+                                        @placeholder = "Email Id",
+                                        type = "email"
+                                    }
+                                })
+                                @Html.ValidationMessageFor(model => model.Parents[i].EmailId, "", new { @class = "error invalid-feedback" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="divider"></div>
+
+            <div class="action-bar">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="field-hint mb-0">
+                        Review the parent details before continuing to the next step.
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" onclick="loadStep(1)" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fa fa-arrow-left me-2"></i> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fa fa-arrow-right me-2"></i> Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <script type="text/javascript">
     function ajaxSuccessParentInfo(data) {
@@ -122,5 +353,4 @@
             loadStep(3, 2, data.StudentInfoId);
         }
     };
-
 </script>

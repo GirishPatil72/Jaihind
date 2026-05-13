@@ -1,13 +1,120 @@
 ﻿@model JaiHindEdutech.Models.AdmissionConfirmationModel
 @using System.Web.Configuration
+@using System.Linq
 @{
     ViewBag.Title = "GenerateFormPDF";
     Layout = null;
+
+    var dummyPhotoUrl = Url.Content("~/Content/assets/images/avatars/1.jpg");
+    var dummySignatureUrl = dummyPhotoUrl;
+
+    //var uploadedImages = Model != null && Model.uploadedImagesModel != null
+    //    ? Model.uploadedImagesModel
+    //    : new List<JaiHindEdutech.Entity.DocumentSubmitted>();
+
+    var uploadedImages = Model != null && Model.uploadedImagesModel != null
+       ? Model.uploadedImagesModel
+       : new List<JaiHindEdutech.Models.UploadedImagesModel>();
+
+    var studentPhoto = uploadedImages.FirstOrDefault(x =>
+x.DocumentOwner == "Student" &&
+x.DocumentType == "StudentPhoto" &&
+!string.IsNullOrWhiteSpace(x.DocumentURL));
+    var studentPhotoUrl = studentPhoto != null && !string.IsNullOrWhiteSpace(studentPhoto.DocumentURL)
+        ? studentPhoto.DocumentURL
+        : dummyPhotoUrl;
+
+    var studentSignature = uploadedImages.FirstOrDefault(x =>
+        x.DocumentOwner == "Student" &&
+        x.DocumentType == "StudentSignature" &&
+        !string.IsNullOrWhiteSpace(x.DocumentURL));
+    var studentSignatureUrl = studentSignature != null && !string.IsNullOrWhiteSpace(studentSignature.DocumentURL)
+        ? studentSignature.DocumentURL
+        : dummySignatureUrl;
+
+    var fatherPhoto = uploadedImages.FirstOrDefault(x =>
+        x.DocumentOwner == "Father" &&
+        x.DocumentType == "FathersPhoto" &&
+        !string.IsNullOrWhiteSpace(x.DocumentURL));
+    var fatherPhotoUrl = fatherPhoto != null && !string.IsNullOrWhiteSpace(fatherPhoto.DocumentURL)
+        ? fatherPhoto.DocumentURL
+        : dummyPhotoUrl;
+
+    var fatherSignature = uploadedImages.FirstOrDefault(x =>
+        x.DocumentOwner == "Father" &&
+        x.DocumentType == "FathersSignature" &&
+        !string.IsNullOrWhiteSpace(x.DocumentURL));
+    var fatherSignatureUrl = fatherSignature != null && !string.IsNullOrWhiteSpace(fatherSignature.DocumentURL)
+        ? fatherSignature.DocumentURL
+        : dummySignatureUrl;
+
+    var motherPhoto = uploadedImages.FirstOrDefault(x =>
+        x.DocumentOwner == "Mother" &&
+        x.DocumentType == "MothersPhoto" &&
+        !string.IsNullOrWhiteSpace(x.DocumentURL));
+    var motherPhotoUrl = motherPhoto != null && !string.IsNullOrWhiteSpace(motherPhoto.DocumentURL)
+        ? motherPhoto.DocumentURL
+        : dummyPhotoUrl;
+
+    var motherSignature = uploadedImages.FirstOrDefault(x =>
+        x.DocumentOwner == "Mother" &&
+        x.DocumentType == "MothersSignature" &&
+        !string.IsNullOrWhiteSpace(x.DocumentURL));
+    var motherSignatureUrl = motherSignature != null && !string.IsNullOrWhiteSpace(motherSignature.DocumentURL)
+        ? motherSignature.DocumentURL
+        : dummySignatureUrl;
 }
 <style>
     @@page {
         size: A4;
-        margin: 20mm;
+        margin: 12mm;
+    }
+
+    @@media print {
+        .no-print {
+            display: none !important;
+        }
+
+        a[href]::after {
+            content: "" !important;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        th, td {
+            word-break: break-word;
+        }
+
+        dl.card,
+        table,
+        tr,
+        td,
+        th {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        h2, h3, h4, h5 {
+            page-break-after: avoid;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+    }
+
+    /* keep this as spacing only, do not force a page break */
+    .divider {
+        margin: 12px 0;
     }
 
     body {
@@ -15,11 +122,6 @@
         font-size: 12px;
         margin: 0;
         padding: 0;
-    }
-
-    .divider {
-        page-break-after: always;
-        margin: 30px 0;
     }
 
     img {
@@ -59,39 +161,36 @@
         padding: 1px 0;
     }
 
-
     .photo-cell {
         text-align: center;
         padding: 10px;
         vertical-align: top;
-        width: 150px; /* Set width to maintain consistent size */
+        width: 150px;
     }
 
-        .photo-cell img.photo {
-            width: 100%; /* Ensures the photo stretches within the container */
-            height: auto;
-            object-fit: cover;
-            border: 1px solid #000;
-            margin: 5px 0;
-            height: 150px !important;
-        }
+    .photo-cell img.photo {
+        width: 100%;
+        height: 150px !important;
+        object-fit: cover;
+        border: 1px solid #000;
+        margin: 5px 0;
+        display: block;
+    }
 
-        .photo-cell img.signature {
-            width: 100%; /* Ensure signature image fits within the width */
-            height: 50px; /* Reduced height for signature */
-            object-fit: contain;
-            border: 1px solid #000;
-            margin: 5px 0;
-        }
+    .photo-cell img.signature {
+        width: 100%;
+        height: 50px;
+        object-fit: contain;
+        border: 1px solid #000;
+        margin: 5px 0;
+        display: block;
+    }
 
     .photo-label {
         font-weight: bold;
         margin-bottom: 5px;
+        font-size: 12px;
     }
-
-
-
-
 
     .checkbox-grid {
         width: 100%;
@@ -99,22 +198,22 @@
         margin-bottom: 20px;
     }
 
-        .checkbox-grid .column {
-            float: left;
-            width: 33.33%;
-            box-sizing: border-box;
-            padding: 0 10px;
-        }
+    .checkbox-grid .column {
+        float: left;
+        width: 33.33%;
+        box-sizing: border-box;
+        padding: 0 10px;
+    }
 
-        .checkbox-grid .form-check {
-            margin-bottom: 10px;
-        }
+    .checkbox-grid .form-check {
+        margin-bottom: 10px;
+    }
 
-        .checkbox-grid::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
+    .checkbox-grid::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 
     h3 {
         margin-top: 0;
@@ -123,14 +222,17 @@
 
     dl.card {
         border: 1px solid #ccc;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
 
     .p-3 {
-        padding: 15px;
+        padding: 10px;
     }
 </style>
 
+<div class="no-print" style="text-align: right; margin: 10px 0 15px 0;">
+    <button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
+</div>
 
 <dl class="card p-3">
     <table class="table table-bordered">
@@ -158,62 +260,28 @@
 
 <div class="row centered-header"><h2>Class @Model.studentInfoModel.ClassName Admission Form @WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString(): @Model.studentInfoModel.Stream</h2></div>
 
-@if (Model.uploadedImagesModel.Count > 0)
-{
-    <dl class="card p-3">
-        <table style="width: 100%; margin-top: 20px;">
+<dl class="card p-3">
+    <table style="width: 100%; margin-top: 6px;">
+        <tr>
+            <td class="photo-cell">
+                <div class="photo-label">Student</div>
+                <img class="photo" src="@studentPhotoUrl" alt="Student Photo" /><br />
+                <img class="signature" src="@studentSignatureUrl" alt="Student Signature" />
+            </td>
+            <td class="photo-cell">
+                <div class="photo-label">Father</div>
+                <img class="photo" src="@fatherPhotoUrl" alt="Father Photo" /><br />
+                <img class="signature" src="@fatherSignatureUrl" alt="Father Signature" />
+            </td>
+            <td class="photo-cell">
+                <div class="photo-label">Mother</div>
+                <img class="photo" src="@motherPhotoUrl" alt="Mother Photo" /><br />
+                <img class="signature" src="@motherSignatureUrl" alt="Mother Signature" />
+            </td>
+        </tr>
+    </table>
+</dl>
 
-            <tr>
-                <td class="photo-cell">
-                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Student"))
-                    {
-
-                        if (image.DocumentType == "StudentPhoto")
-                        {
-                            <div class="photo-label">Student</div>
-                            <img class="photo" src="@image.DocumentURL" alt="Student Photo" /><br />
-                        }
-                        else if (image.DocumentType == "StudentSignature")
-                        {
-                            <img class="signature" src="@image.DocumentURL" alt="Student Signature" />
-                        }
-                    }
-
-                </td>
-                <td class="photo-cell">
-                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Father"))
-                    {
-
-                        if (image.DocumentType == "FathersPhoto")
-                        {
-                            <div class="photo-label">Father</div>
-                            <img class="photo" src="@image.DocumentURL" alt="Fathers Photo" /><br />
-                        }
-                        else if (image.DocumentType == "FathersSignature")
-                        {
-                            <img class="signature" src="@image.DocumentURL" alt="Fathers Signature" />
-                        }
-                    }
-                </td>
-                <td class="photo-cell">
-                    @foreach (var image in Model.uploadedImagesModel.Where(x => x.DocumentOwner == "Mother"))
-                    {
-
-                        if (image.DocumentType == "MothersPhoto")
-                        {
-                            <div class="photo-label">Mother</div>
-                            <img class="photo" src="@image.DocumentURL" alt="Mothers Photo" /><br />
-                        }
-                        else if (image.DocumentType == "MothersSignature")
-                        {
-                            <img class="signature" src="@image.DocumentURL" alt="Mothers Signature" />
-                        }
-                    }
-                </td>
-            </tr>
-        </table>
-    </dl>
-}
 @*<dl class="card p-3">
         <table class="table table-bordered">
             @foreach (var image in Model.uploadedImagesModel)
@@ -326,7 +394,6 @@
 <div class="divider"></div>
 
 <dl class="card p-3">
-
     @for (int i = 0; i < Model.addressInfoFormModel.Address.Count; i++)
     {
         <h3>@Model.addressInfoFormModel.Address[i].AddressType.ToString()</h3>
@@ -370,8 +437,6 @@
         </table>
     }
 </dl>
-
-
 
 
 

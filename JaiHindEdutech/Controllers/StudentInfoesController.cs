@@ -1,4 +1,5 @@
-﻿using JaiHindEdutech.Models;
+﻿using JaiHindEdutech.Infrastructure;
+using JaiHindEdutech.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,13 @@ namespace JaiHindEdutech.Controllers
 {
     public class StudentInfoesController : BaseController
     {
+        private string CurrentUserName
+        {
+            get { return User != null && User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty; }
+        }
         // GET: StudentInfoes
+
+        [PermissionAuthorize(Right = "Create,Edit")]
         public ActionResult Index(int collegeId, string collegeName, int studentInfoId = 0)
         {
             ViewBag.collegeId = collegeId;
@@ -50,9 +57,9 @@ namespace JaiHindEdutech.Controllers
             }
             if (ModelState.IsValid)
             {
-                studentInfoModel.CreatedBy = Session["UserName"].ToString();
+                studentInfoModel.CreatedBy = CurrentUserName;
                 studentInfoModel.CreatedOn = DateTime.Now;
-                studentInfoModel.ModifiedBy = Session["UserName"].ToString();
+                studentInfoModel.ModifiedBy = CurrentUserName;
                 studentInfoModel.ModifiedOn = DateTime.Now;
                 int studentInfoId = studentInfoBL.CreateStudentInfo(studentInfoModel);
                 bool result = false;
@@ -82,9 +89,9 @@ namespace JaiHindEdutech.Controllers
             {
                 foreach (var parent in parentInfoFormModel.Parents)
                 {
-                    parent.CreatedBy = Session["UserName"].ToString();
+                    parent.CreatedBy = CurrentUserName;
                     parent.CreatedOn = DateTime.Now;
-                    parent.ModifiedBy = Session["UserName"].ToString();
+                    parent.ModifiedBy = CurrentUserName;
                     parent.ModifiedOn = DateTime.Now;
                     parent.StudentInfoId = parentInfoFormModel.StudentInfoId;
                     studentInfoBL.CreateParentInfo(parent);
@@ -109,9 +116,9 @@ namespace JaiHindEdutech.Controllers
             {
                 foreach (var address in addressInfoFormModel.Address)
                 {
-                    address.CreatedBy = Session["UserName"].ToString();
+                    address.CreatedBy = CurrentUserName;
                     address.CreatedOn = DateTime.Now;
-                    address.ModifiedBy = Session["UserName"].ToString();
+                    address.ModifiedBy = CurrentUserName;
                     address.ModifiedOn = DateTime.Now;
                     address.StudentInfoId = addressInfoFormModel.StudentInfoId;
                     studentInfoBL.CreateAddressInfo(address);
@@ -179,7 +186,13 @@ namespace JaiHindEdutech.Controllers
 
                         string baseUrl = Request.Url.GetLeftPart(UriPartial.Authority);
                         baseUrl = baseUrl + "/Uploads/" + fileName;
-                        int DocumentId = studentInfoBL.SaveUploadedDocument(studentInfoId, fileItem.FileOwner, baseUrl, fileName, fileItem.File.ContentLength, Session["UserName"].ToString());
+                        int DocumentId = studentInfoBL.SaveUploadedDocument(
+                        studentInfoId,
+                        fileItem.FileOwner,
+                        baseUrl,
+                        fileName,
+                        fileItem.File.ContentLength,
+                        CurrentUserName);
                     }
                 }
                 return Json(new { result = true, StudentInfoId = studentInfoId });
@@ -216,9 +229,9 @@ namespace JaiHindEdutech.Controllers
 
             if (ModelState.IsValid)
             {
-                academicViewModel.CreatedBy = Session["UserName"].ToString();
+                academicViewModel.CreatedBy = CurrentUserName;;
                 academicViewModel.CreatedOn = DateTime.Now;
-                academicViewModel.ModifiedBy = Session["UserName"].ToString();
+                academicViewModel.ModifiedBy = CurrentUserName;
                 academicViewModel.ModifiedOn = DateTime.Now;
                 academicViewModel.StudentInfoId = academicViewModel.StudentInfoId;
                 studentInfoBL.CreatePreviousAcademicInfo(academicViewModel);
@@ -238,11 +251,11 @@ namespace JaiHindEdutech.Controllers
             if (ModelState.IsValid)
             {
                 subjectsAndDocumentsSelectionModel.subjectSelectionModel.AddmissionFormId = studentInfoBL.GetClassInfoByStudentInfoId(subjectsAndDocumentsSelectionModel.StudentInfoId).AddmissionFormId;
-                subjectsAndDocumentsSelectionModel.subjectSelectionModel.CreatedBy = Session["UserName"].ToString();
+                subjectsAndDocumentsSelectionModel.subjectSelectionModel.CreatedBy = CurrentUserName;
+                subjectsAndDocumentsSelectionModel.documentSelectionModel.AddmissionFormId = studentInfoBL.GetClassInfoByStudentInfoId(subjectsAndDocumentsSelectionModel.StudentInfoId).AddmissionFormId;
+                subjectsAndDocumentsSelectionModel.documentSelectionModel.CreatedBy = CurrentUserName;
                 studentInfoBL.SaveSelectedSubjectsInfo(subjectsAndDocumentsSelectionModel.subjectSelectionModel);
 
-                subjectsAndDocumentsSelectionModel.documentSelectionModel.AddmissionFormId = studentInfoBL.GetClassInfoByStudentInfoId(subjectsAndDocumentsSelectionModel.StudentInfoId).AddmissionFormId;
-                subjectsAndDocumentsSelectionModel.documentSelectionModel.CreatedBy = Session["UserName"].ToString();
                 studentInfoBL.SaveSelectedDocumentInfo(subjectsAndDocumentsSelectionModel.documentSelectionModel);
 
                 return Json(new { result = true, StudentInfoId = subjectsAndDocumentsSelectionModel.StudentInfoId });
@@ -260,7 +273,7 @@ namespace JaiHindEdutech.Controllers
             admissionConfirmationModel.ParentInfoFormModel = studentInfoBL.GetParentInfoByStudentInfoId(studentInfoId);
             admissionConfirmationModel.addressInfoFormModel = studentInfoBL.GetAddressInfoByStudentInfoId(studentInfoId);
             admissionConfirmationModel.previousAcademicInfoModel.TenthClass = studentInfoBL.GetAcademicStudentInfoId(studentInfoId, "Class 10th");
-            admissionConfirmationModel.previousAcademicInfoModel.EleventhClass = studentInfoBL.GetAcademicStudentInfoId(studentInfoId, "Class 11th");
+            admissionConfirmationModel.previousAcademicInfoModel.EleventhClass = studentInfoBL.GetAcademicStudentInfoId(studentInfoId, "Class 11st");
             admissionConfirmationModel.subjectSelectionModel = studentInfoBL.GetSelectedSubject(studentInfoId);
             admissionConfirmationModel.documentSelectionModel = studentInfoBL.GetSelectedDocument(studentInfoId);
             return PartialView(admissionConfirmationModel);

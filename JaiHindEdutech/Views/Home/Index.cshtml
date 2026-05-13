@@ -1,31 +1,498 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model JaiHindEdutech.Models.HomeDashboardViewModel
+@using System.Linq
+@{
+    ViewBag.Title = "Dashboard";
 }
 
-@*<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<style>
+    .dashboard-shell {
+        padding: 8px 4px 24px;
+    }
+
+    .hero-card {
+        background: linear-gradient(135deg, #163b5c 0%, #1f4e79 48%, #02adee 100%);
+        color: #fff;
+        border: 0;
+        border-radius: 22px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, .16);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .hero-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(255,255,255,.16), transparent 35%);
+        pointer-events: none;
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
+        font-weight: 800;
+        margin-bottom: .35rem;
+    }
+
+    .hero-subtitle {
+        color: rgba(255,255,255,.88);
+        margin-bottom: 0;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .45rem .75rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.18);
+        font-weight: 600;
+    }
+
+    .metric-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 18px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .metric-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.3rem;
+        flex: 0 0 54px;
+    }
+
+    .metric-label {
+        font-size: .82rem;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        color: #6b7280;
+        font-weight: 700;
+    }
+
+    .metric-value {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #111827;
+        line-height: 1.1;
+    }
+
+    .metric-footer {
+        color: #6b7280;
+        font-size: .92rem;
+    }
+
+    .chart-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 18px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+        height: 100%;
+    }
+
+    .chart-header {
+        padding: 16px 18px 0;
+    }
+
+    .chart-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 4px;
+    }
+
+    .chart-subtitle {
+        color: #6b7280;
+        font-size: .92rem;
+        margin-bottom: 0;
+    }
+
+    .chart-body {
+        padding: 12px 18px 18px;
+    }
+
+    .chart-wrap {
+        position: relative;
+        min-height: 320px;
+    }
+
+    .table-card {
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 18px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+    }
+
+    .table-card .card-body {
+        padding: 0;
+    }
+
+    .table thead th {
+        background: #eaf2f8;
+        color: #1f4e79;
+        font-weight: 800;
+        border-bottom: 1px solid #dbe3ee !important;
+        white-space: nowrap;
+    }
+
+    .rank-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: #eef6ff;
+        color: #1f4e79;
+        font-weight: 800;
+    }
+
+    .top-college-name {
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .progress {
+        height: 8px;
+        background: #e9eef5;
+        border-radius: 999px;
+    }
+
+    .progress-bar {
+        border-radius: 999px;
+    }
+
+    .empty-state {
+        padding: 40px 18px;
+        text-align: center;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        color: #cbd5e1;
+        display: block;
+        margin-bottom: .75rem;
+    }
+</style>
+
+<div class="container-fluid dashboard-shell">
+
+    <div class="hero-card p-4 mb-4">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 position-relative" style="z-index:1;">
+            <div>
+                <div class="hero-badge mb-3">
+                    <i class="fa fa-line-chart"></i>
+                    Admissions Reporting Dashboard
+                </div>
+                <div class="hero-title">Collegewise and Academic Year Wise Admissions</div>
+                <p class="hero-subtitle">A live summary of admissions, top colleges, and academic year trends.</p>
+            </div>
+            <div class="text-end">
+                <div class="hero-badge mb-2">
+                    <i class="fa fa-calendar"></i>
+                    Current Academic Year: @Model.CurrentAcademicYearName
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="metric-icon" style="background: linear-gradient(135deg, #1f4e79, #02adee);">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="metric-label">Total Admissions</div>
+                        <div class="metric-value">@Model.TotalAdmissions</div>
+                    </div>
+                </div>
+                <div class="metric-footer mt-3">All active admission forms</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="metric-icon" style="background: linear-gradient(135deg, #ff7a18, #dc143c);">
+                        <i class="fa fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <div class="metric-label">Current Year Admissions</div>
+                        <div class="metric-value">@Model.CurrentAcademicYearAdmissions</div>
+                    </div>
+                </div>
+                <div class="metric-footer mt-3">@Model.CurrentAcademicYearName</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="metric-icon" style="background: linear-gradient(135deg, #15803d, #22c55e);">
+                        <i class="fa fa-university"></i>
+                    </div>
+                    <div>
+                        <div class="metric-label">Total Colleges</div>
+                        <div class="metric-value">@Model.TotalColleges</div>
+                    </div>
+                </div>
+                <div class="metric-footer mt-3">Active colleges in the system</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="metric-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="metric-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
+                        <i class="fa fa-calendar-check-o"></i>
+                    </div>
+                    <div>
+                        <div class="metric-label">Academic Years</div>
+                        <div class="metric-value">@Model.TotalAcademicYears</div>
+                    </div>
+                </div>
+                <div class="metric-footer mt-3">Configured academic years</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-xl-7">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Admissions by College</div>
+                    <p class="chart-subtitle">Top college-wise admissions for reporting.</p>
+                </div>
+                <div class="chart-body">
+                    <div class="chart-wrap">
+                        <canvas id="collegeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Admissions by Academic Year</div>
+                    <p class="chart-subtitle">Year-to-year admissions trend.</p>
+                </div>
+                <div class="chart-body">
+                    <div class="chart-wrap">
+                        <canvas id="academicYearChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-xl-5">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Class-wise Admissions</div>
+                    <p class="chart-subtitle">Distribution in the current academic year.</p>
+                </div>
+                <div class="chart-body">
+                    <div class="chart-wrap">
+                        <canvas id="classChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-7">
+            <div class="table-card">
+                <div class="card-header py-3 px-3 bg-white">
+                    <div class="chart-title mb-1">Top Colleges</div>
+                    <p class="chart-subtitle mb-0">Highest admissions across all active years.</p>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopColleges != null && Model.TopColleges.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 90px;">Rank</th>
+                                        <th>College</th>
+                                        <th style="width: 140px;">Admissions</th>
+                                        <th style="width: 220px;">Share</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var maxAdmissions = Model.TopColleges.Max(x => x.Count);
+                                        var rank = 1;
+                                    }
+                                    @foreach (var college in Model.TopColleges)
+                                    {
+                                        var width = maxAdmissions == 0 ? 0 : (college.Count * 100 / maxAdmissions);
+                                        <tr>
+                                            <td><span class="rank-pill">@rank</span></td>
+                                            <td>
+                                                <div class="top-college-name">@college.Name</div>
+                                            </td>
+                                            <td><strong>@college.Count</strong></td>
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-info" role="progressbar" style="width:@width%;"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        rank++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fa fa-bar-chart"></i>
+                            No admission data available.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="card-header py-3 px-3 bg-white">
+            <div class="chart-title mb-1">Academic Year Summary</div>
+            <p class="chart-subtitle mb-0">Admissions count per academic year.</p>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th>Academic Year</th>
+                            <th style="width: 180px;">Admissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var year in Model.AcademicYearAdmissions)
+                        {
+                            <tr>
+                                <td>@year.Name</td>
+                                <td><strong>@year.Count</strong></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>*@
+<script>
+    window.addEventListener('load', function () {
+        var collegeLabels = @Html.Raw(System.Web.Helpers.Json.Encode(Model.CollegeAdmissions.Select(x => x.Name)));
+        var collegeValues = @Html.Raw(System.Web.Helpers.Json.Encode(Model.CollegeAdmissions.Select(x => x.Count)));
+
+        var yearLabels = @Html.Raw(System.Web.Helpers.Json.Encode(Model.AcademicYearAdmissions.Select(x => x.Name)));
+        var yearValues = @Html.Raw(System.Web.Helpers.Json.Encode(Model.AcademicYearAdmissions.Select(x => x.Count)));
+
+        var classLabels = @Html.Raw(System.Web.Helpers.Json.Encode(Model.ClassAdmissions.Select(x => x.Name)));
+        var classValues = @Html.Raw(System.Web.Helpers.Json.Encode(Model.ClassAdmissions.Select(x => x.Count)));
+
+        var collegeCtx = document.getElementById('collegeChart').getContext('2d');
+        var academicYearCtx = document.getElementById('academicYearChart').getContext('2d');
+        var classCtx = document.getElementById('classChart').getContext('2d');
+
+        new Chart(collegeCtx, {
+            type: 'horizontalBar',
+            data: {
+                labels: collegeLabels,
+                datasets: [{
+                    label: 'Admissions',
+                    data: collegeValues,
+                    backgroundColor: '#1f4e79',
+                    borderColor: '#163b5c',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false },
+                scales: {
+                    xAxes: [{
+                        ticks: { beginAtZero: true, precision: 0 },
+                        gridLines: { color: 'rgba(229, 234, 241, .8)' }
+                    }],
+                    yAxes: [{
+                        gridLines: { display: false }
+                    }]
+                }
+            }
+        });
+
+        new Chart(academicYearCtx, {
+            type: 'line',
+            data: {
+                labels: yearLabels,
+                datasets: [{
+                    label: 'Admissions',
+                    data: yearValues,
+                    borderColor: '#02adee',
+                    backgroundColor: 'rgba(2, 173, 238, .14)',
+                    pointBackgroundColor: '#02adee',
+                    pointBorderColor: '#ffffff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderWidth: 3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false },
+                scales: {
+                    yAxes: [{
+                        ticks: { beginAtZero: true, precision: 0 },
+                        gridLines: { color: 'rgba(229, 234, 241, .8)' }
+                    }],
+                    xAxes: [{
+                        gridLines: { display: false }
+                    }]
+                }
+            }
+        });
+
+        new Chart(classCtx, {
+            type: 'doughnut',
+            data: {
+                labels: classLabels,
+                datasets: [{
+                    data: classValues,
+                    backgroundColor: ['#1f4e79', '#02adee', '#ff7a18', '#15803d', '#7c3aed', '#dc143c']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -50,6 +50,43 @@
           <Property Name="IsFirstTimeLogin" Type="bit" />
           <Property Name="IsLockedout" Type="bit" />
         </EntityType>
+        <EntityType Name="UserActivityLogs">
+          <Key>
+            <PropertyRef Name="UserActivityLogId" />
+          </Key>
+          <Property Name="UserActivityLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ActivityType" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="EntityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="EntityId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="BeforeValues" Type="nvarchar(max)" />
+          <Property Name="AfterValues" Type="nvarchar(max)" />
+          <Property Name="ControllerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ActionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Url" Type="nvarchar" MaxLength="1000" />
+          <Property Name="HttpMethod" Type="nvarchar" MaxLength="20" />
+          <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserPermissions">
+          <Key>
+            <PropertyRef Name="UserPermissionId" />
+          </Key>
+          <Property Name="UserPermissionId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="ModuleKey" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CanView" Type="bit" />
+          <Property Name="CanCreate" Type="bit" />
+          <Property Name="CanEdit" Type="bit" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CanDelete" Type="bit" />
+        </EntityType>
         <EntityType Name="AddmissionForm">
           <Key>
             <PropertyRef Name="AddmissionFormId" />
@@ -71,6 +108,9 @@
           <Property Name="Stream" Type="varchar" MaxLength="100" />
           <Property Name="CoachingCentreId" Type="int" />
           <Property Name="Remark" Type="nvarchar" MaxLength="1000" />
+          <Property Name="TotalFees" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Scholarship" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FeesPayable" Type="decimal" Precision="10" Scale="2" />
         </EntityType>
         <EntityType Name="AdmissionFormSteps">
           <Key>
@@ -408,6 +448,8 @@
           <EntitySet Name="AspNetUserLogin" EntityType="Self.AspNetUserLogin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserActivityLogs" EntityType="Self.UserActivityLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPermissions" EntityType="Self.UserPermissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AddmissionForm" EntityType="Self.AddmissionForm" Schema="JHE" store:Type="Tables" />
           <EntitySet Name="AdmissionFormSteps" EntityType="Self.AdmissionFormSteps" Schema="JHE" store:Type="Tables" />
           <EntitySet Name="AssStudentAddressStudentInfo" EntityType="Self.AssStudentAddressStudentInfo" Schema="JHE" store:Type="Tables" />
@@ -504,6 +546,9 @@
           <Property Name="Stream" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CoachingCentreId" Type="Int32" />
           <Property Name="Remark" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="TotalFees" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Scholarship" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FeesPayable" Type="Decimal" Precision="10" Scale="2" />
         </EntityType>
         <EntityType Name="AdmissionFormStep">
           <Key>
@@ -849,6 +894,8 @@
           <FunctionImport Name="GetAdmissionInfoByAddmissionFormId" ReturnType="Collection(JaiHindEduModel.GetAdmissionInfoByAddmissionFormId_Result)">
           <Parameter Name="AddmissionFormId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="UserPermissions" EntityType="JaiHindEduModel.UserPermission" />
+          <EntitySet Name="UserActivityLogs" EntityType="JaiHindEduModel.UserActivityLog" />
         </EntityContainer>
         <ComplexType Name="GetAllApplicantStudentsByStudentId_Result">
           <Property Type="Int32" Name="StudentInfoId" Nullable="false" />
@@ -906,6 +953,43 @@
           <Property Type="String" Name="CollegeType" Nullable="true" MaxLength="100" />
           <Property Type="String" Name="CollegeLogo" Nullable="true" MaxLength="500" />
         </ComplexType>
+        <EntityType Name="UserPermission">
+          <Key>
+            <PropertyRef Name="UserPermissionId" />
+          </Key>
+          <Property Name="UserPermissionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="ModuleKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CanView" Type="Boolean" />
+          <Property Name="CanCreate" Type="Boolean" />
+          <Property Name="CanEdit" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CanDelete" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="UserActivityLog">
+          <Key>
+            <PropertyRef Name="UserActivityLogId" />
+          </Key>
+          <Property Name="UserActivityLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="RoleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ActivityType" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="EntityName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EntityId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BeforeValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AfterValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ControllerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ActionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="HttpMethod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -962,6 +1046,9 @@
           <EntitySetMapping Name="AddmissionForms">
             <EntityTypeMapping TypeName="JaiHindEduModel.AddmissionForm">
               <MappingFragment StoreEntitySet="AddmissionForm">
+                <ScalarProperty Name="FeesPayable" ColumnName="FeesPayable" />
+                <ScalarProperty Name="Scholarship" ColumnName="Scholarship" />
+                <ScalarProperty Name="TotalFees" ColumnName="TotalFees" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="AddmissionFormId" ColumnName="AddmissionFormId" />
                 <ScalarProperty Name="StudentInfoId" ColumnName="StudentInfoId" />
@@ -1341,6 +1428,45 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="UserPermissions">
+            <EntityTypeMapping TypeName="JaiHindEduModel.UserPermission">
+              <MappingFragment StoreEntitySet="UserPermissions">
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CanEdit" ColumnName="CanEdit" />
+                <ScalarProperty Name="CanCreate" ColumnName="CanCreate" />
+                <ScalarProperty Name="CanView" ColumnName="CanView" />
+                <ScalarProperty Name="ModuleKey" ColumnName="ModuleKey" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserPermissionId" ColumnName="UserPermissionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserActivityLogs">
+            <EntityTypeMapping TypeName="JaiHindEduModel.UserActivityLog">
+              <MappingFragment StoreEntitySet="UserActivityLogs">
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+                <ScalarProperty Name="HttpMethod" ColumnName="HttpMethod" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
+                <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
+                <ScalarProperty Name="AfterValues" ColumnName="AfterValues" />
+                <ScalarProperty Name="BeforeValues" ColumnName="BeforeValues" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="EntityId" ColumnName="EntityId" />
+                <ScalarProperty Name="EntityName" ColumnName="EntityName" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserActivityLogId" ColumnName="UserActivityLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

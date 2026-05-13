@@ -1,4 +1,5 @@
-﻿using JaiHindEdutech.Entity;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using JaiHindEdutech.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -100,7 +101,10 @@ namespace JaiHindEdutech.Models
                             CoachingCentreId = AdmissionInfo.CoachingCentreId ?? 0,
                             CollegeInfoId = AdmissionInfo.CollegeInfoId ?? 0,
                             AdmissionFormNo = AdmissionInfo.AdmissionFormNo,
-                            Remark = AdmissionInfo.Remark
+                            Remark = AdmissionInfo.Remark,
+                            TotalFees = AdmissionInfo.TotalFees,
+                            Scholarship = AdmissionInfo.Scholarship,
+                            FeesPayable = AdmissionInfo.FeesPayable,
                         };
                         return studentInfoModel;
                     }
@@ -119,17 +123,35 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                int StudentInfoId = 0;
+                int studentInfoId = 0;
 
                 if (user.IsActive == null)
                     user.IsActive = true;
                 if (user.IsDeleted == null)
                     user.IsDeleted = false;
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
                     var userinfo = db.StudentInfoes.Where(s => s.StudentInfoId == user.StudentInfoId && s.IsDeleted == false).FirstOrDefault();
                     if (userinfo != null && userinfo.StudentInfoId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            userinfo.StudentInfoId,
+                            userinfo.FirstName,
+                            userinfo.MiddleName,
+                            userinfo.LastName,
+                            userinfo.FullName,
+                            userinfo.DateOfBirth,
+                            userinfo.Gender,
+                            userinfo.AadharNo,
+                            userinfo.MobileNo,
+                            userinfo.EmailId,
+                            userinfo.Domicile,
+                            userinfo.IsActive,
+                            userinfo.IsDeleted
+                        };
+
                         userinfo.FirstName = user.FirstName;
                         userinfo.MiddleName = user.MiddleName;
                         userinfo.LastName = user.LastName;
@@ -150,11 +172,36 @@ namespace JaiHindEdutech.Models
                         userinfo.ModifiedOn = user.ModifiedOn;
 
                         db.SaveChanges();
-                        StudentInfoId = userinfo.StudentInfoId;
+                        studentInfoId = userinfo.StudentInfoId;
+
+                        var afterSnapshot = new
+                        {
+                            userinfo.StudentInfoId,
+                            user.FirstName,
+                            user.MiddleName,
+                            user.LastName,
+                            FullName = user.FirstName + " " + user.MiddleName + " " + user.LastName,
+                            user.DateOfBirth,
+                            user.Gender,
+                            user.AadharNo,
+                            user.MobileNo,
+                            user.EmailId,
+                            user.Domicile,
+                            user.IsActive,
+                            user.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Updated",
+                            "StudentInfo",
+                            studentInfoId.ToString(),
+                            "Student record updated",
+                            beforeSnapshot,
+                            afterSnapshot);
                     }
                     else
                     {
-                        var studentInfoModel = new StudentInfo
+                        var studentInfoEntity = new StudentInfo
                         {
                             FirstName = user.FirstName,
                             MiddleName = user.MiddleName,
@@ -177,11 +224,37 @@ namespace JaiHindEdutech.Models
                             ModifiedBy = user.ModifiedBy,
                             ModifiedOn = user.ModifiedOn
                         };
-                        db.StudentInfoes.Add(studentInfoModel);
+                        db.StudentInfoes.Add(studentInfoEntity);
                         db.SaveChanges();
-                        StudentInfoId = studentInfoModel.StudentInfoId;
+                        studentInfoId = studentInfoEntity.StudentInfoId;
+
+                        var afterSnapshot = new
+                        {
+                            studentInfoEntity.StudentInfoId,
+                            user.FirstName,
+                            user.MiddleName,
+                            user.LastName,
+                            FullName = user.FirstName + " " + user.MiddleName + " " + user.LastName,
+                            user.DateOfBirth,
+                            user.Gender,
+                            user.AadharNo,
+                            user.MobileNo,
+                            user.EmailId,
+                            user.Domicile,
+                            user.IsActive,
+                            user.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Created",
+                            "StudentInfo",
+                            studentInfoId.ToString(),
+                            "Student record created",
+                            null,
+                            afterSnapshot);
                     }
-                    return StudentInfoId;
+
+                    return studentInfoId;
                 }
             }
             catch
@@ -192,17 +265,40 @@ namespace JaiHindEdutech.Models
 
         public int CreateAdmissionInfo(StudentInfoModel user)
         {
-            string CurrentAcademicYear = WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString();
             try
             {
-                int AddmissionFormId = 0;
+                int addmissionFormId = 0;
                 using (var db = new JaiHindEduEntitiesNew())
                 {
-                    int academicyearid = db.LutAcademicYears.Where(a => a.Year == CurrentAcademicYear).Select(a => a.AcademicYearId).FirstOrDefault();
+                    int academicYearId = db.LutAcademicYears
+                        .Where(a => a.IsCurrent == true)
+                        .OrderByDescending(a => a.AcademicYearId)
+                        .Select(a => a.AcademicYearId)
+                        .FirstOrDefault();
 
-                    var classinfo = db.AddmissionForms.Where(s => s.AddmissionFormId == user.AddmissionFormId && s.IsDeleted == false && s.AcademicYearId == academicyearid).FirstOrDefault();
+                    var classinfo = db.AddmissionForms
+                        .Where(s => s.AddmissionFormId == user.AddmissionFormId && s.IsDeleted == false && s.AcademicYearId == academicYearId)
+                        .FirstOrDefault();
+
                     if (classinfo != null && classinfo.AddmissionFormId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            classinfo.AddmissionFormId,
+                            classinfo.StudentInfoId,
+                            classinfo.CollegeInfoId,
+                            classinfo.ClassName,
+                            classinfo.Stream,
+                            classinfo.CoachingCentreId,
+                            classinfo.AcademicYearId,
+                            classinfo.AdmissionFormNo,
+                            classinfo.Remark,
+                            classinfo.TotalFees,
+                            classinfo.Scholarship,
+                            classinfo.FeesPayable,
+                            classinfo.IsDeleted
+                        };
+
                         classinfo.StudentInfoId = user.StudentInfoId;
                         classinfo.CollegeInfoId = user.CollegeInfoId;
                         classinfo.ClassName = user.ClassName;
@@ -213,9 +309,37 @@ namespace JaiHindEdutech.Models
                         classinfo.ModifiedOn = user.ModifiedOn;
                         classinfo.AdmissionFormNo = user.AdmissionFormNo;
                         classinfo.Remark = user.Remark;
+                        classinfo.TotalFees = user.TotalFees;
+                        classinfo.Scholarship = user.Scholarship;
+                        classinfo.FeesPayable = user.FeesPayable;
 
                         db.SaveChanges();
-                        AddmissionFormId = classinfo.AddmissionFormId;
+                        addmissionFormId = classinfo.AddmissionFormId;
+
+                        var afterSnapshot = new
+                        {
+                            classinfo.AddmissionFormId,
+                            classinfo.StudentInfoId,
+                            classinfo.CollegeInfoId,
+                            classinfo.ClassName,
+                            classinfo.Stream,
+                            classinfo.CoachingCentreId,
+                            classinfo.AcademicYearId,
+                            classinfo.AdmissionFormNo,
+                            classinfo.Remark,
+                            classinfo.TotalFees,
+                            classinfo.Scholarship,
+                            classinfo.FeesPayable,
+                            classinfo.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Updated",
+                            "AddmissionForm",
+                            addmissionFormId.ToString(),
+                            "Admission form updated",
+                            beforeSnapshot,
+                            afterSnapshot);
                     }
                     else
                     {
@@ -231,18 +355,48 @@ namespace JaiHindEdutech.Models
                             CreatedOn = user.CreatedOn,
                             ModifiedBy = user.ModifiedBy,
                             ModifiedOn = user.ModifiedOn,
-                            AcademicYearId = academicyearid,
+                            AcademicYearId = academicYearId,
                             AdmissionFormNo = user.AdmissionFormNo,
-                            Remark = user.Remark
+                            Remark = user.Remark,
+                            TotalFees = user.TotalFees,
+                            Scholarship = user.Scholarship,
+                            FeesPayable = user.FeesPayable
                         };
+
                         db.AddmissionForms.Add(admissionInfoModel);
                         db.SaveChanges();
-                        AddmissionFormId = admissionInfoModel.AddmissionFormId;
+                        addmissionFormId = admissionInfoModel.AddmissionFormId;
+
+                        var afterSnapshot = new
+                        {
+                            admissionInfoModel.AddmissionFormId,
+                            admissionInfoModel.StudentInfoId,
+                            admissionInfoModel.CollegeInfoId,
+                            admissionInfoModel.ClassName,
+                            admissionInfoModel.Stream,
+                            admissionInfoModel.CoachingCentreId,
+                            admissionInfoModel.AcademicYearId,
+                            admissionInfoModel.AdmissionFormNo,
+                            admissionInfoModel.Remark,
+                            admissionInfoModel.TotalFees,
+                            admissionInfoModel.Scholarship,
+                            admissionInfoModel.FeesPayable,
+                            admissionInfoModel.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Created",
+                            "AddmissionForm",
+                            addmissionFormId.ToString(),
+                            "Admission form created",
+                            null,
+                            afterSnapshot);
                     }
-                    return AddmissionFormId;
+
+                    return addmissionFormId;
                 }
             }
-            catch (DbEntityValidationException e)
+            catch (DbEntityValidationException)
             {
                 return 0;
             }
@@ -303,17 +457,32 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                int ParentInfoId = 0;
+                int parentInfoId = 0;
 
                 if (user.IsActive == null)
                     user.IsActive = true;
                 if (user.IsDeleted == null)
                     user.IsDeleted = false;
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
                     var userinfo = db.ParentInfoes.Where(s => s.ParentInfoId == user.ParentInfoId && s.IsDeleted == false).FirstOrDefault();
                     if (userinfo != null && userinfo.ParentInfoId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            userinfo.ParentInfoId,
+                            userinfo.ParentType,
+                            userinfo.FullName,
+                            userinfo.AadharNo,
+                            userinfo.Occupation,
+                            userinfo.AnnualIncome,
+                            userinfo.EmailId,
+                            userinfo.MobileNo,
+                            userinfo.IsActive,
+                            userinfo.IsDeleted
+                        };
+
                         userinfo.ParentType = user.ParentType.ToString();
                         userinfo.FullName = user.FullName;
                         userinfo.AadharNo = user.AadharNo;
@@ -325,8 +494,31 @@ namespace JaiHindEdutech.Models
                         userinfo.IsDeleted = user.IsDeleted;
                         userinfo.ModifiedBy = user.ModifiedBy;
                         userinfo.ModifiedOn = user.ModifiedOn;
+
                         db.SaveChanges();
-                        ParentInfoId = userinfo.ParentInfoId;
+                        parentInfoId = userinfo.ParentInfoId;
+
+                        var afterSnapshot = new
+                        {
+                            userinfo.ParentInfoId,
+                            ParentType = user.ParentType.ToString(),
+                            user.FullName,
+                            user.AadharNo,
+                            user.Occupation,
+                            user.AnnualIncome,
+                            user.EmailId,
+                            user.MobileNo,
+                            user.IsActive,
+                            user.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Updated",
+                            "ParentInfo",
+                            parentInfoId.ToString(),
+                            "Parent information updated",
+                            beforeSnapshot,
+                            afterSnapshot);
                     }
                     else
                     {
@@ -348,9 +540,9 @@ namespace JaiHindEdutech.Models
                         };
                         db.ParentInfoes.Add(parentInfoModel);
                         db.SaveChanges();
-                        ParentInfoId = parentInfoModel.ParentInfoId;
+                        parentInfoId = parentInfoModel.ParentInfoId;
 
-                        var assstuparentInfoModel = new AssStudentParentInfo
+                        var assStudentParent = new AssStudentParentInfo
                         {
                             ParentType = parentInfoModel.ParentType,
                             StudentInfoId = user.StudentInfoId,
@@ -361,10 +553,33 @@ namespace JaiHindEdutech.Models
                             ModifiedOn = parentInfoModel.ModifiedOn,
                             IsDeleted = user.IsDeleted
                         };
-                        db.AssStudentParentInfoes.Add(assstuparentInfoModel);
+                        db.AssStudentParentInfoes.Add(assStudentParent);
                         db.SaveChanges();
+
+                        var afterSnapshot = new
+                        {
+                            parentInfoModel.ParentInfoId,
+                            parentInfoModel.ParentType,
+                            parentInfoModel.FullName,
+                            parentInfoModel.AadharNo,
+                            parentInfoModel.Occupation,
+                            parentInfoModel.AnnualIncome,
+                            parentInfoModel.EmailId,
+                            parentInfoModel.MobileNo,
+                            parentInfoModel.IsActive,
+                            parentInfoModel.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Created",
+                            "ParentInfo",
+                            parentInfoId.ToString(),
+                            "Parent information created",
+                            null,
+                            afterSnapshot);
                     }
-                    return ParentInfoId;
+
+                    return parentInfoId;
                 }
             }
             catch
@@ -428,15 +643,32 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                int AddressInfoId = 0;
+                int addressInfoId = 0;
 
                 if (address.IsDeleted == null)
                     address.IsDeleted = false;
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
                     var addressinfo = db.StudentAddressInfoes.Where(s => s.StudentAddressInfoId == address.StudentAddressInfoId && s.IsDeleted == false).FirstOrDefault();
                     if (addressinfo != null && addressinfo.StudentAddressInfoId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            addressinfo.StudentAddressInfoId,
+                            addressinfo.AddressType,
+                            addressinfo.HouseNo,
+                            addressinfo.Area,
+                            addressinfo.Village,
+                            addressinfo.PO,
+                            addressinfo.District,
+                            addressinfo.City,
+                            addressinfo.State,
+                            addressinfo.Zip,
+                            addressinfo.SameAsPermanent,
+                            addressinfo.IsDeleted
+                        };
+
                         addressinfo.AddressType = address.AddressType.ToString();
                         addressinfo.HouseNo = address.HouseNo;
                         addressinfo.Area = address.Area;
@@ -450,12 +682,37 @@ namespace JaiHindEdutech.Models
                         addressinfo.IsDeleted = address.IsDeleted;
                         addressinfo.ModifiedBy = address.ModifiedBy;
                         addressinfo.ModifiedOn = address.ModifiedOn;
+
                         db.SaveChanges();
-                        AddressInfoId = addressinfo.StudentAddressInfoId;
+                        addressInfoId = addressinfo.StudentAddressInfoId;
+
+                        var afterSnapshot = new
+                        {
+                            addressinfo.StudentAddressInfoId,
+                            AddressType = address.AddressType.ToString(),
+                            address.HouseNo,
+                            address.Area,
+                            address.Village,
+                            address.PO,
+                            address.District,
+                            address.City,
+                            address.State,
+                            address.Zip,
+                            address.SameAsPermanent,
+                            address.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Updated",
+                            "StudentAddressInfo",
+                            addressInfoId.ToString(),
+                            "Address information updated",
+                            beforeSnapshot,
+                            afterSnapshot);
                     }
                     else
                     {
-                        var addressInfo = new StudentAddressInfo
+                        var addressEntity = new StudentAddressInfo
                         {
                             AddressType = address.AddressType.ToString(),
                             HouseNo = address.HouseNo,
@@ -473,27 +730,52 @@ namespace JaiHindEdutech.Models
                             ModifiedBy = address.ModifiedBy,
                             ModifiedOn = address.ModifiedOn
                         };
-                        db.StudentAddressInfoes.Add(addressInfo);
+                        db.StudentAddressInfoes.Add(addressEntity);
                         db.SaveChanges();
-                        AddressInfoId = addressInfo.StudentAddressInfoId;
+                        addressInfoId = addressEntity.StudentAddressInfoId;
 
                         var assStudentAddressStudent = new AssStudentAddressStudentInfo
                         {
                             StudentInfoId = address.StudentInfoId,
-                            StudentAddressInfoId = addressInfo.StudentAddressInfoId,
-                            CreatedBy = addressInfo.CreatedBy,
-                            CreatedOn = addressInfo.CreatedOn,
-                            ModifiedBy = addressInfo.ModifiedBy,
-                            ModifiedOn = addressInfo.ModifiedOn,
+                            StudentAddressInfoId = addressEntity.StudentAddressInfoId,
+                            CreatedBy = addressEntity.CreatedBy,
+                            CreatedOn = addressEntity.CreatedOn,
+                            ModifiedBy = addressEntity.ModifiedBy,
+                            ModifiedOn = addressEntity.ModifiedOn,
                             IsDeleted = address.IsDeleted
                         };
                         db.AssStudentAddressStudentInfoes.Add(assStudentAddressStudent);
                         db.SaveChanges();
+
+                        var afterSnapshot = new
+                        {
+                            addressEntity.StudentAddressInfoId,
+                            addressEntity.AddressType,
+                            addressEntity.HouseNo,
+                            addressEntity.Area,
+                            addressEntity.Village,
+                            addressEntity.PO,
+                            addressEntity.District,
+                            addressEntity.City,
+                            addressEntity.State,
+                            addressEntity.Zip,
+                            addressEntity.SameAsPermanent,
+                            addressEntity.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Created",
+                            "StudentAddressInfo",
+                            addressInfoId.ToString(),
+                            "Address information created",
+                            null,
+                            afterSnapshot);
                     }
-                    return AddressInfoId;
+
+                    return addressInfoId;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -503,26 +785,27 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                int DocumentId = 0;
-                int DocumentTypeId = 0;
+                int documentId = 0;
+                int documentTypeId = 0;
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
                     if (FileOwner == "StudentPhoto")
-                        DocumentTypeId = 1;
+                        documentTypeId = 1;
                     else if (FileOwner == "StudentSignature")
-                        DocumentTypeId = 2;
+                        documentTypeId = 2;
                     else if (FileOwner == "FatherPhoto")
-                        DocumentTypeId = 5;
+                        documentTypeId = 5;
                     else if (FileOwner == "FatherSignature")
-                        DocumentTypeId = 6;
+                        documentTypeId = 6;
                     else if (FileOwner == "MotherPhoto")
-                        DocumentTypeId = 3;
+                        documentTypeId = 3;
                     else if (FileOwner == "MotherSignature")
-                        DocumentTypeId = 4;
+                        documentTypeId = 4;
 
                     var document = new Document
                     {
-                        DocumentTypeId = DocumentTypeId,
+                        DocumentTypeId = documentTypeId,
                         Name = documentName,
                         Link = fullPath,
                         FileSize = fileSize.ToString(),
@@ -532,16 +815,17 @@ namespace JaiHindEdutech.Models
                         ModifiedBy = CreatedBy,
                         ModifiedOn = DateTime.Now
                     };
+
                     db.Documents.Add(document);
                     db.SaveChanges();
-                    DocumentId = document.DocumentId;
+                    documentId = document.DocumentId;
 
                     if (FileOwner == "StudentPhoto")
                     {
                         var userinfo = db.StudentInfoes.Where(s => s.StudentInfoId == StudentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.StudentInfoId > 0)
                         {
-                            userinfo.StudentPhotoId = DocumentId;
+                            userinfo.StudentPhotoId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
@@ -552,7 +836,7 @@ namespace JaiHindEdutech.Models
                         var userinfo = db.StudentInfoes.Where(s => s.StudentInfoId == StudentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.StudentInfoId > 0)
                         {
-                            userinfo.StudentSignatureId = DocumentId;
+                            userinfo.StudentSignatureId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
@@ -565,7 +849,7 @@ namespace JaiHindEdutech.Models
                         var userinfo = db.ParentInfoes.Where(s => s.ParentInfoId == assStudentParent.ParentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.ParentInfoId > 0)
                         {
-                            userinfo.ParentPhotoId = DocumentId;
+                            userinfo.ParentPhotoId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
@@ -578,7 +862,7 @@ namespace JaiHindEdutech.Models
                         var userinfo = db.ParentInfoes.Where(s => s.ParentInfoId == assStudentParent.ParentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.ParentInfoId > 0)
                         {
-                            userinfo.ParentSignatureId = DocumentId;
+                            userinfo.ParentSignatureId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
@@ -591,7 +875,7 @@ namespace JaiHindEdutech.Models
                         var userinfo = db.ParentInfoes.Where(s => s.ParentInfoId == assStudentParent.ParentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.ParentInfoId > 0)
                         {
-                            userinfo.ParentPhotoId = DocumentId;
+                            userinfo.ParentPhotoId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
@@ -604,17 +888,34 @@ namespace JaiHindEdutech.Models
                         var userinfo = db.ParentInfoes.Where(s => s.ParentInfoId == assStudentParent.ParentInfoId && s.IsDeleted == false).FirstOrDefault();
                         if (userinfo != null && userinfo.ParentInfoId > 0)
                         {
-                            userinfo.ParentSignatureId = DocumentId;
+                            userinfo.ParentSignatureId = documentId;
                             userinfo.ModifiedBy = CreatedBy;
                             userinfo.ModifiedOn = DateTime.Now;
                             db.SaveChanges();
                         }
                     }
 
-                    return DocumentId;
+                    TrackActivity(
+                        "Created",
+                        "Document",
+                        documentId.ToString(),
+                        "Uploaded document: " + FileOwner,
+                        null,
+                        new
+                        {
+                            document.DocumentId,
+                            document.DocumentTypeId,
+                            document.Name,
+                            document.Link,
+                            document.FileSize,
+                            FileOwner,
+                            StudentInfoId
+                        });
+
+                    return documentId;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -624,10 +925,10 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                string CurrentAcademicYear = WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString();
+                //string CurrentAcademicYear = WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString();
                 using (var db = new JaiHindEduEntitiesNew())
                 {
-                    int academicyearid = db.LutAcademicYears.Where(a => a.Year == CurrentAcademicYear).Select(a => a.AcademicYearId).FirstOrDefault();
+                    int academicyearid = db.LutAcademicYears.Where(a => a.IsCurrent == true).OrderByDescending(a => a.AcademicYearId).Select(a => a.AcademicYearId).FirstOrDefault();
 
                     return db.AddmissionForms.Where(x => x.StudentInfoId == StudentInfoId && x.IsDeleted == false && x.AcademicYearId == academicyearid).FirstOrDefault();
                 }
@@ -686,6 +987,20 @@ namespace JaiHindEdutech.Models
                     var academicinfo = db.StudentPreviousAcademicInfoes.Where(s => s.StudentInfoId == academicViewModel.StudentInfoId && s.IsDeleted == false && s.ExamName == "Class 10th").FirstOrDefault();
                     if (academicinfo != null && academicinfo.StudentPreviousAcademicInfoId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            academicinfo.StudentPreviousAcademicInfoId,
+                            academicinfo.StudentInfoId,
+                            academicinfo.ExamName,
+                            academicinfo.Board,
+                            academicinfo.SchoolOrCollege,
+                            academicinfo.ExamSeatNo,
+                            academicinfo.EligibilityCertNo,
+                            academicinfo.MonthYearOfPassing,
+                            academicinfo.TotalMarks,
+                            academicinfo.Percentage
+                        };
+
                         academicinfo.ExamName = academicViewModel.TenthClass.ExamName;
                         academicinfo.Board = academicViewModel.TenthClass.Board;
                         academicinfo.SchoolOrCollege = academicViewModel.TenthClass.SchoolOrCollege;
@@ -697,6 +1012,26 @@ namespace JaiHindEdutech.Models
                         academicinfo.ModifiedBy = academicViewModel.ModifiedBy;
                         academicinfo.ModifiedOn = academicViewModel.ModifiedOn;
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Updated",
+                            "StudentPreviousAcademicInfo",
+                            academicinfo.StudentPreviousAcademicInfoId.ToString(),
+                            "Class 10th academic info updated",
+                            beforeSnapshot,
+                            new
+                            {
+                                academicinfo.StudentPreviousAcademicInfoId,
+                                academicViewModel.StudentInfoId,
+                                academicViewModel.TenthClass.ExamName,
+                                academicViewModel.TenthClass.Board,
+                                academicViewModel.TenthClass.SchoolOrCollege,
+                                academicViewModel.TenthClass.ExamSeatNo,
+                                academicViewModel.TenthClass.EligibilityCertNo,
+                                academicViewModel.TenthClass.MonthYearOfPassing,
+                                academicViewModel.TenthClass.TotalMarks,
+                                academicViewModel.TenthClass.Percentage
+                            });
                     }
                     else
                     {
@@ -719,6 +1054,26 @@ namespace JaiHindEdutech.Models
                         };
                         db.StudentPreviousAcademicInfoes.Add(academicinfomodel);
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Created",
+                            "StudentPreviousAcademicInfo",
+                            academicinfomodel.StudentPreviousAcademicInfoId.ToString(),
+                            "Class 10th academic info created",
+                            null,
+                            new
+                            {
+                                academicinfomodel.StudentPreviousAcademicInfoId,
+                                academicViewModel.StudentInfoId,
+                                academicViewModel.TenthClass.ExamName,
+                                academicViewModel.TenthClass.Board,
+                                academicViewModel.TenthClass.SchoolOrCollege,
+                                academicViewModel.TenthClass.ExamSeatNo,
+                                academicViewModel.TenthClass.EligibilityCertNo,
+                                academicViewModel.TenthClass.MonthYearOfPassing,
+                                academicViewModel.TenthClass.TotalMarks,
+                                academicViewModel.TenthClass.Percentage
+                            });
                     }
 
                     if (academicViewModel.SelectedClass == "12th")
@@ -726,6 +1081,20 @@ namespace JaiHindEdutech.Models
                         var academicinfo11 = db.StudentPreviousAcademicInfoes.Where(s => s.StudentInfoId == academicViewModel.StudentInfoId && s.IsDeleted == false && s.ExamName == "Class 11th").FirstOrDefault();
                         if (academicinfo11 != null && academicinfo11.StudentPreviousAcademicInfoId > 0)
                         {
+                            var beforeSnapshot11 = new
+                            {
+                                academicinfo11.StudentPreviousAcademicInfoId,
+                                academicinfo11.StudentInfoId,
+                                academicinfo11.ExamName,
+                                academicinfo11.Board,
+                                academicinfo11.SchoolOrCollege,
+                                academicinfo11.ExamSeatNo,
+                                academicinfo11.EligibilityCertNo,
+                                academicinfo11.MonthYearOfPassing,
+                                academicinfo11.TotalMarks,
+                                academicinfo11.Percentage
+                            };
+
                             academicinfo11.ExamName = academicViewModel.EleventhClass.ExamName;
                             academicinfo11.Board = academicViewModel.EleventhClass.Board;
                             academicinfo11.SchoolOrCollege = academicViewModel.EleventhClass.SchoolOrCollege;
@@ -737,6 +1106,26 @@ namespace JaiHindEdutech.Models
                             academicinfo11.ModifiedBy = academicViewModel.ModifiedBy;
                             academicinfo11.ModifiedOn = academicViewModel.ModifiedOn;
                             db.SaveChanges();
+
+                            TrackActivity(
+                                "Updated",
+                                "StudentPreviousAcademicInfo",
+                                academicinfo11.StudentPreviousAcademicInfoId.ToString(),
+                                "Class 11th academic info updated",
+                                beforeSnapshot11,
+                                new
+                                {
+                                    academicinfo11.StudentPreviousAcademicInfoId,
+                                    academicViewModel.StudentInfoId,
+                                    academicViewModel.EleventhClass.ExamName,
+                                    academicViewModel.EleventhClass.Board,
+                                    academicViewModel.EleventhClass.SchoolOrCollege,
+                                    academicViewModel.EleventhClass.ExamSeatNo,
+                                    academicViewModel.EleventhClass.EligibilityCertNo,
+                                    academicViewModel.EleventhClass.MonthYearOfPassing,
+                                    academicViewModel.EleventhClass.TotalMarks,
+                                    academicViewModel.EleventhClass.Percentage
+                                });
                         }
                         else
                         {
@@ -759,8 +1148,29 @@ namespace JaiHindEdutech.Models
                             };
                             db.StudentPreviousAcademicInfoes.Add(academicinfo11model);
                             db.SaveChanges();
+
+                            TrackActivity(
+                                "Created",
+                                "StudentPreviousAcademicInfo",
+                                academicinfo11model.StudentPreviousAcademicInfoId.ToString(),
+                                "Class 11th academic info created",
+                                null,
+                                new
+                                {
+                                    academicinfo11model.StudentPreviousAcademicInfoId,
+                                    academicViewModel.StudentInfoId,
+                                    academicViewModel.EleventhClass.ExamName,
+                                    academicViewModel.EleventhClass.Board,
+                                    academicViewModel.EleventhClass.SchoolOrCollege,
+                                    academicViewModel.EleventhClass.ExamSeatNo,
+                                    academicViewModel.EleventhClass.EligibilityCertNo,
+                                    academicViewModel.EleventhClass.MonthYearOfPassing,
+                                    academicViewModel.EleventhClass.TotalMarks,
+                                    academicViewModel.EleventhClass.Percentage
+                                });
                         }
                     }
+
                     return 1;
                 }
             }
@@ -786,6 +1196,26 @@ namespace JaiHindEdutech.Models
                     var subjects = db.SubjectsChoosens.Where(x => x.AddmissionFormId == subjectSelection.AddmissionFormId).FirstOrDefault();
                     if (subjects != null && subjects.SubjectsChoosenId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            subjects.SubjectsChoosenId,
+                            subjects.AddmissionFormId,
+                            subjects.Physics,
+                            subjects.English,
+                            subjects.Chemistry,
+                            subjects.EVS,
+                            subjects.PhysicalEducation,
+                            subjects.Hindi,
+                            subjects.Marathi,
+                            subjects.Mathemcatics,
+                            subjects.Biology,
+                            subjects.Geography,
+                            subjects.ComputerScience,
+                            subjects.InformationTechnology,
+                            subjects.InformaticsPractices,
+                            subjects.CropScience
+                        };
+
                         subjects.AddmissionFormId = subjectSelection.AddmissionFormId;
                         subjects.Physics = subjectSelection.Physics;
                         subjects.English = subjectSelection.English;
@@ -804,10 +1234,36 @@ namespace JaiHindEdutech.Models
                         subjects.ModifiedBy = subjectSelection.CreatedBy;
                         subjects.ModifiedOn = DateTime.Now;
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Updated",
+                            "SubjectsChoosen",
+                            subjects.SubjectsChoosenId.ToString(),
+                            "Subject selection updated",
+                            beforeSnapshot,
+                            new
+                            {
+                                subjects.SubjectsChoosenId,
+                                subjectSelection.AddmissionFormId,
+                                subjectSelection.Physics,
+                                subjectSelection.English,
+                                subjectSelection.Chemistry,
+                                subjectSelection.EVS,
+                                subjectSelection.PhysicalEducation,
+                                subjectSelection.Hindi,
+                                subjectSelection.Marathi,
+                                subjectSelection.Mathemcatics,
+                                subjectSelection.Biology,
+                                subjectSelection.Geography,
+                                subjectSelection.ComputerScience,
+                                subjectSelection.InformationTechnology,
+                                subjectSelection.InformaticsPractices,
+                                subjectSelection.CropScience
+                            });
                     }
                     else
                     {
-                        var subjectsave = new SubjectsChoosen
+                        var subjectSave = new SubjectsChoosen
                         {
                             AddmissionFormId = subjectSelection.AddmissionFormId,
                             Physics = subjectSelection.Physics,
@@ -827,15 +1283,41 @@ namespace JaiHindEdutech.Models
                             CreatedBy = subjectSelection.CreatedBy,
                             CreatedOn = DateTime.Now,
                             ModifiedBy = subjectSelection.CreatedBy,
-                            ModifiedOn = DateTime.Now,
+                            ModifiedOn = DateTime.Now
                         };
-                        db.SubjectsChoosens.Add(subjectsave);
+                        db.SubjectsChoosens.Add(subjectSave);
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Created",
+                            "SubjectsChoosen",
+                            subjectSave.SubjectsChoosenId.ToString(),
+                            "Subject selection created",
+                            null,
+                            new
+                            {
+                                subjectSave.SubjectsChoosenId,
+                                subjectSelection.AddmissionFormId,
+                                subjectSelection.Physics,
+                                subjectSelection.English,
+                                subjectSelection.Chemistry,
+                                subjectSelection.EVS,
+                                subjectSelection.PhysicalEducation,
+                                subjectSelection.Hindi,
+                                subjectSelection.Marathi,
+                                subjectSelection.Mathemcatics,
+                                subjectSelection.Biology,
+                                subjectSelection.Geography,
+                                subjectSelection.ComputerScience,
+                                subjectSelection.InformationTechnology,
+                                subjectSelection.InformaticsPractices,
+                                subjectSelection.CropScience
+                            });
                     }
                 }
                 return 1;
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -850,6 +1332,26 @@ namespace JaiHindEdutech.Models
                     var documents = db.DocumentSubmitteds.Where(x => x.AddmissionFormId == documentSelection.AddmissionFormId).FirstOrDefault();
                     if (documents != null && documents.DocumentSubmittedId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            documents.DocumentSubmittedId,
+                            documents.AddmissionFormId,
+                            documents.ClassXMarksheet,
+                            documents.ClassXIMarksheet,
+                            documents.SchoolLC,
+                            documents.CasteCertificate,
+                            documents.AadharCard,
+                            documents.GapCertificate,
+                            documents.SnglieGirlChild,
+                            documents.ElegibilityCert,
+                            documents.PassingCert,
+                            documents.EBCCertificate,
+                            documents.PassportSizePhoto,
+                            documents.CopyOfLOC,
+                            documents.AadharFather,
+                            documents.AadharMother
+                        };
+
                         documents.AddmissionFormId = documentSelection.AddmissionFormId;
                         documents.ClassXMarksheet = documentSelection.ClassXMarksheet;
                         documents.ClassXIMarksheet = documentSelection.ClassXIMarksheet;
@@ -868,10 +1370,36 @@ namespace JaiHindEdutech.Models
                         documents.ModifiedBy = documentSelection.CreatedBy;
                         documents.ModifiedOn = DateTime.Now;
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Updated",
+                            "DocumentSubmitted",
+                            documents.DocumentSubmittedId.ToString(),
+                            "Document selection updated",
+                            beforeSnapshot,
+                            new
+                            {
+                                documents.DocumentSubmittedId,
+                                documentSelection.AddmissionFormId,
+                                documentSelection.ClassXMarksheet,
+                                documentSelection.ClassXIMarksheet,
+                                documentSelection.SchoolLC,
+                                documentSelection.CasteCertificate,
+                                documentSelection.AadharCard,
+                                documentSelection.GapCertificate,
+                                documentSelection.SnglieGirlChild,
+                                documentSelection.ElegibilityCert,
+                                documentSelection.PassingCert,
+                                documentSelection.EBCCertificate,
+                                documentSelection.PassportSizePhoto,
+                                documentSelection.CopyOfLOC,
+                                documentSelection.AadharFather,
+                                documentSelection.AadharMother
+                            });
                     }
                     else
                     {
-                        var documentsave = new DocumentSubmitted
+                        var documentSave = new DocumentSubmitted
                         {
                             AddmissionFormId = documentSelection.AddmissionFormId,
                             ClassXMarksheet = documentSelection.ClassXMarksheet,
@@ -891,15 +1419,41 @@ namespace JaiHindEdutech.Models
                             CreatedBy = documentSelection.CreatedBy,
                             CreatedOn = DateTime.Now,
                             ModifiedBy = documentSelection.CreatedBy,
-                            ModifiedOn = DateTime.Now,
+                            ModifiedOn = DateTime.Now
                         };
-                        db.DocumentSubmitteds.Add(documentsave);
+                        db.DocumentSubmitteds.Add(documentSave);
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Created",
+                            "DocumentSubmitted",
+                            documentSave.DocumentSubmittedId.ToString(),
+                            "Document selection created",
+                            null,
+                            new
+                            {
+                                documentSave.DocumentSubmittedId,
+                                documentSelection.AddmissionFormId,
+                                documentSelection.ClassXMarksheet,
+                                documentSelection.ClassXIMarksheet,
+                                documentSelection.SchoolLC,
+                                documentSelection.CasteCertificate,
+                                documentSelection.AadharCard,
+                                documentSelection.GapCertificate,
+                                documentSelection.SnglieGirlChild,
+                                documentSelection.ElegibilityCert,
+                                documentSelection.PassingCert,
+                                documentSelection.EBCCertificate,
+                                documentSelection.PassportSizePhoto,
+                                documentSelection.CopyOfLOC,
+                                documentSelection.AadharFather,
+                                documentSelection.AadharMother
+                            });
                     }
                 }
                 return 1;
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
@@ -1086,8 +1640,9 @@ namespace JaiHindEdutech.Models
         {
             try
             {
-                string RollNumberReturn = "";
-                string RollNumber = "";
+                string rollNumberReturn = "";
+                string rollNumber = "";
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
                     var admissionform = db.AddmissionForms.Where(a => a.StudentInfoId == StudentInfoId && a.IsDeleted == false).OrderByDescending(s => s.RollNumber).FirstOrDefault();
@@ -1104,8 +1659,9 @@ namespace JaiHindEdutech.Models
                         stream = "S";
                     if (admissionform.Stream == "Commerce")
                         stream = "C";
-
-                    string prefix = college.CollegeNameShort + "/" + WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString() + "/" + classno + "/" + stream + "/";// school.SchoolCode;
+                    string academicyear = db.LutAcademicYears.Where(a => a.IsCurrent == true).OrderByDescending(a => a.AcademicYearId).Select(a => a.Year).FirstOrDefault();
+                    string prefix = college.CollegeNameShort + "/" + academicyear + "/" + classno + "/" + stream + "/";// school.SchoolCode;
+                    //string prefix = college.CollegeNameShort + "/" + WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString() + "/" + classno + "/" + stream + "/";// school.SchoolCode;
 
                     //string latestRollNo = db.AddmissionForms.Where(a=>a.CollegeInfoId == admissionform.CollegeInfoId && a.RollNumber.StartsWith(prefix)).OrderByDescending(s => s.RollNumber).Select(s => s.RollNumber).FirstOrDefault();
 
@@ -1125,17 +1681,17 @@ namespace JaiHindEdutech.Models
                     }
 
                     // Step 3: Format roll number as SBP001, SBP002, etc.
-                    RollNumber = $"{prefix}{nextNumber.ToString("D3")}";
+                    rollNumber = $"{prefix}{nextNumber.ToString("D3")}";
 
 
                     if (admissionform.RollNumber == null)
-                        admissionform.RollNumber = RollNumber;
+                        admissionform.RollNumber = rollNumber;
                     db.SaveChanges();
 
-                    RollNumberReturn = admissionform.RollNumber;
+                    rollNumberReturn = admissionform.RollNumber;
 
                 }
-                return RollNumberReturn;
+                return rollNumberReturn;
             }
             catch (Exception e)
             {
@@ -1208,6 +1764,23 @@ namespace JaiHindEdutech.Models
             }
         }
 
-        
+        public List<AllAdmissionDataModel> GetAllAdmissionData(int CollegeInfoId, string academicYear)
+        {
+            using (var context = new JaiHindEduEntitiesNew())
+            {
+                var result = context.Database.SqlQuery<AllAdmissionDataModel>(
+                    "EXEC JHE.GetAllAddmissionInfo @CollegeInfoId, @AcademicYear",
+                    new SqlParameter("@CollegeInfoId", CollegeInfoId),
+                    new SqlParameter("@AcademicYear", academicYear ?? (object)DBNull.Value)
+                ).ToList();
+
+                return result;
+            }
+        }
+
+        private void TrackActivity(string activityType, string entityName, string entityId, string description, object beforeValues = null, object afterValues = null)
+        {
+            ActivityLogHelper.Log(activityType, entityName,entityId, description, beforeValues, afterValues);
+        }
     }
 }

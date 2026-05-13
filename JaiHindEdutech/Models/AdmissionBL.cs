@@ -11,24 +11,28 @@ namespace JaiHindEdutech.Models
     public class AdmissionBL
     {
 
-        public List<ApplicantStudentDto> GetAllStudents(int studentInfoId = 0)
+        public List<ApplicantStudentDto> GetAllStudents(int studentInfoId = 0, string academicYear = null)
         {
-            List<ApplicantStudentDto> ApplicantStudentDto = new List<ApplicantStudentDto>();
+            List<ApplicantStudentDto> applicantStudentDto = new List<ApplicantStudentDto>();
             try
             {
-                string CurrentAcademicYear = WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString();
-                List<StudentInfoModel> studentInfoList = new List<StudentInfoModel>();
+                string currentAcademicYear = string.IsNullOrWhiteSpace(academicYear)
+                    ? WebConfigurationManager.AppSettings["CurrentAcademicYear"].ToString()
+                    : academicYear;
+
                 using (var db = new JaiHindEduEntitiesNew())
                 {
-                    ApplicantStudentDto = db.Database.SqlQuery<ApplicantStudentDto>("EXEC [JHE].[GetAllApplicantStudentsByStudentId] @StudentInfoId,@AcademicYear",
-                      new SqlParameter("@StudentInfoId", studentInfoId),
-                      new SqlParameter("@AcademicYear", CurrentAcademicYear)).ToList();
-                    return ApplicantStudentDto;
+                    applicantStudentDto = db.Database.SqlQuery<ApplicantStudentDto>(
+                        "EXEC [JHE].[GetAllApplicantStudentsByStudentId] @StudentInfoId,@AcademicYear",
+                        new SqlParameter("@StudentInfoId", studentInfoId),
+                        new SqlParameter("@AcademicYear", currentAcademicYear)).ToList();
+
+                    return applicantStudentDto;
                 }
             }
-            catch (Exception e)
+            catch
             {
-                return ApplicantStudentDto;
+                return applicantStudentDto;
             }
 
         }
@@ -53,6 +57,22 @@ namespace JaiHindEdutech.Models
                     var fees = db.FeeReceipts.Where(x => x.AdmissionFormId == feeReceipt.AdmissionFormId).FirstOrDefault();
                     if (fees != null && fees.FeeReceiptId > 0)
                     {
+                        var beforeSnapshot = new
+                        {
+                            fees.FeeReceiptId,
+                            fees.AdmissionFormId,
+                            fees.AdmissionFee,
+                            fees.C1StInstallment,
+                            fees.C2ndInstallment,
+                            fees.C3rdInstallment,
+                            fees.C4thInstallment,
+                            fees.BalanceAmount,
+                            fees.ExamFee,
+                            fees.Misclellaneous,
+                            fees.TotalAmount,
+                            fees.IsDeleted
+                        };
+
                         fees.AdmissionFee = feeReceipt.AdmissionFee;
                         fees.C1StInstallment = feeReceipt.C1StInstallment;
                         fees.C2ndInstallment = feeReceipt.C2ndInstallment;
@@ -64,7 +84,30 @@ namespace JaiHindEdutech.Models
                         fees.TotalAmount = feeReceipt.TotalAmount;
                         fees.ModifiedBy = feeReceipt.CreatedBy;
                         fees.ModifiedOn = DateTime.Now;
+
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Updated",
+                            "FeeReceipt",
+                            fees.FeeReceiptId.ToString(),
+                            "Fee receipt updated",
+                            beforeSnapshot,
+                            new
+                            {
+                                fees.FeeReceiptId,
+                                fees.AdmissionFormId,
+                                feeReceipt.AdmissionFee,
+                                feeReceipt.C1StInstallment,
+                                feeReceipt.C2ndInstallment,
+                                feeReceipt.C3rdInstallment,
+                                feeReceipt.C4thInstallment,
+                                feeReceipt.BalanceAmount,
+                                feeReceipt.ExamFee,
+                                feeReceipt.Misclellaneous,
+                                feeReceipt.TotalAmount,
+                                fees.IsDeleted
+                            });
                     }
                     else
                     {
@@ -87,8 +130,31 @@ namespace JaiHindEdutech.Models
                         };
                         db.FeeReceipts.Add(fee);
                         db.SaveChanges();
+
+                        TrackActivity(
+                            "Created",
+                            "FeeReceipt",
+                            fee.FeeReceiptId.ToString(),
+                            "Fee receipt created",
+                            null,
+                            new
+                            {
+                                fee.FeeReceiptId,
+                                fee.AdmissionFormId,
+                                fee.AdmissionFee,
+                                fee.C1StInstallment,
+                                fee.C2ndInstallment,
+                                fee.C3rdInstallment,
+                                fee.C4thInstallment,
+                                fee.BalanceAmount,
+                                fee.ExamFee,
+                                fee.Misclellaneous,
+                                fee.TotalAmount,
+                                fee.IsDeleted
+                            });
                     }
                 }
+
                 return 1;
             }
             catch (Exception e)
@@ -166,6 +232,10 @@ namespace JaiHindEdutech.Models
                 var result = context.CollegeInfoes.Where(c => c.IsActive == true).ToList();
                 return result;
             }
+        }
+        private void TrackActivity(string activityType, string entityName, string entityId, string description, object beforeValues = null, object afterValues = null)
+        {
+            ActivityLogHelper.Log(activityType, entityName, entityId, description, beforeValues, afterValues);
         }
     }
 }

@@ -1,0 +1,548 @@
+﻿@using System.Linq
+@model IEnumerable<JaiHindEdutech.Entity.UserActivityLog>
+
+@{
+    ViewBag.Title = "Activity Logs";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+
+    var logs = Model ?? Enumerable.Empty<JaiHindEdutech.Entity.UserActivityLog>();
+    var latestLog = logs.FirstOrDefault();
+}
+
+@functions {
+    private string GetActivityClass(string activityType)
+    {
+        var value = (activityType ?? string.Empty).Trim().ToLowerInvariant();
+
+        switch (value)
+        {
+            case "created":
+                return "activity-pill activity-pill-success";
+            case "updated":
+                return "activity-pill activity-pill-warning";
+            case "deleted":
+                return "activity-pill activity-pill-danger";
+            case "downloaded":
+                return "activity-pill activity-pill-info";
+            default:
+                return "activity-pill activity-pill-neutral";
+        }
+    }
+}
+
+<style>
+    .activity-logs-page {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: hidden;
+    }
+
+    .activity-logs-page .activity-page-card {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+    }
+
+    .activity-logs-page .activity-page-body {
+        padding: 0.75rem 0.75rem 1rem 0.75rem;
+    }
+
+    .activity-summary {
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 12px 14px;
+        height: 100%;
+    }
+
+    .activity-summary-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+
+    .activity-summary-value {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.3;
+    }
+
+    .activity-summary-note {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 4px;
+        line-height: 1.4;
+    }
+
+    .activity-table-wrap {
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .activity-table {
+        width: 100%;
+        table-layout: auto;
+    }
+
+    .activity-table th,
+    .activity-table td {
+        vertical-align: middle;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .activity-col-date { width: 150px; }
+    .activity-col-user { width: 120px; }
+    .activity-col-activity { width: 110px; }
+    .activity-col-entity { width: 140px; }
+    .activity-col-description { min-width: 220px; }
+    .activity-col-source { min-width: 180px; }
+    .activity-col-details { width: 90px; }
+
+    .activity-pill {
+        display: inline-block;
+        padding: 0.3rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .activity-pill-success { background: #dcfce7; color: #166534; }
+    .activity-pill-warning { background: #fef3c7; color: #92400e; }
+    .activity-pill-danger { background: #fee2e2; color: #991b1b; }
+    .activity-pill-info { background: #dbeafe; color: #1d4ed8; }
+    .activity-pill-neutral { background: #e5e7eb; color: #374151; }
+
+    .activity-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        z-index: 2147483000 !important;
+        background: rgba(15, 23, 42, 0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        box-sizing: border-box;
+        margin: 0 !important;
+    }
+
+    .activity-overlay.is-open {
+        display: flex;
+    }
+
+    .activity-popup {
+        width: min(960px, calc(100vw - 2rem));
+        max-width: calc(100vw - 2rem);
+        max-height: calc(100vh - 2rem);
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 25px 80px rgba(15, 23, 42, 0.35);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        margin: 0 auto;
+    }
+
+    .activity-popup-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+    }
+
+    .activity-popup-kicker {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .activity-popup-subtitle {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .activity-popup-close {
+        border: 0;
+        background: transparent;
+        color: #64748b;
+        font-size: 2rem;
+        line-height: 1;
+        padding: 0;
+        margin-top: -6px;
+        cursor: pointer;
+    }
+
+    .activity-popup-close:hover {
+        color: #0f172a;
+    }
+
+    .activity-popup-body {
+        padding: 1rem 1.25rem;
+        overflow: auto;
+        background: #ffffff;
+    }
+
+    .activity-modal-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f8fafc;
+        padding: 12px 14px;
+        height: 100%;
+    }
+
+    .activity-modal-label {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+
+    .activity-modal-value {
+        font-size: 0.95rem;
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .activity-snapshot-label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .activity-json {
+        background: #f8fafc;
+        color: #0f172a;
+        border-radius: 12px;
+        padding: 12px 14px;
+        max-height: 340px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 12px;
+        line-height: 1.55;
+        margin: 0;
+        border: 1px solid #e2e8f0;
+        font-family: Consolas, "Courier New", monospace;
+    }
+</style>
+
+<div class="activity-logs-page app-main__inner">
+    <div class="card activity-page-card shadow-sm">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="mb-0">Activity Logs</h5>
+                <small class="text-muted">Admin-only activity history</small>
+            </div>
+            <a href="@Url.Action("ActivityLogs", "Admin")" class="btn btn-primary btn-sm">
+                Refresh
+            </a>
+        </div>
+
+        <div class="activity-page-body">
+            <div class="row mb-3">
+                <div class="col-md-4 mb-3">
+                    <div class="activity-summary">
+                        <div class="activity-summary-label">Records shown</div>
+                        <div class="activity-summary-value">@logs.Count()</div>
+                        <div class="activity-summary-note">Latest 500 entries from the audit trail.</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="activity-summary">
+                        <div class="activity-summary-label">Most recent entry</div>
+                        <div class="activity-summary-value">
+                            @(latestLog != null ? latestLog.CreatedOn.ToString("dd-MM-yyyy HH:mm:ss") : "N/A")
+                        </div>
+                        <div class="activity-summary-note">
+                            @(latestLog != null ? (latestLog.UserName + " · " + latestLog.ActivityType) : "No activity logs available.")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="activity-summary">
+                        <div class="activity-summary-label">View mode</div>
+                        <div class="activity-summary-value">Paginated grid</div>
+                        <div class="activity-summary-note">The table uses client-side paging for smoother browsing.</div>
+                    </div>
+                </div>
+            </div>
+
+            @if (logs.Any())
+            {
+                <div class="activity-table-wrap">
+                    <table id="activityLogsTable" class="table table-bordered table-striped table-hover align-middle activity-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="activity-col-date">Date</th>
+                                <th class="activity-col-user">User</th>
+                                <th class="activity-col-activity">Activity</th>
+                                <th class="activity-col-entity">Entity</th>
+                                <th class="activity-col-description">Description</th>
+                                <th class="activity-col-source">Source</th>
+                                <th class="activity-col-details">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in logs)
+                            {
+                                <tr>
+                                    <td class="activity-col-date">@item.CreatedOn.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                                    <td class="activity-col-user">@item.UserName</td>
+                                    <td class="activity-col-activity">
+                                        <span class="@GetActivityClass(item.ActivityType)">@item.ActivityType</span>
+                                    </td>
+                                    <td class="activity-col-entity">@item.EntityName</td>
+                                    <td class="activity-col-description">@item.Description</td>
+                                    <td class="activity-col-source">
+                                        <div><strong>@item.ControllerName</strong></div>
+                                        <div class="text-muted">@item.ActionName</div>
+                                        <div class="text-muted small">@item.HttpMethod</div>
+                                    </td>
+                                    <td class="activity-col-details">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm view-log-details"
+                                                data-created="@item.CreatedOn.ToString("dd-MM-yyyy HH:mm:ss")"
+                                                data-user="@item.UserName"
+                                                data-role="@item.RoleName"
+                                                data-activity="@item.ActivityType"
+                                                data-entity="@item.EntityName"
+                                                data-reference="@item.EntityId"
+                                                data-description="@item.Description"
+                                                data-controller="@item.ControllerName"
+                                                data-action="@item.ActionName"
+                                                data-method="@item.HttpMethod"
+                                                data-ip="@item.IpAddress"
+                                                data-url="@item.Url"
+                                                data-before="@Html.AttributeEncode(item.BeforeValues ?? string.Empty)"
+                                                data-after="@Html.AttributeEncode(item.AfterValues ?? string.Empty)">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">
+                    No activity logs found.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="activity-overlay" id="activityLogOverlay" aria-hidden="true">
+    <div class="activity-popup" role="dialog" aria-modal="true" aria-labelledby="activityLogPopupTitle">
+        <div class="activity-popup-header">
+            <div>
+                <div class="activity-popup-kicker" id="activityLogPopupKicker">Activity</div>
+                <h5 class="mb-0" id="activityLogPopupTitle">Change Details</h5>
+                <div class="activity-popup-subtitle" id="activityLogPopupSubtitle"></div>
+            </div>
+            <button type="button" class="activity-popup-close" aria-label="Close" onclick="closeActivityLogPopup()">&times;</button>
+        </div>
+
+        <div class="activity-popup-body">
+            <div class="row mb-3">
+                <div class="col-md-3 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">User</div>
+                        <div class="activity-modal-value" id="activityLogUser"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Role</div>
+                        <div class="activity-modal-value" id="activityLogRole"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Activity</div>
+                        <div class="activity-modal-value" id="activityLogType"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Reference</div>
+                        <div class="activity-modal-value" id="activityLogReference"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Description</div>
+                        <div class="activity-modal-value" id="activityLogDescription"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Source</div>
+                        <div class="activity-modal-value" id="activityLogSource"></div>
+                        <div class="activity-modal-value text-muted small mt-1" id="activityLogMethod"></div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="activity-modal-card">
+                        <div class="activity-modal-label">Network</div>
+                        <div class="activity-modal-value" id="activityLogIp"></div>
+                        <div class="activity-modal-value text-muted small text-break mt-1" id="activityLogUrl"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <div class="activity-snapshot-label">Before</div>
+                    <pre class="activity-json" id="activityLogBefore"></pre>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="activity-snapshot-label">After</div>
+                    <pre class="activity-json" id="activityLogAfter"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    function normalizeActivityValue(value) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+        if (typeof value === 'object') {
+            try {
+                return JSON.stringify(value, null, 2);
+            } catch (e) {
+                return value.toString();
+            }
+        }
+
+        return String(value);
+    }
+
+    function decodeHtmlEntities(value) {
+        if (!value) {
+            return '';
+        }
+
+        return $('<textarea/>').html(value).text();
+    }
+
+    function formatSnapshot(value) {
+        var decoded = decodeHtmlEntities(normalizeActivityValue(value)).trim();
+
+        if (!decoded) {
+            return 'No values captured.';
+        }
+
+        try {
+            var parsed = JSON.parse(decoded);
+            return JSON.stringify(parsed, null, 2);
+        }
+        catch (e) {
+            return decoded;
+        }
+    }
+
+    function openActivityLogPopup(button) {
+        var btn = $(button);
+
+        $('#activityLogPopupKicker').text(normalizeActivityValue(btn.attr('data-activity') || 'Activity'));
+        $('#activityLogPopupTitle').text(normalizeActivityValue(btn.attr('data-entity') || 'Change Details'));
+        $('#activityLogPopupSubtitle').text(normalizeActivityValue((btn.attr('data-created') || '') + ' · ' + (btn.attr('data-user') || 'Unknown user')));
+
+        $('#activityLogUser').text(normalizeActivityValue(btn.attr('data-user') || '-'));
+        $('#activityLogRole').text(normalizeActivityValue(btn.attr('data-role') || '-'));
+        $('#activityLogType').text(normalizeActivityValue(btn.attr('data-activity') || '-'));
+        $('#activityLogReference').text(normalizeActivityValue(btn.attr('data-reference') || '-'));
+        $('#activityLogDescription').text(normalizeActivityValue(btn.attr('data-description') || '-'));
+        $('#activityLogSource').text(normalizeActivityValue((btn.attr('data-controller') || '-') + ' / ' + (btn.attr('data-action') || '-')));
+        $('#activityLogMethod').text(normalizeActivityValue(btn.attr('data-method') || '-'));
+        $('#activityLogIp').text(normalizeActivityValue(btn.attr('data-ip') || '-'));
+        $('#activityLogUrl').text(normalizeActivityValue(btn.attr('data-url') || '-'));
+
+        $('#activityLogBefore').text(formatSnapshot(btn.attr('data-before')));
+        $('#activityLogAfter').text(formatSnapshot(btn.attr('data-after')));
+
+        $('#activityLogOverlay').addClass('is-open').attr('aria-hidden', 'false');
+        $('body').addClass('activity-popup-open');
+    }
+
+    function closeActivityLogPopup() {
+        $('#activityLogOverlay').removeClass('is-open').attr('aria-hidden', 'true');
+        $('body').removeClass('activity-popup-open');
+    }
+
+    $(function () {
+        if ($.fn.DataTable && $('#activityLogsTable').length) {
+            $('#activityLogsTable').DataTable({
+                paging: true,
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                deferRender: true,
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { targets: 6, orderable: false, searchable: false }
+                ]
+            });
+        }
+
+        $('body').append($('#activityLogOverlay'));
+
+        $(document).on('click', '.view-log-details', function () {
+            openActivityLogPopup(this);
+        });
+
+        $('#activityLogOverlay').on('click', function (e) {
+            if (e.target === this) {
+                closeActivityLogPopup();
+            }
+        });
+
+        $(document).on('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeActivityLogPopup();
+            }
+        });
+    });
+</script>
