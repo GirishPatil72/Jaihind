@@ -22,7 +22,7 @@
     {
         new SelectListItem { Text = "Male", Value = "Male" },
         new SelectListItem { Text = "Female", Value = "Female" }
-                                                                                                    }, "Value", "Text", Model.Gender);
+    }, "Value", "Text", Model.Gender);
 
 }
 @using (Ajax.BeginForm("StudentInfoPost", "Admission", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "ajaxSuccessStudentInfo(data)", UpdateTargetId = "wizardContainer" }, new { encType = Model.encType, id = "frmStudentInfo", name = "frmStudentInfo", @class = "col-md-10 mx-auto" }))

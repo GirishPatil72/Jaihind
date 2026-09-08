@@ -276,9 +276,10 @@ namespace JaiHindEdutech.Models
                         .Select(a => a.AcademicYearId)
                         .FirstOrDefault();
 
-                    var classinfo = db.AddmissionForms
-                        .Where(s => s.AddmissionFormId == user.AddmissionFormId && s.IsDeleted == false && s.AcademicYearId == academicYearId)
-                        .FirstOrDefault();
+                    var classinfo = db.AddmissionForms.FirstOrDefault(s =>
+                            s.StudentInfoId == user.StudentInfoId &&
+                            s.IsDeleted == false &&
+                            s.AcademicYearId == academicYearId);
 
                     if (classinfo != null && classinfo.AddmissionFormId > 0)
                     {
@@ -1781,6 +1782,173 @@ namespace JaiHindEdutech.Models
         private void TrackActivity(string activityType, string entityName, string entityId, string description, object beforeValues = null, object afterValues = null)
         {
             ActivityLogHelper.Log(activityType, entityName,entityId, description, beforeValues, afterValues);
+        }
+
+        public int CreateOrUpdateAddressInfo(AddressInfoModel address)
+        {
+            try
+            {
+                int addressInfoId = 0;
+
+                if (address.IsDeleted == null)
+                    address.IsDeleted = false;
+
+                using (var db = new JaiHindEduEntitiesNew())
+                {
+                    // First, try to find existing address by StudentAddressInfoId
+                    StudentAddressInfo addressinfo = null;
+                    
+                    if (address.StudentAddressInfoId > 0)
+                    {
+                        addressinfo = db.StudentAddressInfoes
+                            .FirstOrDefault(s => s.StudentAddressInfoId == address.StudentAddressInfoId && s.IsDeleted == false);
+                    }
+                    
+                    // If not found by ID, check if address already exists for this student + address type
+                    if (addressinfo == null && address.StudentInfoId > 0)
+                    {
+                        var existingAssociation = db.AssStudentAddressStudentInfoes
+                            .Include("StudentAddressInfo")
+                            .FirstOrDefault(x => x.StudentInfoId == address.StudentInfoId 
+                                && x.StudentAddressInfo.AddressType == address.AddressType.ToString()
+                                && x.IsDeleted == false);
+                        
+                        if (existingAssociation != null)
+                        {
+                            addressinfo = existingAssociation.StudentAddressInfo;
+                        }
+                    }
+
+                    if (addressinfo != null && addressinfo.StudentAddressInfoId > 0)
+                    {
+                        // UPDATE existing address
+                        var beforeSnapshot = new
+                        {
+                            addressinfo.StudentAddressInfoId,
+                            addressinfo.AddressType,
+                            addressinfo.HouseNo,
+                            addressinfo.Area,
+                            addressinfo.Village,
+                            addressinfo.PO,
+                            addressinfo.District,
+                            addressinfo.City,
+                            addressinfo.State,
+                            addressinfo.Zip,
+                            addressinfo.SameAsPermanent,
+                            addressinfo.IsDeleted
+                        };
+
+                        addressinfo.AddressType = address.AddressType.ToString();
+                        addressinfo.HouseNo = address.HouseNo;
+                        addressinfo.Area = address.Area;
+                        addressinfo.Village = address.Village;
+                        addressinfo.PO = address.PO;
+                        addressinfo.District = address.District;
+                        addressinfo.City = address.City;
+                        addressinfo.State = address.State;
+                        addressinfo.Zip = address.Zip;
+                        addressinfo.SameAsPermanent = address.SameAsPermanent;
+                        addressinfo.IsDeleted = address.IsDeleted;
+                        addressinfo.ModifiedBy = address.ModifiedBy;
+                        addressinfo.ModifiedOn = address.ModifiedOn;
+
+                        db.SaveChanges();
+                        addressInfoId = addressinfo.StudentAddressInfoId;
+
+                        var afterSnapshot = new
+                        {
+                            addressinfo.StudentAddressInfoId,
+                            AddressType = address.AddressType.ToString(),
+                            address.HouseNo,
+                            address.Area,
+                            address.Village,
+                            address.PO,
+                            address.District,
+                            address.City,
+                            address.State,
+                            address.Zip,
+                            address.SameAsPermanent,
+                            address.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Updated",
+                            "StudentAddressInfo",
+                            addressInfoId.ToString(),
+                            "Address information updated",
+                            beforeSnapshot,
+                            afterSnapshot);
+                    }
+                    else
+                    {
+                        // CREATE new address
+                        var addressEntity = new StudentAddressInfo
+                        {
+                            AddressType = address.AddressType.ToString(),
+                            HouseNo = address.HouseNo,
+                            Area = address.Area,
+                            Village = address.Village,
+                            PO = address.PO,
+                            District = address.District,
+                            City = address.City,
+                            State = address.State,
+                            Zip = address.Zip,
+                            SameAsPermanent = address.SameAsPermanent,
+                            IsDeleted = address.IsDeleted,
+                            CreatedBy = address.CreatedBy,
+                            CreatedOn = address.CreatedOn,
+                            ModifiedBy = address.ModifiedBy,
+                            ModifiedOn = address.ModifiedOn
+                        };
+                        db.StudentAddressInfoes.Add(addressEntity);
+                        db.SaveChanges();
+                        addressInfoId = addressEntity.StudentAddressInfoId;
+
+                        var assStudentAddressStudent = new AssStudentAddressStudentInfo
+                        {
+                            StudentInfoId = address.StudentInfoId,
+                            StudentAddressInfoId = addressEntity.StudentAddressInfoId,
+                            CreatedBy = addressEntity.CreatedBy,
+                            CreatedOn = addressEntity.CreatedOn,
+                            ModifiedBy = addressEntity.ModifiedBy,
+                            ModifiedOn = addressEntity.ModifiedOn,
+                            IsDeleted = address.IsDeleted
+                        };
+                        db.AssStudentAddressStudentInfoes.Add(assStudentAddressStudent);
+                        db.SaveChanges();
+
+                        var afterSnapshot = new
+                        {
+                            addressEntity.StudentAddressInfoId,
+                            addressEntity.AddressType,
+                            addressEntity.HouseNo,
+                            addressEntity.Area,
+                            addressEntity.Village,
+                            addressEntity.PO,
+                            addressEntity.District,
+                            addressEntity.City,
+                            addressEntity.State,
+                            addressEntity.Zip,
+                            addressEntity.SameAsPermanent,
+                            addressEntity.IsDeleted
+                        };
+
+                        TrackActivity(
+                            "Created",
+                            "StudentAddressInfo",
+                            addressInfoId.ToString(),
+                            "Address information created",
+                            null,
+                            afterSnapshot);
+                    }
+
+                    return addressInfoId;
+                }
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }

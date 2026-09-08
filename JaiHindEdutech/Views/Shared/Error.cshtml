@@ -1,13 +1,27 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+﻿@{
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+
+    var errorReference = ViewBag.ErrorReference as string;
+
+    if (string.IsNullOrWhiteSpace(errorReference) && TempData["ErrorReference"] != null)
+    {
+        errorReference = TempData["ErrorReference"].ToString();
+    }
+}
+
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Something went wrong</h4>
+        <p>
+            We could not process your request right now. Please try again later.
+        </p>
+
+        @if (!string.IsNullOrWhiteSpace(errorReference))
+        {
+            <hr />
+            <p class="mb-0">
+                Error Reference: <strong>@errorReference</strong>
+            </p>
+        }
+    </div>
+</div>

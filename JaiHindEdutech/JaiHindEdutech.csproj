@@ -448,6 +448,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\ApplicationHandleErrorAttribute.cs" />
     <Compile Include="Infrastructure\PermissionAuthorizeAttribute.cs" />
     <Compile Include="Models\ActivityLogHelper.cs" />
     <Compile Include="Models\AddressInfoModel.cs" />

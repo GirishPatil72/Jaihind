@@ -12,27 +12,27 @@ namespace JaiHindEdutech.Models
         public bool SameAsPermanent { get; set; }
         public AddressType AddressType { get; set; }
         [Display(Name = "House No")]
-        [Required(ErrorMessage = "House No. is required.")]
+        //[Required(ErrorMessage = "House No. is required.")]
         public string HouseNo { get; set; }
-        [Required(ErrorMessage = "Area is required.")]
+        //[Required(ErrorMessage = "Area is required.")]
         public string Area { get; set; }
 
-        [Required(ErrorMessage = "Village is required.")]
+        //[Required(ErrorMessage = "Village is required.")]
         public string Village { get; set; }
 
-        [Required(ErrorMessage = "PO is required.")]
+        //[Required(ErrorMessage = "PO is required.")]
         public string PO { get; set; }
 
-        [Required(ErrorMessage = "District is required.")]
+        //[Required(ErrorMessage = "District is required.")]
         public string District { get; set; }
 
-        [Required(ErrorMessage = "City is required.")]
+        //[Required(ErrorMessage = "City is required.")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "State is required.")]
+        //[Required(ErrorMessage = "State is required.")]
         public string State { get; set; }
 
-        [Required(ErrorMessage = "Pincode is required.")]
+        //[Required(ErrorMessage = "Pincode is required.")]
         [Display(Name = "Pincode")]
         public string Zip { get; set; }
         public string CreatedBy { get; set; }

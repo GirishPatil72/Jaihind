@@ -127,5 +127,12 @@ namespace JaiHindEdutech.Controllers
 
             return View();
         }
+
+        [AllowAnonymous]
+        public ActionResult Error(string reference)
+        {
+            ViewBag.ErrorReference = reference;
+            return View("~/Views/Shared/Error.cshtml");
+        }
     }
 }

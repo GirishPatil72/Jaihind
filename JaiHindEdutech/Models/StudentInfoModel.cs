@@ -75,7 +75,7 @@ namespace JaiHindEdutech.Models
         public int AddmissionFormId { get; set; }
         public string AdmissionFormNo { get; set; }
 
-        [Required(ErrorMessage = "Remark is required.")]
+        //[Required(ErrorMessage = "Remark is required.")]
         public string Remark { get; set; }
 
         [Display(Name = "Total Fees")]

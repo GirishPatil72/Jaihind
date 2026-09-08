@@ -1,5 +1,4 @@
-﻿
-<div class="col-lg-8 col-md-12">
+﻿<div class="col-lg-8 col-md-12">
     <div class="main-card mb-3 card">
         <div class="card-body">
 
@@ -9,8 +8,8 @@
                         @*<a href="#step-1" class="nav-link">
                                 <em>1</em><span>Account Information</span>
                             </a>*@
-                        <a  onclick="LoadWizardSteps('@Url.Action("StudentInfo", new { controller = "StudentInfoes" })',1)">
-                            <em>1</em><span>1. Student Info<br></span>
+                        <a href="javascript:void(0);" onclick="return LoadWizardSteps('@Url.Action("StudentInfo", new { controller = "StudentInfoes" })', 1);">
+                            <em>1</em><span>1. Student Info</span>
                         </a>
                     </li>
                     <li class="nav-item done">
@@ -135,66 +134,22 @@
 
 <script type="text/javascript">
     function LoadWizardSteps(url, index) {
-        debugger
-        if ($('#IsEdit') == undefined || $('#IsEdit').val() == undefined || $('#IsEdit').val().toLowerCase() != 'true')
-        {
-            @*var IsSaveLastParam = ''
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("checkAllStepsCompleted","Transaction",new {area="Transaction"})',
-                data: { TransactionID: $("#TransactionID").val() },
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                async: false,
-                success: function (result) {
-                    if (result == true) {
-                        IsSaveLastParam = '&IsSaveLast=true';
-                    }
-                    else {
-
-                        IsSaveLastParam = '';
-                    }
-                },
-                failure: function () {
-                    alert("Failed!");
-                }
-            });*@
-
-
-            if ((index <= parseFloat($("#ModelStepName").val()) - 1 && $("#ModelStepName").val() != "6") || url == "LastStepURL") {
-                var lastStep = "&LastStep=" + $("#ModelStepName").val();
-                switch (index) {
-                    case 1:
-                        //debugger;
-                        var CityAddressID = typeof ($("#CityAddressID").val()) == "undefined" ? 0 : $("#CityAddressID").val();
-                        if (CityAddressID != 0)
-                            var strCityAddressID = '&CityAddressID=' + CityAddressID;
-                        else var strCityAddressID = '';
-                        window.location.href = '@Url.Action("RenderTab", "Tab")';
-                        break;
-                    @*case 2:
-                        window.location.href = '@Url.Action("RenderTab", "Tab", new { area = "ComCon" })?tabName=' + 'PermitInfoStep Transaction' + '&transactionId=' + $("#TransactionID").val() + '&modelStepName=' + index + '&SubmitAction=""' + lastStep + IsSaveLastParam;
-                        break;
-                    case 3:
-                        window.location.href = '@Url.Action("RenderTab", "Tab", new { area = "ComCon" })?tabName=' + 'PermitReviewStep Transaction' + '&transactionId=' + $("#TransactionID").val() + '&modelStepName=' + index + '&SubmitAction=""' + lastStep + IsSaveLastParam;
-                        break;
-                    case 4:
-                        window.location.href = '@Url.Action("RenderTab", "Tab", new { area = "ComCon" })?tabName=' + 'ContatInfoStep Transaction' + '&transactionId=' + $("#TransactionID").val() + '&modelStepName=' + index + '&SubmitAction=""' + lastStep + IsSaveLastParam;
-                        break;
-                    case 5:
-                        window.location.href = '@Url.Action("RenderTab", "Tab", new { area = "ComCon" })?tabName=' + 'Preview Confirm Transaction' + '&transactionId=' + $("#TransactionID").val() + '&SubmitAction=""' + lastStep + IsSaveLastParam;
-                        break;
-                    case 6:
-                        window.location.href = '@Url.Action("RenderTab", "Tab", new { area = "ComCon" })?tabName=' + 'Transaction Confirmation' + '&transactionId=' + $("#TransactionID").val() + '&SubmitAction=""' + lastStep + IsSaveLastParam;
-                        break;*@
-                }
-
-                $("#StepIndex").val(index);
-
-                /*Function to set step wizard*/
-                SetWizardCss(index);
-            }
+        if ($('#IsEdit').val() != undefined && $('#IsEdit').val().toLowerCase() == 'true') {
+            return;
         }
 
+        if ((index <= parseFloat($("#ModelStepName").val()) - 1 && $("#ModelStepName").val() != "6") || url == "LastStepURL") {
+            $("#StepIndex").val(index);
+            SetWizardCss(index);
+
+            switch (index) {
+                case 1:
+                    window.location.href = '@Url.Action("RenderTab", "Tab")';
+                    break;
+                case 2:
+                    window.location.href = '@Url.Action("Address", "StudentInfoes")?studentInfoId=' + $("#StudentInfoId").val();
+                    break;
+            }
+        }
     }
 </script>

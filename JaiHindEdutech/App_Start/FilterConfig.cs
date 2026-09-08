@@ -1,4 +1,4 @@
-﻿using System.Web;
+﻿using JaiHindEdutech.Infrastructure;
 using System.Web.Mvc;
 
 namespace JaiHindEdutech
@@ -7,7 +7,7 @@ namespace JaiHindEdutech
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new ApplicationHandleErrorAttribute());
         }
     }
 }

@@ -179,7 +179,10 @@
     {
         HttpMethod = "POST",
         InsertionMode = InsertionMode.Replace,
+        OnBegin = "beginAddressSubmit()",
         OnSuccess = "ajaxSuccessAddressInfo(data)",
+        OnComplete = "endAddressSubmit()",
+        OnFailure = "endAddressSubmit()",
         UpdateTargetId = "wizardContainer"
     },
     new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "address-shell" }))
@@ -376,7 +379,7 @@
                         <button type="button" onclick="loadStep(2)" class="btn btn-outline-secondary btn-lg px-4">
                             <i class="fa fa-arrow-left me-2"></i> Previous
                         </button>
-                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <button type="submit" id="btnAddressNext" class="btn btn-primary btn-lg px-4">
                             <i class="fa fa-arrow-right me-2"></i> Next
                         </button>
                     </div>
@@ -387,8 +390,25 @@
 }
 
 <script type="text/javascript">
+    var addressSubmitting = false;
+
+    function beginAddressSubmit() {
+        if (addressSubmitting) {
+            return false;
+        }
+        addressSubmitting = true;
+        $('#btnAddressNext').prop('disabled', true);
+        return true;
+    }
+
+    function endAddressSubmit() {
+        addressSubmitting = false;
+        $('#btnAddressNext').prop('disabled', false);
+    }
+
     function ajaxSuccessAddressInfo(data) {
-        if (data.result == true) {
+        endAddressSubmit();
+        if (data && data.result === true) {
             loadStep(4, 3, data.StudentInfoId);
         }
     };
@@ -407,8 +427,6 @@
                 $('#City_' + index1).val($('#City_' + index0).val());
                 $('#State_' + index1).val($('#State_' + index0).val());
                 $('#Zip_' + index1).val($('#Zip_' + index0).val());
-
-                // Optional: make fields readonly
                 $(`#HouseNo_${index1}, #Area_${index1}, #Village_${index1}, #PO_${index1}, #District_${index1}, #City_${index1}, #State_${index1}, #Zip_${index1}`).prop('readonly', true);
             } else {
                 $(`#HouseNo_${index1}, #Area_${index1}, #Village_${index1}, #PO_${index1}, #District_${index1}, #City_${index1}, #State_${index1}, #Zip_${index1}`).val('').prop('readonly', false);

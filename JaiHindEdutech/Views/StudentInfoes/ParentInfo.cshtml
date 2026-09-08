@@ -178,7 +178,10 @@
     {
         HttpMethod = "POST",
         InsertionMode = InsertionMode.Replace,
+        OnBegin = "beginParentSubmit()",
         OnSuccess = "ajaxSuccessParentInfo(data)",
+        OnComplete = "endParentSubmit()",
+        OnFailure = "endParentSubmit()",
         UpdateTargetId = "wizardContainer"
     },
     new { encType = Model.encType, id = "frmSetAddress", name = "frmSetAddress", @class = "parent-shell" }))
@@ -337,7 +340,7 @@
                         <button type="button" onclick="loadStep(1)" class="btn btn-outline-secondary btn-lg px-4">
                             <i class="fa fa-arrow-left me-2"></i> Previous
                         </button>
-                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <button type="submit" id="btnParentNext" class="btn btn-primary btn-lg px-4">
                             <i class="fa fa-arrow-right me-2"></i> Next
                         </button>
                     </div>
@@ -348,8 +351,25 @@
 }
 
 <script type="text/javascript">
+    var parentSubmitting = false;
+
+    function beginParentSubmit() {
+        if (parentSubmitting) {
+            return false;
+        }
+        parentSubmitting = true;
+        $('#btnParentNext').prop('disabled', true);
+        return true;
+    }
+
+    function endParentSubmit() {
+        parentSubmitting = false;
+        $('#btnParentNext').prop('disabled', false);
+    }
+
     function ajaxSuccessParentInfo(data) {
-        if (data.result == true) {
+        endParentSubmit();
+        if (data && data.result === true) {
             loadStep(3, 2, data.StudentInfoId);
         }
     };

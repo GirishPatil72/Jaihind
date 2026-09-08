@@ -15,8 +15,8 @@ namespace JaiHindEdutech.Controllers
         {
             get { return User != null && User.Identity != null && User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty; }
         }
+    
         // GET: StudentInfoes
-
         [PermissionAuthorize(Right = "Create,Edit")]
         public ActionResult Index(int collegeId, string collegeName, int studentInfoId = 0)
         {
@@ -36,43 +36,40 @@ namespace JaiHindEdutech.Controllers
             studentInfoModel = studentInfoBL.GetStudentInfoById(studentInfoId);
             return PartialView(studentInfoModel);
         }
+
         [HttpPost]
         public ActionResult StudentInfoPost(StudentInfoModel studentInfoModel)
         {
             StudentInfoBL studentInfoBL = new StudentInfoBL();
 
-            
             ModelState.Remove("CoachingCentreId");
-            foreach (var entry in ModelState)
+
+            if (!ModelState.IsValid)
             {
-                if (entry.Value.Errors.Count > 0)
-                {
-                    var fieldName = entry.Key;
-                    foreach (var error in entry.Value.Errors)
-                    {
-                        // Log or debug the field and error message
-                        //System.Diagnostics.Debug.WriteLine($"Field: {fieldName}, Error: {error.ErrorMessage}");
-                    }
-                }
+                return PartialView("StudentInfo", studentInfoModel);
             }
-            if (ModelState.IsValid)
+
+            studentInfoModel.ModifiedBy = CurrentUserName;
+            studentInfoModel.ModifiedOn = DateTime.Now;
+
+            if (studentInfoModel.StudentInfoId <= 0)
             {
                 studentInfoModel.CreatedBy = CurrentUserName;
                 studentInfoModel.CreatedOn = DateTime.Now;
-                studentInfoModel.ModifiedBy = CurrentUserName;
-                studentInfoModel.ModifiedOn = DateTime.Now;
-                int studentInfoId = studentInfoBL.CreateStudentInfo(studentInfoModel);
-                bool result = false;
-                if (studentInfoId > 0)
-                {
-                    studentInfoModel.StudentInfoId = studentInfoId;
-                    studentInfoModel.AddmissionFormId = studentInfoBL.CreateAdmissionInfo(studentInfoModel);
-                    result = true;
-                }
-                return Json(new { result = result, StudentInfoId = studentInfoId });
             }
-            return PartialView("StudentInfo", studentInfoModel);
+
+            int studentInfoId = studentInfoBL.CreateStudentInfo(studentInfoModel);
+            if (studentInfoId <= 0)
+            {
+                return Json(new { result = false, message = "Failed to save student info" });
+            }
+
+            studentInfoModel.StudentInfoId = studentInfoId;
+            studentInfoModel.AddmissionFormId = studentInfoBL.CreateAdmissionInfo(studentInfoModel);
+
+            return Json(new { result = true, StudentInfoId = studentInfoId });
         }
+
         public ActionResult ParentInfo(int studentInfoId)
         {
             StudentInfoBL studentInfoBL = new StudentInfoBL();
@@ -89,8 +86,12 @@ namespace JaiHindEdutech.Controllers
             {
                 foreach (var parent in parentInfoFormModel.Parents)
                 {
-                    parent.CreatedBy = CurrentUserName;
-                    parent.CreatedOn = DateTime.Now;
+                    // Set timestamps properly - only set CreatedBy/On for new records
+                    if (parent.ParentInfoId <= 0)
+                    {
+                        parent.CreatedBy = CurrentUserName;
+                        parent.CreatedOn = DateTime.Now;
+                    }
                     parent.ModifiedBy = CurrentUserName;
                     parent.ModifiedOn = DateTime.Now;
                     parent.StudentInfoId = parentInfoFormModel.StudentInfoId;
@@ -100,6 +101,7 @@ namespace JaiHindEdutech.Controllers
             }
             return PartialView("ParentInfo", parentInfoFormModel);
         }
+
         public ActionResult Address(int studentInfoId)
         {
             StudentInfoBL studentInfoBL = new StudentInfoBL();
@@ -116,12 +118,16 @@ namespace JaiHindEdutech.Controllers
             {
                 foreach (var address in addressInfoFormModel.Address)
                 {
-                    address.CreatedBy = CurrentUserName;
-                    address.CreatedOn = DateTime.Now;
+                    // Set timestamps properly - only set CreatedBy/On for new records
+                    if (address.StudentAddressInfoId <= 0)
+                    {
+                        address.CreatedBy = CurrentUserName;
+                        address.CreatedOn = DateTime.Now;
+                    }
                     address.ModifiedBy = CurrentUserName;
                     address.ModifiedOn = DateTime.Now;
                     address.StudentInfoId = addressInfoFormModel.StudentInfoId;
-                    studentInfoBL.CreateAddressInfo(address);
+                    studentInfoBL.CreateOrUpdateAddressInfo(address); // Use new method
                 }
                 return Json(new { result = true, StudentInfoId = addressInfoFormModel.StudentInfoId });
             }

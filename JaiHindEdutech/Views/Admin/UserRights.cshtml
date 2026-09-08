@@ -119,22 +119,22 @@
                                 <div class="row">
                                     <div class="col-3 text-center">
                                         <div class="form-check d-inline-block">
-                                            @Html.CheckBoxFor(m => m.Items[i].CanView, new { @class = "form-check-input js-view-right", id = $"view_{i}" })
+                                            @Html.CheckBoxFor(m => m.Items[i].CanView, new { @class = "form-check-input js-view-right", id = "view_" + i })
                                         </div>
                                     </div>
                                     <div class="col-3 text-center">
                                         <div class="form-check d-inline-block">
-                                            @Html.CheckBoxFor(m => m.Items[i].CanCreate, new { @class = "form-check-input js-create-right", id = $"create_{i}" })
+                                            @Html.CheckBoxFor(m => m.Items[i].CanCreate, new { @class = "form-check-input js-create-right", id = "create_" + i })
                                         </div>
                                     </div>
                                     <div class="col-3 text-center">
                                         <div class="form-check d-inline-block">
-                                            @Html.CheckBoxFor(m => m.Items[i].CanEdit, new { @class = "form-check-input js-edit-right", id = $"edit_{i}" })
+                                            @Html.CheckBoxFor(m => m.Items[i].CanEdit, new { @class = "form-check-input js-edit-right", id = "edit_" + i })
                                         </div>
                                     </div>
                                     <div class="col-3 text-center">
                                         <div class="form-check d-inline-block">
-                                            @Html.CheckBoxFor(m => m.Items[i].CanDelete, new { @class = "form-check-input js-delete-right", id = $"delete_{i}" })
+                                            @Html.CheckBoxFor(m => m.Items[i].CanDelete, new { @class = "form-check-input js-delete-right", id = "delete_" + i })
                                         </div>
                                     </div>
                                 </div>

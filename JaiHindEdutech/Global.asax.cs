@@ -86,5 +86,39 @@ namespace JaiHindEdutech
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-GB");
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-GB");
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception exception = Server.GetLastError();
+            string errorReference = Guid.NewGuid().ToString("N");
+
+            JaiHindEdutech.Models.ActivityLogHelper.Log(
+                activityType: "Error",
+                entityName: "Application",
+                description: "Unhandled application error. Reference: " + errorReference,
+                afterValues: new
+                {
+                    Reference = errorReference,
+                    ExceptionType = exception != null ? exception.GetType().FullName : null,
+                    Message = exception != null ? exception.Message : null,
+                    Details = exception != null ? exception.ToString() : null
+                });
+
+            Server.ClearError();
+
+            Response.Clear();
+            Response.StatusCode = 500;
+            Response.TrySkipIisCustomErrors = true;
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                Response.ContentType = "application/json";
+                Response.Write("{\"result\":false,\"message\":\"Something went wrong while processing your request. Please try again later.\",\"reference\":\"" + errorReference + "\"}");
+                Response.End();
+                return;
+            }
+
+            Response.Redirect("~/Home/Error?reference=" + errorReference);
+        }
     }
 }
